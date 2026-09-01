@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>BhoomiSync Survey - Khasra 101 (Haripura)</name>
+    <description>BhoomiSync Digital Land Survey Report Export - SUR-2026-001</description>
+
+    <!-- Styles -->
+    <Style id="officialBoundaryStyle">
+      <LineStyle><color>fffa823b</color><width>2</width></LineStyle>
+      <PolyStyle><color>4d8a3a1e</color></PolyStyle>
+    </Style>
+    <Style id="historicalBoundaryStyle">
+      <LineStyle><color>fff755a8</color><width>1.5</width></LineStyle>
+      <PolyStyle><color>4d64073b</color></PolyStyle>
+    </Style>
+    <Style id="droneBoundaryStyle">
+      <LineStyle><color>ff47e0fd</color><width>2</width></LineStyle>
+      <PolyStyle><color>4d0f3578</color></PolyStyle>
+    </Style>
+    <Style id="verifiedBoundaryStyle">
+      <LineStyle><color>ff99d334</color><width>3</width></LineStyle>
+      <PolyStyle><color>663b4e06</color></PolyStyle>
+    </Style>
+
+    <Folder>
+      <name>Official Revenue Cadastre</name>
+      <Placemark>
+        <name>Official Boundary - Khasra #101</name>
+        <description>Area: 12,500.00 m² | Source: Jamabandi Record</description>
+        <styleUrl>#officialBoundaryStyle</styleUrl>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates>73.711,24.584,0 73.713,24.584,0 73.713,24.586,0 73.711,24.586,0 73.711,24.584,0</coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Historical Cadastre Baseline (2021)</name>
+      <Placemark>
+        <name>Historical Boundary (2021) - Khasra #101</name>
+        <description>Area: 12,437.50 m²</description>
+        <styleUrl>#historicalBoundaryStyle</styleUrl>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates>73.711,24.584,0 73.713,24.584,0 73.713,24.586,0 73.711,24.586,0 73.711,24.584,0</coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Drone AI Detected Boundary</name>
+      <Placemark>
+        <name>Drone Detected Boundary - Khasra #101</name>
+        <description>Planar Area: 12,500.00 m² | 3D Surface: 12,725.00 m²</description>
+        <styleUrl>#droneBoundaryStyle</styleUrl>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates>73.712,24.585,0 73.7145,24.5852,0 73.7142,24.583,0 73.7118,24.5828,0 73.712,24.585,0</coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Parcel Information Point</name>
+      <Placemark>
+        <name>Khasra #101</name>
+        <description>Village: Haripura | Land Use: AGRICULTURAL_CROP</description>
+        <Point>
+          <coordinates>73.7132,24.584,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

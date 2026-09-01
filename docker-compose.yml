@@ -1,0 +1,69 @@
+services:
+  # ----------------------------------------------------------------------------
+  # PostgreSQL 16 + PostGIS 3.4 Database Service
+  # ----------------------------------------------------------------------------
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: bhoomisync-postgis
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bhoomi_user
+      POSTGRES_PASSWORD: bhoomi_password
+      POSTGRES_DB: bhoomisync_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+      - ./infrastructure/database/init-postgis.sql:/docker-entrypoint-initdb.d/init-postgis.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bhoomi_user -d bhoomisync_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # BhoomiSync Backend (FastAPI + SQLAlchemy + Geospatial Engine)
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/backend.Dockerfile
+    container_name: bhoomisync-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://bhoomi_user:bhoomi_password@db:5432/bhoomisync_db
+      STORAGE_PROVIDER: LOCAL
+      STORAGE_BUCKET: bhoomisync-surveys-data
+      STORAGE_LOCAL_ROOT: /app/data
+      DATA_GATEWAY_TYPE: ESP32_PHONE
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000,http://frontend:80
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./data:/app/data
+
+  # ----------------------------------------------------------------------------
+  # BhoomiSync Frontend (React + TypeScript + Vite + GIS Map)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/frontend.Dockerfile
+    container_name: bhoomisync-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+
+volumes:
+  postgis_data:
+    driver: local

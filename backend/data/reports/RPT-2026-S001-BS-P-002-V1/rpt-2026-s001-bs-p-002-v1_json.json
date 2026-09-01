@@ -1,0 +1,239 @@
+{
+  "report_header": {
+    "report_number": "BHOOMI/RJ/UDP/2026/010002-V1",
+    "survey_id": "SUR-2026-001",
+    "survey_title": "Haripura Agricultural Resurvey Pilot",
+    "parcel_id": "BS-P-002",
+    "khasra_number": "102",
+    "generated_at": "2026-09-01T11:37:39.590004Z",
+    "schema_version": "1.0.0",
+    "crs": "EPSG:4326 (WGS84) / Projected UTM Zone 43N (EPSG:32643)",
+    "preferred_unit": "m2",
+    "access_role_level": "SURVEYOR"
+  },
+  "data_provenance_and_integrity": {
+    "checksum_sha256": "e618779e0167b4b2c5b8ba19820920f7ed088c9eca7ab5d44eccae6d2b8e1e64",
+    "data_source_breakdown": {
+      "raw_sensors": "CAMERA_RGB_LIDAR_RTK_GNSS",
+      "ai_models": "BHOOMI_SEG_V2_DEEP_RESNET",
+      "system_calculations": "WGS84_GEODESIC_CHAMBERLAIN_DUQUETTE",
+      "official_records": "RAJASTHAN_REVENUE_JAMABANDI",
+      "surveyor_sign_off": "AI_DETECTED"
+    }
+  },
+  "parcel_attributes": {
+    "parcel_id": "BS-P-002",
+    "khasra_number": "102",
+    "subdivision": "1",
+    "village": "Haripura",
+    "tehsil": "Girwa",
+    "district": "Udaipur",
+    "state": "Rajasthan",
+    "centroid_latitude": 24.584,
+    "centroid_longitude": 73.7132,
+    "land_use": "AGRICULTURAL_CROP",
+    "land_classification_confidence": 0.947
+  },
+  "ownership_title": {
+    "total_owners": 1,
+    "owners": [
+      {
+        "owner_name": "Suresh Kumar Dangi",
+        "owner_type": "INDIVIDUAL",
+        "share_percentage": 100.0,
+        "contact_number": "HASH-TEL-91290002",
+        "id_number": "OWN-HR-002",
+        "is_primary": true
+      }
+    ],
+    "tenure_type": "KHATEDARI (Permanent Agricultural Tenure)",
+    "land_tax_status": "PAID_UP_TO_DATE"
+  },
+  "geospatial_measurements": {
+    "planar_area_m2": 9800.0,
+    "planar_area_hectares": 0.98,
+    "planar_area_acres": 2.4216,
+    "surface_area_m2": 9976.4,
+    "surface_area_hectares": 0.9976,
+    "surface_area_acres": 2.4652,
+    "official_area_m2": 9800.0,
+    "historical_area_m2": 9751.0,
+    "verified_area_m2": 9800.0,
+    "perimeter_m": 448.6,
+    "mean_slope_degrees": 4.2,
+    "elevation_min_m": 582.4,
+    "elevation_max_m": 594.1,
+    "calculation_method": "Geodesic WGS84 Ellipsoid (Chamberlain-Duquette) + 3D DEM Surface Integration"
+  },
+  "drone_survey_telemetry": {
+    "camera_model": "Sony RX0 II Ultra-Compact Survey Camera (DSC-RX0M2)",
+    "image_resolution": "61.0 Megapixels (9504 x 6336 px)",
+    "gsd_cm_px": 1.25,
+    "total_aerial_images": 240,
+    "lidar_sensor": "Livox Mid-360 Solid-State 3D LiDAR (Mid-360)",
+    "lidar_points_captured": 14500000,
+    "lidar_point_density_pts_m2": 185.4,
+    "rtk_gnss_fix": "FIXED",
+    "avg_horizontal_accuracy_cm": 1.2,
+    "avg_vertical_accuracy_cm": 2.1,
+    "flight_altitude_agl_m": 60.0
+  },
+  "ai_land_classification": {
+    "primary_class": "AGRICULTURAL_CROP",
+    "confidence_score": 0.947,
+    "classes_breakdown": [
+      {
+        "class_name": "AGRICULTURAL_CROP",
+        "label": "Cultivated Crop (Wheat/Mustard)",
+        "area_m2": 7644.0,
+        "percentage": 78.0,
+        "confidence": 0.96
+      },
+      {
+        "class_name": "AGRICULTURAL_FALLOW",
+        "label": "Seasonal Fallow",
+        "area_m2": 1176.0,
+        "percentage": 12.0,
+        "confidence": 0.92
+      },
+      {
+        "class_name": "VEGETATION_TREES",
+        "label": "Field Boundary Trees & Shrubs",
+        "area_m2": 588.0,
+        "percentage": 6.0,
+        "confidence": 0.89
+      },
+      {
+        "class_name": "WATER_HARVESTING",
+        "label": "Irrigation Bund / Channel",
+        "area_m2": 392.0,
+        "percentage": 4.0,
+        "confidence": 0.94
+      }
+    ],
+    "disclaimer": "AI-generated classification \u2014 predictions are generated via deep-learning computer vision models and are subject to field verification by an authorized cadastral surveyor."
+  },
+  "boundary_intelligence": {
+    "geometries": {
+      "official_boundary": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.713,
+              24.584
+            ],
+            [
+              73.715,
+              24.584
+            ],
+            [
+              73.715,
+              24.586
+            ],
+            [
+              73.713,
+              24.586
+            ],
+            [
+              73.713,
+              24.584
+            ]
+          ]
+        ]
+      },
+      "historical_boundary": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.713,
+              24.584
+            ],
+            [
+              73.715,
+              24.584
+            ],
+            [
+              73.715,
+              24.586
+            ],
+            [
+              73.713,
+              24.586
+            ],
+            [
+              73.713,
+              24.584
+            ]
+          ]
+        ]
+      },
+      "drone_boundary": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.712,
+              24.585
+            ],
+            [
+              73.7145,
+              24.5852
+            ],
+            [
+              73.7142,
+              24.583
+            ],
+            [
+              73.7118,
+              24.5828
+            ],
+            [
+              73.712,
+              24.585
+            ]
+          ]
+        ]
+      },
+      "verified_boundary": null
+    },
+    "comparison_metrics": {
+      "iou_score": 0.974,
+      "max_displacement_m": 0.42,
+      "mean_displacement_m": 0.18,
+      "centroid_drift_m": 0.22,
+      "area_difference_m2": 0.0,
+      "area_difference_percentage": 0.0,
+      "perimeter_difference_m": 3.6,
+      "status": "WITHIN_CADASTRAL_TOLERANCE"
+    }
+  },
+  "historical_changes_and_encroachments": {
+    "historical_changes_detected": 1,
+    "changes_summary": "Minor bund widening (+0.25m) on south irrigation boundary.",
+    "encroachment_assessment": {
+      "detected": false,
+      "status_text": "No potential encroachment detected by the current spatial analysis.",
+      "alert_id": null,
+      "severity": "NONE",
+      "estimated_area_m2": 0.0,
+      "location_description": "Field perimeter is strictly consistent with village revenue records.",
+      "disclaimer": "POTENTIAL ENCROACHMENT NOTICE: Encroachment markers and boundary anomalies identified herein represent preliminary spatial discrepancies between cadastral records and aerial sensor datasets. They constitute 'Potential Encroachments' and require formal ground demarcation and field verification."
+    }
+  },
+  "surveyor_verification": {
+    "verification_status": "AI_DETECTED",
+    "surveyor_name": "Vikram Singh (Cadastral Surveyor, Grade I)",
+    "surveyor_id": "SRV-RJ-2024-0891",
+    "license_number": "RAJ-REV-CAD-4412",
+    "verification_date": "2026-09-01",
+    "remarks": "Aerial boundary verified with RTK Ground Control Points. Alignment adheres to Rajasthan Land Revenue Act standards.",
+    "digital_sign_hash": "SIG-SHA256-0824924C8A5623B8"
+  },
+  "legal_and_operational_disclaimers": {
+    "legal_validity_notice": "DISCLAIMER OF LEGAL TITLE: This document is a technical digital land survey report and geospatial intelligence dossier generated by the BhoomiSync platform. It is prepared for cadastral verification, surveyor review, and administrative analysis. This document does not constitute a legally binding government land deed, mutation order, or final record-of-rights (RoR) title. Legal validity and final mutation approval rest exclusively with the competent government revenue authority (Tehsildar / Settlement Officer).",
+    "ai_notice": "AI-generated classification \u2014 predictions are generated via deep-learning computer vision models and are subject to field verification by an authorized cadastral surveyor.",
+    "encroachment_notice": "POTENTIAL ENCROACHMENT NOTICE: Encroachment markers and boundary anomalies identified herein represent preliminary spatial discrepancies between cadastral records and aerial sensor datasets. They constitute 'Potential Encroachments' and require formal ground demarcation and field verification."
+  }
+}
