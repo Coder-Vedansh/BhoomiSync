@@ -11,17 +11,53 @@ from app.db.session import init_db, SessionLocal
 from app.db.seed import seed_mock_data
 
 
+def _run_auto_migrations():
+    """
+    Run lightweight SQLite schema auto-migrations at startup.
+    Ensures new columns added to SQLAlchemy models are present in the dev SQLite DB
+    without requiring Alembic. Safe to run multiple times (idempotent).
+    """
+    from app.db.session import engine
+    import sqlalchemy
+
+    # Only needed for SQLite dev mode — PostgreSQL uses Alembic
+    if "sqlite" not in str(engine.url):
+        return
+
+    migrations = [
+        # (table, column, column_def)
+        ("surveys", "lifecycle_stage", "TEXT DEFAULT 'PLANNED'"),
+    ]
+
+    with engine.connect() as conn:
+        for table, column, col_def in migrations:
+            try:
+                result = conn.execute(sqlalchemy.text(f"PRAGMA table_info({table})"))
+                existing_cols = [row[1] for row in result.fetchall()]
+                if column not in existing_cols:
+                    conn.execute(sqlalchemy.text(
+                        f"ALTER TABLE {table} ADD COLUMN {column} {col_def}"
+                    ))
+                    conn.commit()
+            except Exception:
+                pass  # Table may not exist yet on first run — init_db() will create it
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown events."""
-    # Initialize DB Schema and Seed Mock Survey
+    # Initialize DB Schema
     init_db()
+    # Run any pending schema migrations (idempotent)
+    _run_auto_migrations()
+    # Seed mock data
     db = SessionLocal()
     try:
         seed_mock_data(db)
     finally:
         db.close()
     yield
+
 
 
 app = FastAPI(

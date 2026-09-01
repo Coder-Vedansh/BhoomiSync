@@ -67,9 +67,18 @@ class Settings(BaseSettings):
     R2_ENDPOINT_URL: str = Field(default="", description="Cloudflare R2 S3 API Endpoint URL")
     SIMULATED_PROCESSING: bool = Field(default=True, description="Enable simulated fast processing pipeline for demo & tests")
 
-    model_config = SettingsConfigDict(env_file=".env", extra="allow")
+    # Remote Processing Engine Microservice Configuration
+    PROCESSING_ENGINE_URL: str = Field(
+        default="http://localhost:9000/api/v1/engine",
+        description="Endpoint URL of the standalone photogrammetry and AI engine server"
+    )
+    PROCESSING_ENGINE_SECRET: str = "bhoomisync-engine-dev-secret"
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
 
 settings = Settings()
-
