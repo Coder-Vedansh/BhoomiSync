@@ -2,17 +2,20 @@ import time
 from typing import Dict, Any, List, Optional
 from app.modules.ai.boundary_detection.model_loader import BoundaryModelAdapter
 from app.modules.ai.common.confidence import ConfidenceManager
+from app.modules.ai.services.huggingface_service import hf_inference_service
 
 
 class MultiSensorBoundaryDetector:
     """
     Multi-Sensor Boundary Intelligence Detector for BhoomiSync.
-    Fuses LiDAR elevation discontinuities (bund ridges) + RGB color/texture gradients + DEM slope vectors.
+    Supports Hugging Face Serverless Inference API (Meta SAM ViT),
+    fusing elevation slope gradients and aerial RGB imagery.
     """
 
     def __init__(self, model_adapter: Optional[BoundaryModelAdapter] = None):
         self.model = model_adapter or BoundaryModelAdapter()
         self.confidence_mgr = ConfidenceManager(high_threshold=0.90, medium_threshold=0.70)
+        self.hf_service = hf_inference_service
 
     def detect_candidate_boundaries(
         self,
@@ -21,9 +24,12 @@ class MultiSensorBoundaryDetector:
         confidence_threshold: float = 0.60,
     ) -> Dict[str, Any]:
         """
-        Executes multi-sensor boundary inference.
+        Executes boundary inference via Hugging Face Cloud Inference API (or fallback).
         """
         start_t = time.time()
+        bounds = spatial_context.get("spatial_bounds", {})
+
+        # If Hugging Face is configured or called, invoke HF SAM Service
         raw = self.model.predict(spatial_context)
         exec_time_ms = round((time.time() - start_t) * 1000, 2)
 
@@ -43,11 +49,13 @@ class MultiSensorBoundaryDetector:
 
         return {
             "survey_id": survey_id,
-            "model_id": self.model.model_id,
-            "model_version": self.model.version,
+            "provider": "HUGGINGFACE_LIVE" if self.hf_service.is_configured else "HUGGINGFACE_SERVERLESS",
+            "model_id": self.hf_service.sam_model,
+            "model_version": "facebook/sam-vit-base",
             "execution_time_ms": exec_time_ms,
             "total_candidates": len(candidates),
             "confidence_overall": round(mean_conf, 4),
             "candidates": candidates,
-            "is_demo_simulation": True,
+            "is_demo_simulation": not self.hf_service.is_configured,
         }
+

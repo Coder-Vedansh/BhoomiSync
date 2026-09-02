@@ -74,6 +74,20 @@ class Settings(BaseSettings):
     )
     PROCESSING_ENGINE_SECRET: str = "bhoomisync-engine-dev-secret"
 
+    # Hugging Face Serverless Inference API (Cloud AI)
+    HUGGINGFACE_API_KEY: str = Field(
+        default="",
+        description="Hugging Face User Access Token (e.g. hf_...)"
+    )
+    HF_SAM_MODEL: str = Field(
+        default="facebook/sam-vit-base",
+        description="Hugging Face Model ID for Segment Anything boundary extraction"
+    )
+    HF_LULC_MODEL: str = Field(
+        default="nvidia/segformer-b0-finetuned-ade-512-512",
+        description="Hugging Face Model ID for LULC Semantic Segmentation"
+    )
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

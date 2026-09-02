@@ -17,6 +17,16 @@ router.include_router(change_detection_router)
 router.include_router(inference_router)
 
 
+@router.get("/huggingface/status")
+async def get_huggingface_status():
+    """
+    Returns live connection and configuration status of the Hugging Face Serverless Inference API.
+    """
+    from app.modules.ai.services.huggingface_service import hf_inference_service
+    status_info = await hf_inference_service.check_api_status()
+    return success_response(data=status_info)
+
+
 @router.get("/modules", response_model=ApiResponse[AIModulesResponse])
 def list_ai_modules():
     """
