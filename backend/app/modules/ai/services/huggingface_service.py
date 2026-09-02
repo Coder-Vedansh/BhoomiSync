@@ -27,15 +27,28 @@ class HuggingFaceInferenceService:
         sam_model: Optional[str] = None,
         lulc_model: Optional[str] = None,
     ):
-        self.api_key = api_key or settings.HUGGINGFACE_API_KEY
-        self.sam_model = sam_model or settings.HF_SAM_MODEL
-        self.lulc_model = lulc_model or settings.HF_LULC_MODEL
+        self._explicit_api_key = api_key
+        self._explicit_sam_model = sam_model
+        self._explicit_lulc_model = lulc_model
         self.timeout = 25.0
+
+    @property
+    def api_key(self) -> str:
+        return self._explicit_api_key or settings.HUGGINGFACE_API_KEY or ""
+
+    @property
+    def sam_model(self) -> str:
+        return self._explicit_sam_model or settings.HF_SAM_MODEL or "facebook/sam-vit-base"
+
+    @property
+    def lulc_model(self) -> str:
+        return self._explicit_lulc_model or settings.HF_LULC_MODEL or "nvidia/segformer-b0-finetuned-ade-512-512"
 
     @property
     def is_configured(self) -> bool:
         """Check if a real Hugging Face API token is provided."""
-        return bool(self.api_key and len(self.api_key.strip()) > 5 and not self.api_key.startswith("your-"))
+        key = self.api_key.strip()
+        return bool(key and len(key) > 5 and not key.startswith("your-") and not key.startswith("hf_your_"))
 
     @property
     def headers(self) -> Dict[str, str]:
