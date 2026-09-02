@@ -13,6 +13,7 @@ from app.modules.auth.auth_router import router as auth_router
 from app.modules.reporting.routers.report_router import router as report_router
 from app.modules.drone_ingestion.routers.drone_ingestion_router import router as drone_router
 from app.modules.system.system_health_router import router as system_router
+from app.modules.processing_engine.router import router as processing_engine_router
 from app.schemas.common import SystemHealthStatus
 from app.core.config import settings
 from app.core.response import ApiResponse, success_response
@@ -39,6 +40,7 @@ def health_check():
 
 # Mount all domain sub-routers under /api/v1
 api_v1_router.include_router(system_router)
+api_v1_router.include_router(processing_engine_router)
 api_v1_router.include_router(drone_router, prefix="/drone")
 api_v1_router.include_router(auth_router)
 api_v1_router.include_router(report_router)
@@ -56,6 +58,7 @@ api_v1_router.include_router(geospatial_router)
 api_compat_router = APIRouter(prefix="/api")
 api_compat_router.get("/health", response_model=ApiResponse[SystemHealthStatus], tags=["System Health"])(health_check)
 api_compat_router.include_router(system_router)
+api_compat_router.include_router(processing_engine_router)
 api_compat_router.include_router(drone_router, prefix="/drone")
 api_compat_router.include_router(auth_router)
 api_compat_router.include_router(report_router)

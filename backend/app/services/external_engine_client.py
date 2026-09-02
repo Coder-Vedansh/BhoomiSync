@@ -99,12 +99,39 @@ class ExternalEngineClient:
                     json=payload,
                     headers=self.headers,
                 )
+        except Exception as e:
+            logger.warning(f"External engine boundary detection unavailable: {e}")
+        return None
+
+    async def fetch_tile(self, survey_id: str, z: int, x: int, y: int) -> Optional[bytes]:
+        """Fetch rendered orthomosaic tile from remote engine."""
+        try:
+            async with httpx.AsyncClient(timeout=8.0) as client:
+                res = await client.get(
+                    f"{self.base_url}/tiles/{survey_id}/{z}/{x}/{y}.png",
+                    headers=self.headers,
+                )
+                if res.status_code == 200:
+                    return res.content
+        except Exception:
+            pass
+        return None
+
+    async def cancel_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Cancel a running photogrammetry job on remote engine."""
+        try:
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                res = await client.post(
+                    f"{self.base_url}/photogrammetry/jobs/{job_id}/cancel",
+                    headers=self.headers,
+                )
                 if res.status_code == 200:
                     return res.json()
         except Exception as e:
-            logger.warning(f"External engine boundary detection unavailable: {e}")
+            logger.warning(f"Failed to cancel external engine job {job_id}: {e}")
         return None
 
 
 # Global client instance
 external_engine_client = ExternalEngineClient()
+

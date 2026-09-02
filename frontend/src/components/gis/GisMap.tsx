@@ -282,7 +282,17 @@ export const GisMap: React.FC<GisMapProps> = ({
           />
         )}
 
-        {/* 4. Orthomosaic Raster Overlay */}
+        {/* 4. Orthomosaic Raster Dynamic Tile Overlay (from Remote Engine) */}
+        {layerVisibility['orthomosaic-raster'] && (
+          <TileLayer
+            attribution='&copy; <a href="#">BhoomiSync Photogrammetry Engine</a>'
+            url={`/api/v1/engine/tiles/${survey?.survey_id || 'SUR-2026-001'}/{z}/{x}/{y}.png`}
+            opacity={0.85}
+            zIndex={10}
+            maxZoom={22}
+          />
+        )}
+
         {layerVisibility['orthomosaic-raster'] && orthoManifest && (
           <Polygon
             positions={[
@@ -294,7 +304,7 @@ export const GisMap: React.FC<GisMapProps> = ({
             pathOptions={{
               color: '#10b981',
               weight: 2,
-              fillOpacity: 0.15,
+              fillOpacity: 0.08,
               fillColor: '#059669',
             }}
           >
