@@ -360,6 +360,29 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
       <div className="flex-1 relative flex overflow-hidden">
         {/* Central Dominant GIS Map */}
         <div className="flex-1 h-full w-full relative">
+          {/* Floating Map Avionics Flight HUD */}
+          <div className="absolute top-4 left-4 z-10 hidden sm:flex items-center gap-2 p-1.5 rounded-xl glass-panel text-xs text-white shadow-xl pointer-events-auto border border-slate-700/60">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800">
+              <Activity size={12} className="text-emerald-400" />
+              <span className="text-[10px] text-slate-400 font-mono">ALT:</span>
+              <span className="font-mono font-bold text-white text-[11px]">{currentAlt.toFixed(1)}m</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800">
+              <Zap size={12} className="text-cyan-400" />
+              <span className="text-[10px] text-slate-400 font-mono">SPD:</span>
+              <span className="font-mono font-bold text-cyan-300 text-[11px]">{currentSpeed.toFixed(1)}m/s</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800">
+              <Crosshair size={12} className="text-emerald-400" />
+              <span className="text-[10px] text-slate-400 font-mono">RTK:</span>
+              <span className="font-mono font-bold text-emerald-400 text-[11px]">FIXED (1.4cm)</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800">
+              <span className="text-[10px] text-slate-400 font-mono">BAT:</span>
+              <span className="font-mono font-bold text-emerald-400 text-[11px]">{currentBattery.toFixed(0)}%</span>
+            </div>
+          </div>
+
           <GisMap
             survey={survey}
             parcels={parcels}
