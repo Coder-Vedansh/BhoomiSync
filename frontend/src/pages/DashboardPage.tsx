@@ -6,24 +6,23 @@ import {
   Layers,
   ArrowRight,
   TrendingUp,
-  AlertTriangle,
   CheckCircle2,
   Play,
   Square,
   Crosshair,
+  Zap,
+  Activity,
+  Cloud,
+  Cpu,
+  Radio,
+  Clock,
+  Sparkles,
 } from 'lucide-react';
 import { api } from '../services/api';
 import { droneMissionApi } from '../services/droneMissionApi';
 import { Survey } from '../types';
 import { DroneMission, TelemetryRecord, MissionHealth, SimulatorStatus } from '../types/droneMission';
-import {
-  PageHeader,
-  StatGrid,
-  MetricCard,
-  Card,
-  Button,
-  Badge,
-} from '../components/ui';
+import { Badge } from '../components/ui';
 
 interface DashboardPageProps {
   onNavigate: (tab: string, id?: string) => void;
@@ -36,6 +35,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
   const [health, setHealth] = useState<MissionHealth | null>(null);
   const [simStatus, setSimStatus] = useState<SimulatorStatus | null>(null);
   const [latestTel, setLatestTel] = useState<TelemetryRecord | null>(null);
+  const [timeStr, setTimeStr] = useState<string>('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTimeStr(now.toLocaleTimeString('en-US', { hour12: false }));
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -66,7 +76,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
       }
     }
     loadData();
-    const interval = setInterval(loadData, 5000);
+    const interval = setInterval(loadData, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -90,384 +100,440 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     }
   };
 
+  const stages = [
+    { num: 1, name: 'PLANNED', done: true },
+    { num: 2, name: 'PRE_FLIGHT_CALIBRATION', done: true },
+    { num: 3, name: 'MISSION_IN_PROGRESS', done: true },
+    { num: 4, name: 'DATA_INGESTED', done: true },
+    { num: 5, name: 'PROCESSING', done: true },
+    { num: 6, name: 'SURVEYOR_REVIEW', active: true },
+    { num: 7, name: 'COMMUNITY_OBJECTION', done: false },
+    { num: 8, name: 'OFFICIAL_APPROVAL', done: false },
+    { num: 9, name: 'GAZETTE_NOTIFICATION', done: false },
+    { num: 10, name: 'COMPLETED', done: false },
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* 1. Page Header */}
-      <PageHeader
-        title="Executive Cadastral Survey Dashboard"
-        subtitle="High-level operational command center: Survey acreage, physical drone mission status, Cloudflare R2 ingestion, and AI boundary verification"
-        badge={
-          <div className="flex items-center gap-2">
-            <Badge variant="emerald" dot>
-              System Operational
-            </Badge>
-            <Badge variant={isSimRunning ? 'amber' : 'cyan'}>
-              {isSimRunning ? 'SIMULATION MODE' : 'LIVE DATA'}
-            </Badge>
+    <div className="space-y-6 pb-12">
+      {/* ========================================================================= */}
+      {/* 1. HERO COMMAND BANNER (Cyber-Cartography Glassmorphism) */}
+      {/* ========================================================================= */}
+      <div className="relative overflow-hidden rounded-2xl p-6 sm:p-8 bg-gradient-to-r from-slate-900 via-slate-900/90 to-emerald-950/40 border border-emerald-500/20 shadow-2xl backdrop-blur-xl">
+        {/* Ambient Glow Orbs */}
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 -mb-16 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-emerald-500/20">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                SYSTEM OPERATIONAL
+              </span>
+              <span className="px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5">
+                <Crosshair size={12} className="text-cyan-400" />
+                RTK CENTIMETER FIXED
+              </span>
+              <span className="text-xs font-mono text-slate-400 flex items-center gap-1">
+                <Clock size={12} className="text-slate-500" />
+                UTC {timeStr}
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-emerald-200 tracking-tight">
+              BhoomiSync Operational Command
+            </h1>
+            <p className="text-slate-300 text-sm max-w-2xl leading-relaxed">
+              Real-time cadastral resurvey suite: Cellular 5G drone avionics, Cloudflare R2 zero-egress ingestion, and AI boundary extraction for high-precision land governance.
+            </p>
           </div>
-        }
-        actions={
-          <div className="flex items-center gap-2 flex-wrap">
-            <Button
-              size="sm"
-              variant="primary"
-              icon={<MapPin size={14} />}
+
+          {/* Quick Action Matrix */}
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <button
               onClick={() => onNavigate('gis')}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer border border-emerald-400/30"
             >
-              Open GIS Workbench
-            </Button>
-            <Button
-              size="sm"
-              variant="cyan"
-              icon={isSimRunning ? <Square size={14} /> : <Play size={14} />}
+              <MapPin size={15} />
+              <span>Launch GIS Workbench</span>
+              <ArrowRight size={14} className="ml-1" />
+            </button>
+
+            <button
               onClick={handleToggleSimulator}
+              className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer border shadow-lg ${
+                isSimRunning
+                  ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 hover:bg-rose-500/30 shadow-rose-500/10'
+                  : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30 shadow-cyan-500/10'
+              }`}
             >
-              {isSimRunning ? 'Stop Flight Simulator' : 'Start Flight Simulator'}
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              icon={<FileText size={14} />}
+              {isSimRunning ? <Square size={14} className="text-rose-400" /> : <Play size={14} className="text-cyan-400" />}
+              <span>{isSimRunning ? 'Stop Flight Simulator' : 'Start Flight Simulator'}</span>
+            </button>
+
+            <button
               onClick={() => onNavigate('reports')}
+              className="px-3.5 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold text-xs border border-slate-700 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              Generate Report
-            </Button>
+              <FileText size={14} className="text-amber-400" />
+              <span>Dossiers</span>
+            </button>
           </div>
-        }
-      />
+        </div>
+      </div>
 
-      {/* 2. Section A: Core Survey Statistics (4-Col Stat Grid) */}
-      <StatGrid columns={4}>
-        <MetricCard
-          label="Total Surveyed Villages"
-          value={<span className="font-mono text-2xl font-extrabold">{surveys.length}</span>}
-          subtitle="Pilot revenue villages mapped"
-          icon={<MapPin size={16} />}
-          variant="emerald"
-        />
-        <MetricCard
-          label="Total Surveyed Land Area"
-          value={
-            <span className="font-mono text-2xl font-extrabold text-cyan-300">
-              {totalHectares.toFixed(1)} <span className="text-sm font-normal text-slate-400">ha</span>
-            </span>
-          }
-          subtitle={`${(totalHectares * 2.471).toFixed(1)} Acres sub-centimeter verified`}
-          icon={<TrendingUp size={16} />}
-          variant="cyan"
-        />
-        <MetricCard
-          label="Cadastral Parcels Registered"
-          value={<span className="font-mono text-2xl font-extrabold">{totalParcels}</span>}
-          subtitle="Authoritative Khasra records"
-          icon={<ShieldCheck size={16} />}
-          variant="emerald"
-        />
-        <MetricCard
-          label="Raw Sensor Datasets in R2"
-          value={<span className="font-mono text-2xl font-extrabold text-purple-300">{totalDatasets}</span>}
-          subtitle="RGB, LiDAR, RTK &amp; DEM rasters"
-          icon={<Layers size={16} />}
-          variant="purple"
-        />
-      </StatGrid>
-
-      {/* 3. Section B & C: Live Drone Mission + Cloudflare R2 Ingestion Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Section B: Drone Mission & Hardware Status */}
-        <Card
-          title="Physical Drone Mission Status"
-          subtitle="Cellular 5G telemetry & RTK centimeter carrier fix"
-          actions={
-            <Badge variant="cyan" size="sm" dot>
-              {isSimRunning ? 'SIMULATOR ACTIVE' : '5G CONNECTED'}
-            </Badge>
-          }
+      {/* ========================================================================= */}
+      {/* 2. STATS GRID (Cyber Glass Cards with Glowing Radial Halos) */}
+      {/* ========================================================================= */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Card 1: Surveyed Land Area */}
+        <div
+          onClick={() => onNavigate('gis')}
+          className="group relative p-5 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/40 transition-all duration-300 shadow-xl cursor-pointer overflow-hidden transform hover:-translate-y-1"
         >
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
+          <div className="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Surveyed Land</span>
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30 group-hover:scale-110 transition-transform">
+              <TrendingUp size={18} />
+            </div>
+          </div>
+          <div className="text-3xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-teal-200">
+            {totalHectares.toFixed(1)} <span className="text-sm font-normal text-slate-400">ha</span>
+          </div>
+          <div className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+            <span className="text-emerald-400 font-semibold font-mono">{(totalHectares * 2.471).toFixed(1)} Acres</span>
+            <span>sub-cm verified</span>
+          </div>
+        </div>
+
+        {/* Card 2: Registered Khasra Parcels */}
+        <div
+          onClick={() => onNavigate('land-registry')}
+          className="group relative p-5 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/40 transition-all duration-300 shadow-xl cursor-pointer overflow-hidden transform hover:-translate-y-1"
+        >
+          <div className="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Registered Parcels</span>
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/30 group-hover:scale-110 transition-transform">
+              <ShieldCheck size={18} />
+            </div>
+          </div>
+          <div className="text-3xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-100">
+            {totalParcels}
+          </div>
+          <div className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+            <span className="text-emerald-400 font-semibold">100% Georeferenced</span>
+            <span>in PostGIS</span>
+          </div>
+        </div>
+
+        {/* Card 3: Pilot Revenue Villages */}
+        <div
+          onClick={() => onNavigate('gis')}
+          className="group relative p-5 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-500/40 transition-all duration-300 shadow-xl cursor-pointer overflow-hidden transform hover:-translate-y-1"
+        >
+          <div className="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Survey Campaigns</span>
+            <div className="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/30 group-hover:scale-110 transition-transform">
+              <MapPin size={18} />
+            </div>
+          </div>
+          <div className="text-3xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-100">
+            {surveys.length}
+          </div>
+          <div className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+            <span className="text-amber-400 font-semibold font-mono">Haripura Pilot</span>
+            <span>Udaipur, RJ</span>
+          </div>
+        </div>
+
+        {/* Card 4: Sensor Datasets in R2 */}
+        <div
+          onClick={() => onNavigate('gis')}
+          className="group relative p-5 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-slate-800 hover:border-purple-500/40 transition-all duration-300 shadow-xl cursor-pointer overflow-hidden transform hover:-translate-y-1"
+        >
+          <div className="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">R2 Cloud Datasets</span>
+            <div className="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center border border-purple-500/30 group-hover:scale-110 transition-transform">
+              <Layers size={18} />
+            </div>
+          </div>
+          <div className="text-3xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-indigo-200">
+            {totalDatasets}
+          </div>
+          <div className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+            <span className="text-purple-400 font-semibold">RGB &amp; LiDAR</span>
+            <span>Zero-Egress S3</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3. 10-STAGE SURVEY LIFECYCLE STEPPER (High-Tech Progression Radar) */}
+      {/* ========================================================================= */}
+      <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur-md">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+              <Sparkles size={16} className="text-emerald-400" />
+              10-Stage Statutory Survey Lifecycle Progression
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Active Survey: <strong className="text-emerald-300 font-mono">SUR-2026-001 (Haripura Agricultural Resurvey Pilot)</strong>
+            </p>
+          </div>
+          <span className="px-2.5 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-bold font-mono">
+            STAGE 6: SURVEYOR_REVIEW (60% COMPLETE)
+          </span>
+        </div>
+
+        {/* Stepper Nodes */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 pt-2">
+          {stages.map((st) => (
+            <div
+              key={st.num}
+              className={`p-2.5 rounded-xl border text-center transition-all ${
+                st.active
+                  ? 'bg-purple-500/20 border-purple-400 text-white shadow-lg shadow-purple-500/20 scale-105'
+                  : st.done
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                  : 'bg-slate-950/40 border-slate-800/80 text-slate-500'
+              }`}
+            >
+              <div
+                className={`w-6 h-6 mx-auto rounded-full flex items-center justify-center text-[10px] font-bold font-mono mb-1.5 ${
+                  st.active
+                    ? 'bg-purple-500 text-white animate-pulse'
+                    : st.done
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-slate-800 text-slate-400'
+                }`}
+              >
+                {st.done ? '✓' : st.num}
+              </div>
+              <div className="text-[10px] font-bold uppercase truncate leading-tight">
+                {st.name.replace(/_/g, ' ')}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 4. DUAL TELEMETRY & CLOUD PIPELINE CARDS */}
+      {/* ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Section A: Live Drone Avionics Cluster */}
+        <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30">
+                <Radio size={16} />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-white text-sm">Physical Drone Avionics &amp; 10 Hz Telemetry</h3>
+                <p className="text-[11px] text-slate-400">DJI Matrice 350 RTK (DRN-001) via Cellular 5G Bridge</p>
+              </div>
+            </div>
+            <Badge variant={isSimRunning ? 'amber' : 'emerald'} size="sm" dot>
+              {isSimRunning ? 'SIMULATOR ACTIVE' : '5G CARRIER FIXED'}
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 font-bold uppercase block">RTK Carrier</span>
-              <span className="font-mono text-xs font-bold text-emerald-400 flex items-center gap-1 mt-0.5">
+              <span className="font-mono text-xs font-bold text-emerald-400 flex items-center gap-1 mt-1">
                 <Crosshair size={12} /> FIXED (1.4 cm)
               </span>
             </div>
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 font-bold uppercase block">Altitude MSL</span>
-              <span className="font-mono text-xs font-bold text-white mt-0.5 block">
+              <span className="font-mono text-sm font-bold text-white mt-1 block">
                 {(latestTel?.altitude ?? simStatus?.current_alt ?? 122.5).toFixed(1)} m
               </span>
             </div>
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 font-bold uppercase block">Ground Speed</span>
-              <span className="font-mono text-xs font-bold text-cyan-300 mt-0.5 block">
+              <span className="font-mono text-sm font-bold text-cyan-300 mt-1 block">
                 {(latestTel?.speed ?? 9.2).toFixed(1)} m/s
               </span>
             </div>
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 font-bold uppercase block">Battery Level</span>
-              <span className="font-mono text-xs font-bold text-emerald-400 mt-0.5 block">
+              <span className="font-mono text-sm font-bold text-emerald-400 mt-1 block">
                 {(latestTel?.battery_percent ?? simStatus?.battery ?? 100).toFixed(0)}%
               </span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950/40 border border-slate-800/80 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-slate-400">Active Mission: </span>
-              <span className="font-mono font-bold text-white">
-                {activeMission?.mission_id || 'MIS-2026-HARIPURA-002'}
-              </span>
+          <div className="p-3.5 rounded-xl bg-slate-950/50 border border-slate-800/80 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Activity size={14} className="text-cyan-400" />
+              <span className="text-slate-300">Active Flight: <strong className="text-white font-mono">{activeMission?.mission_id || 'MIS-2026-HARIPURA-002'}</strong></span>
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              icon={<ArrowRight size={13} />}
-              iconPosition="right"
+            <button
               onClick={() => onNavigate('gis')}
+              className="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1 text-xs hover:underline cursor-pointer"
             >
-              Inspect Flight in GIS
-            </Button>
+              <span>View Map Track</span>
+              <ArrowRight size={13} />
+            </button>
           </div>
-        </Card>
+        </div>
 
-        {/* Section C: Cloudflare R2 Data Stream */}
-        <Card
-          title="Cloudflare R2 Storage & Ingestion Status"
-          subtitle="S3-compatible zero-egress bucket & processing pipeline"
-          actions={
+        {/* Section B: Cloudflare R2 Ingestion & Processing Pipeline */}
+        <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center border border-purple-500/30">
+                <Cloud size={16} />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-white text-sm">Cloudflare R2 Storage &amp; Zero-Egress Gateway</h3>
+                <p className="text-[11px] text-slate-400">Presigned S3 streaming to OpenDroneMap &amp; TiTiler</p>
+              </div>
+            </div>
             <Badge variant="emerald" size="sm">
-              R2 Bucket Online
+              Bucket Active
             </Badge>
-          }
-        >
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
-              <span className="text-[10px] text-slate-400 font-bold uppercase block">Objects Ingested</span>
-              <span className="font-mono text-sm font-extrabold text-white mt-0.5 block">
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
+              <span className="text-[10px] text-slate-400 font-bold uppercase block">Ingested Frames</span>
+              <span className="font-mono text-sm font-extrabold text-white mt-1 block">
                 {activeMission?.total_objects ?? 59}
               </span>
             </div>
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 font-bold uppercase block">Data Volume</span>
-              <span className="font-mono text-sm font-extrabold text-cyan-400 mt-0.5 block">
+              <span className="font-mono text-sm font-extrabold text-purple-300 mt-1 block">
                 {(((activeMission?.total_bytes ?? 0) || 41943040) / (1024 * 1024)).toFixed(1)} MB
               </span>
             </div>
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
-              <span className="text-[10px] text-slate-400 font-bold uppercase block">Upload Rate</span>
-              <span className="font-mono text-sm font-extrabold text-emerald-400 mt-0.5 block">
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
+              <span className="text-[10px] text-slate-400 font-bold uppercase block">Stream Rate</span>
+              <span className="font-mono text-sm font-extrabold text-emerald-400 mt-1 block">
                 {health?.upload_rate_mbps ?? 4.82} Mbps
               </span>
             </div>
-            <div className="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
-              <span className="text-[10px] text-slate-400 font-bold uppercase block">Checksum Status</span>
-              <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1 mt-1">
-                <CheckCircle2 size={12} /> SHA256 OK
+            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
+              <span className="text-[10px] text-slate-400 font-bold uppercase block">Integrity Seal</span>
+              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1 mt-1 font-mono">
+                <CheckCircle2 size={12} /> SHA-256 OK
               </span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950/40 border border-slate-800/80 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-slate-400">11-Stage Pipeline: </span>
-              <span className="text-emerald-400 font-bold font-mono">11/11 Stages Complete (100%)</span>
+          <div className="p-3.5 rounded-xl bg-slate-950/50 border border-slate-800/80 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Cpu size={14} className="text-purple-400" />
+              <span className="text-slate-300">Photogrammetry: <strong className="text-emerald-400 font-mono">11/11 Stages Complete (100%)</strong></span>
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              icon={<ArrowRight size={13} />}
-              iconPosition="right"
+            <button
               onClick={() => onNavigate('gis')}
+              className="text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-1 text-xs hover:underline cursor-pointer"
             >
-              View Pipeline
-            </Button>
+              <span>View Orthomosaic</span>
+              <ArrowRight size={13} />
+            </button>
           </div>
-        </Card>
-      </div>
-
-      {/* 4. Section D & E: AI Processing Status & Land Registry Discrepancy Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Section D: AI Intelligence Status */}
-        <div className="lg:col-span-1">
-          <Card title="AI Intelligence Engines" subtitle="Automated segmentation & bund extraction">
-            <div className="space-y-2.5 text-xs">
-              <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-white">8-Class LULC Model</div>
-                  <div className="text-[10px] text-slate-400">DeepLabV3+ ResNet-101</div>
-                </div>
-                <Badge variant="cyan" size="sm">94.2% Acc</Badge>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-white">Bund Boundary Extraction</div>
-                  <div className="text-[10px] text-slate-400">SAM + LiDAR Intensity Edge</div>
-                </div>
-                <Badge variant="emerald" size="sm">1.2 cm Res</Badge>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-white">Historical Change Detection</div>
-                  <div className="text-[10px] text-slate-400">Siamese-CNN 1975 vs 2026</div>
-                </div>
-                <Badge variant="amber" size="sm">IoU 98.4%</Badge>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Section E: Land Registry Alerts */}
-        <div className="lg:col-span-2">
-          <Card
-            title="Land Registry Discrepancy & Encroachment Alerts"
-            subtitle="Automated variance screening between official khatoni records and drone photogrammetry"
-            actions={
-              <Button size="sm" variant="ghost" onClick={() => onNavigate('land-registry')}>
-                Open Registry &rarr;
-              </Button>
-            }
-          >
-            <div className="space-y-2 text-xs">
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <AlertTriangle size={16} className="text-amber-400 flex-shrink-0" />
-                  <div>
-                    <span className="font-bold text-white font-mono">Khasra #103 — Haripura</span>
-                    <p className="text-[11px] text-slate-300">
-                      Area discrepancy -50 m² (-0.40%). Permissible margin within ±1.0%. Awaiting surveyor certification.
-                    </p>
-                  </div>
-                </div>
-                <Button size="sm" variant="outline" onClick={() => onNavigate('land-registry')}>
-                  Inspect
-                </Button>
-              </div>
-
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={16} className="text-emerald-400 flex-shrink-0" />
-                  <div>
-                    <span className="font-bold text-white font-mono">Khasra #101 &amp; #102 — Haripura</span>
-                    <p className="text-[11px] text-slate-300">
-                      Sub-centimeter boundary match verified. 3D terrain surface area computed and digitally anchored.
-                    </p>
-                  </div>
-                </div>
-                <Badge variant="emerald" size="sm">VERIFIED</Badge>
-              </div>
-            </div>
-          </Card>
         </div>
       </div>
 
-      {/* 5. Section F & G: Quick Actions & Recent Operational Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Section F: Quick Operational Action Hub */}
-        <div className="lg:col-span-1 space-y-4">
-          <Card title="Quick Operational Actions" subtitle="One-click access to core workstation features">
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => onNavigate('gis')}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-emerald-500/40 hover:bg-slate-900 transition-all text-left group"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-                    <MapPin size={16} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white group-hover:text-emerald-300">
-                      Open GIS Workbench
-                    </div>
-                    <div className="text-[10px] text-slate-400">24-layer interactive map &amp; telemetry</div>
-                  </div>
-                </div>
-                <ArrowRight size={14} className="text-slate-500 group-hover:text-emerald-400" />
-              </button>
+      {/* ========================================================================= */}
+      {/* 5. 4 PRIMARY WORKSTATIONS HUB (One-Click Launch Matrix) */}
+      {/* ========================================================================= */}
+      <div>
+        <h3 className="text-base font-extrabold text-white mb-3 flex items-center gap-2">
+          <Layers size={16} className="text-cyan-400" />
+          Primary Operational Workstations
+        </h3>
 
-              <button
-                onClick={() => onNavigate('land-registry')}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 transition-all text-left group"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-                    <ShieldCheck size={16} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white group-hover:text-cyan-300">
-                      Search Land Registry
-                    </div>
-                    <div className="text-[10px] text-slate-400">Khasra title ownership &amp; 4-way compare</div>
-                  </div>
-                </div>
-                <ArrowRight size={14} className="text-slate-500 group-hover:text-cyan-400" />
-              </button>
-
-              <button
-                onClick={() => onNavigate('reports')}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-purple-500/40 hover:bg-slate-900 transition-all text-left group"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
-                    <FileText size={16} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white group-hover:text-purple-300">
-                      Generate Survey Report
-                    </div>
-                    <div className="text-[10px] text-slate-400">PDF Form 1-A &amp; 5-format exports</div>
-                  </div>
-                </div>
-                <ArrowRight size={14} className="text-slate-500 group-hover:text-purple-400" />
-              </button>
-            </div>
-          </Card>
-        </div>
-
-        {/* Section G: Recent Activity Feed */}
-        <div className="lg:col-span-2">
-          <Card
-            title="Recent Cadastral Activity &amp; Audit Trail"
-            subtitle="Immutable event logs across missions, AI inferences, and boundary verifications"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Workstation 1: GIS Workbench */}
+          <div
+            onClick={() => onNavigate('gis')}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 hover:border-emerald-500/50 transition-all duration-300 shadow-xl cursor-pointer group transform hover:-translate-y-1"
           >
-            <div className="space-y-2 max-h-64 overflow-y-auto pr-1 text-xs">
-              {[
-                { time: '16:04:12', type: 'MISSION', desc: 'Drone MIS-2026-HARIPURA-002 streamed 59 telemetry packets (RTK FIXED 1.4 cm)', user: 'ESP32 / 5G' },
-                { time: '15:58:30', type: 'VERIFY', desc: 'Surveyor approved boundary for Khasra #101 (Area: 12,450 m²)', user: 'Surveyor Sharma' },
-                { time: '15:42:10', type: 'REPORT', desc: 'Generated Form 1-A Cadastral Survey Dossier (SHA-256 Verified)', user: 'BhoomiSync Engine' },
-                { time: '15:20:05', type: 'AI_FUSION', desc: '11-Stage Cloud Processing executed: Orthomosaic & DEM generated', user: 'Geospatial Worker' },
-                { time: '14:55:22', type: 'REGISTRY', desc: 'Imported 4 Khasra records for Haripura village into PostGIS', user: 'Official Patel' },
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/50 border border-slate-800/80 text-[11px]"
-                >
-                  <div className="flex items-center gap-2 truncate">
-                    <span className="font-mono text-slate-500 text-[10px]">{item.time}</span>
-                    <Badge
-                      variant={
-                        item.type === 'MISSION'
-                          ? 'cyan'
-                          : item.type === 'VERIFY'
-                          ? 'emerald'
-                          : item.type === 'REPORT'
-                          ? 'purple'
-                          : 'amber'
-                      }
-                      size="sm"
-                    >
-                      {item.type}
-                    </Badge>
-                    <span className="text-slate-300 truncate">{item.desc}</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-slate-400 flex-shrink-0 ml-2 font-semibold">
-                    {item.user}
-                  </span>
-                </div>
-              ))}
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <MapPin size={20} />
             </div>
-          </Card>
+            <h4 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+              Cadastral GIS Workbench
+            </h4>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              24-layer Leaflet map, drone flight HUD, 2D orthomosaic tiles, DEM elevation, and interactive boundary editor.
+            </p>
+            <div className="mt-4 flex items-center gap-1 text-xs font-bold text-emerald-400 group-hover:translate-x-1 transition-transform">
+              <span>Open Map Workstation</span>
+              <ArrowRight size={14} />
+            </div>
+          </div>
+
+          {/* Workstation 2: Land Registry */}
+          <div
+            onClick={() => onNavigate('land-registry')}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 shadow-xl cursor-pointer group transform hover:-translate-y-1"
+          >
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <ShieldCheck size={20} />
+            </div>
+            <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+              Authoritative Land Registry
+            </h4>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Khasra plot search, ownership titles, geometric area difference engine, and dispute resolution flags.
+            </p>
+            <div className="mt-4 flex items-center gap-1 text-xs font-bold text-cyan-400 group-hover:translate-x-1 transition-transform">
+              <span>Inspect Registry</span>
+              <ArrowRight size={14} />
+            </div>
+          </div>
+
+          {/* Workstation 3: AI Intelligence */}
+          <div
+            onClick={() => onNavigate('gis')}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 shadow-xl cursor-pointer group transform hover:-translate-y-1"
+          >
+            <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center border border-purple-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <Zap size={20} />
+            </div>
+            <h4 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
+              AI Intelligence &amp; SAM
+            </h4>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Meta Segment Anything (SAM ViT) farm bund extraction and SegFormer 8-class land use classification.
+            </p>
+            <div className="mt-4 flex items-center gap-1 text-xs font-bold text-purple-400 group-hover:translate-x-1 transition-transform">
+              <span>Trigger AI Pipeline</span>
+              <ArrowRight size={14} />
+            </div>
+          </div>
+
+          {/* Workstation 4: Reports & Exports */}
+          <div
+            onClick={() => onNavigate('reports')}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 hover:border-amber-500/50 transition-all duration-300 shadow-xl cursor-pointer group transform hover:-translate-y-1"
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <FileText size={20} />
+            </div>
+            <h4 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+              Reports &amp; Revenue Dossiers
+            </h4>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Compile statutory Form 1-A PDF dossiers, Google Earth KML files, GeoJSON boundaries, and CSV ledgers.
+            </p>
+            <div className="mt-4 flex items-center gap-1 text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform">
+              <span>Download Dossiers</span>
+              <ArrowRight size={14} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
