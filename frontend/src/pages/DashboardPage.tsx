@@ -6,21 +6,19 @@ import {
   Layers,
   ArrowRight,
   TrendingUp,
-  CheckCircle2,
   Play,
   Square,
   Crosshair,
-  Zap,
-  Cloud,
   Radio,
-  Clock,
+  Cloud,
+  CheckCircle2,
+  ChevronRight,
   Sparkles,
 } from 'lucide-react';
 import { api } from '../services/api';
 import { droneMissionApi } from '../services/droneMissionApi';
 import { Survey } from '../types';
 import { DroneMission, TelemetryRecord, MissionHealth, SimulatorStatus } from '../types/droneMission';
-import { Badge } from '../components/ui';
 
 interface DashboardPageProps {
   onNavigate: (tab: string, id?: string) => void;
@@ -33,17 +31,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
   const [health, setHealth] = useState<MissionHealth | null>(null);
   const [simStatus, setSimStatus] = useState<SimulatorStatus | null>(null);
   const [latestTel, setLatestTel] = useState<TelemetryRecord | null>(null);
-  const [timeStr, setTimeStr] = useState<string>('');
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTimeStr(now.toLocaleTimeString('en-US', { hour12: false }));
-    };
-    updateTime();
-    const timer = setInterval(updateTime, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -99,488 +86,424 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
   };
 
   const stages = [
-    { num: 1, title: 'Planned', desc: 'Boundary pre-cleared' },
-    { num: 2, title: 'Pre-Flight', desc: 'Sensors calibrated' },
-    { num: 3, title: 'Flight Active', desc: '10 Hz RTK logging' },
-    { num: 4, title: 'Data Ingested', desc: 'R2 SHA-256 verified' },
-    { num: 5, title: 'Processing', desc: 'SfM Orthomosaic & DEM' },
-    { num: 6, title: 'Surveyor Review', desc: 'Ground verification', active: true },
-    { num: 7, title: 'Objections', desc: 'Dispute arbitration' },
-    { num: 8, title: 'Official Approval', desc: 'Tehsildar e-Seal' },
-    { num: 9, title: 'Gazette Notice', desc: 'Public land record' },
-    { num: 10, title: 'Completed', desc: 'ROR / Khasra final' },
+    { num: 1, name: 'Planned' },
+    { num: 2, name: 'Calibration' },
+    { num: 3, name: 'Flight' },
+    { num: 4, name: 'Ingested' },
+    { num: 5, name: 'Processing' },
+    { num: 6, name: 'Review', active: true },
+    { num: 7, name: 'Objections' },
+    { num: 8, name: 'Approval' },
+    { num: 9, name: 'Gazette' },
+    { num: 10, name: 'Completed' },
   ];
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="max-w-7xl mx-auto space-y-6 pb-12">
       {/* ========================================================================= */}
-      {/* 1. HERO COMMAND BANNER */}
+      {/* 1. CLEAN REFINED HEADER */}
       {/* ========================================================================= */}
-      <div className="relative overflow-hidden rounded-2xl p-6 sm:p-8 bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 -mb-16 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold flex items-center gap-2 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                SYSTEM OPERATIONAL
-              </span>
-              <span className="px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5">
-                <Crosshair size={13} className="text-cyan-400" />
-                RTK CARRIER FIXED (1.4 cm)
-              </span>
-              <span className="text-xs font-mono text-slate-400 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/70 border border-slate-800">
-                <Clock size={13} className="text-slate-400" />
-                UTC {timeStr}
-              </span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
-              BhoomiSync Operational Command
-            </h1>
-            <p className="text-slate-300 text-sm max-w-3xl leading-relaxed">
-              Real-time cadastral resurvey suite: Cellular 5G drone avionics, Cloudflare R2 zero-egress ingestion, and AI boundary extraction for high-precision land governance.
-            </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live Connected
+            </span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700">
+              <Crosshair size={11} className="text-cyan-400" />
+              RTK Fixed (1.4 cm)
+            </span>
+            <span className="text-xs text-slate-500 font-mono hidden sm:inline">
+              SUR-2026-001 (Haripura Pilot)
+            </span>
           </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Survey Operations Overview
+          </h1>
+        </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <button
-              onClick={() => onNavigate('gis')}
-              className="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer"
-            >
-              <MapPin size={16} />
-              <span>Launch GIS Workbench</span>
-              <ArrowRight size={14} className="ml-0.5" />
-            </button>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            onClick={() => onNavigate('gis')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs shadow-sm transition-all cursor-pointer"
+          >
+            <MapPin size={14} />
+            <span>Open GIS Workbench</span>
+            <ArrowRight size={13} />
+          </button>
 
-            <button
-              onClick={handleToggleSimulator}
-              className={`px-4 py-3 rounded-xl font-bold text-xs transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer border shadow-md ${
-                isSimRunning
-                  ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 hover:bg-rose-500/30'
-                  : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30'
-              }`}
-            >
-              {isSimRunning ? <Square size={14} className="text-rose-400" /> : <Play size={14} className="text-cyan-400" />}
-              <span>{isSimRunning ? 'Stop Flight Simulator' : 'Start Flight Simulator'}</span>
-            </button>
+          <button
+            onClick={handleToggleSimulator}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+              isSimRunning
+                ? 'bg-rose-500/10 text-rose-300 border-rose-500/30 hover:bg-rose-500/20'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+            }`}
+          >
+            {isSimRunning ? <Square size={13} className="text-rose-400" /> : <Play size={13} className="text-cyan-400" />}
+            <span>{isSimRunning ? 'Stop Simulator' : 'Flight Simulator'}</span>
+          </button>
 
-            <button
-              onClick={() => onNavigate('reports')}
-              className="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold text-xs border border-slate-700 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
-            >
-              <FileText size={14} className="text-amber-400" />
-              <span>Dossiers</span>
-            </button>
-          </div>
+          <button
+            onClick={() => onNavigate('reports')}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all cursor-pointer"
+          >
+            <FileText size={13} className="text-slate-400" />
+            <span>Reports</span>
+          </button>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. STATS GRID (4 Clean, Spacious Metric Cards) */}
+      {/* 2. STATS ROW (4 Balanced, Clean Metric Cards) */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Card 1: Surveyed Land Area */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Card 1: Total Area */}
         <div
           onClick={() => onNavigate('gis')}
-          className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/40 transition-all duration-200 shadow-lg cursor-pointer flex flex-col justify-between"
+          className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group"
         >
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Surveyed Land</span>
-              <div className="w-8 h-8 rounded-lg bg-cyan-500/15 text-cyan-400 flex items-center justify-center">
-                <TrendingUp size={16} />
-              </div>
-            </div>
-            <div className="text-3xl font-black font-mono text-cyan-300 my-1">
-              {totalHectares.toFixed(1)} <span className="text-sm font-normal text-slate-400">ha</span>
-            </div>
+          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>Surveyed Land</span>
+            <TrendingUp size={15} className="text-cyan-400" />
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
-            <span>Acreage:</span>
-            <span className="font-mono font-bold text-emerald-400">{(totalHectares * 2.471).toFixed(1)} Acres</span>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <span className="text-2xl font-bold font-mono text-white tracking-tight">
+              {totalHectares.toFixed(1)}
+            </span>
+            <span className="text-xs text-slate-400">hectares</span>
+          </div>
+          <div className="mt-2 text-[11px] text-slate-500 flex items-center gap-1">
+            <span className="text-emerald-400 font-medium">{(totalHectares * 2.471).toFixed(1)} acres</span>
+            <span>· sub-cm accuracy</span>
           </div>
         </div>
 
-        {/* Card 2: Registered Khasra Parcels */}
+        {/* Card 2: Registered Parcels */}
         <div
           onClick={() => onNavigate('land-registry')}
-          className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/40 transition-all duration-200 shadow-lg cursor-pointer flex flex-col justify-between"
+          className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group"
         >
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Registered Parcels</span>
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
-                <ShieldCheck size={16} />
-              </div>
-            </div>
-            <div className="text-3xl font-black font-mono text-emerald-300 my-1">
-              {totalParcels}
-            </div>
+          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>Registered Parcels</span>
+            <ShieldCheck size={15} className="text-emerald-400" />
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
-            <span>Database:</span>
-            <span className="font-semibold text-emerald-400">PostGIS Spatial Vector</span>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <span className="text-2xl font-bold font-mono text-white tracking-tight">
+              {totalParcels}
+            </span>
+            <span className="text-xs text-slate-400">Khasra plots</span>
+          </div>
+          <div className="mt-2 text-[11px] text-slate-500 flex items-center gap-1">
+            <span className="text-emerald-400 font-medium">100% verified</span>
+            <span>in PostGIS</span>
           </div>
         </div>
 
-        {/* Card 3: Pilot Revenue Villages */}
+        {/* Card 3: Survey Campaigns */}
         <div
           onClick={() => onNavigate('gis')}
-          className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 transition-all duration-200 shadow-lg cursor-pointer flex flex-col justify-between"
+          className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group"
         >
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Survey Campaigns</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center">
-                <MapPin size={16} />
-              </div>
-            </div>
-            <div className="text-3xl font-black font-mono text-amber-300 my-1">
-              {surveys.length}
-            </div>
+          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>Active Campaign</span>
+            <MapPin size={15} className="text-amber-400" />
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
-            <span>Location:</span>
-            <span className="font-semibold text-amber-300">Haripura, Udaipur</span>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <span className="text-2xl font-bold font-mono text-white tracking-tight">
+              {surveys.length}
+            </span>
+            <span className="text-xs text-slate-400">village</span>
+          </div>
+          <div className="mt-2 text-[11px] text-slate-500">
+            <span className="text-slate-300">Haripura</span>, Udaipur Tehsil
           </div>
         </div>
 
         {/* Card 4: Sensor Datasets in R2 */}
         <div
           onClick={() => onNavigate('gis')}
-          className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/40 transition-all duration-200 shadow-lg cursor-pointer flex flex-col justify-between"
+          className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group"
         >
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">R2 Cloud Datasets</span>
-              <div className="w-8 h-8 rounded-lg bg-purple-500/15 text-purple-400 flex items-center justify-center">
-                <Layers size={16} />
-              </div>
-            </div>
-            <div className="text-3xl font-black font-mono text-purple-300 my-1">
-              {totalDatasets}
-            </div>
+          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>R2 Cloud Datasets</span>
+            <Layers size={15} className="text-purple-400" />
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
-            <span>Payloads:</span>
-            <span className="font-semibold text-purple-300">RGB, LiDAR, DEM</span>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <span className="text-2xl font-bold font-mono text-white tracking-tight">
+              {totalDatasets}
+            </span>
+            <span className="text-xs text-slate-400">assets</span>
+          </div>
+          <div className="mt-2 text-[11px] text-slate-500">
+            RGB, LiDAR, DEM rasters
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. 10-STAGE STATUTORY LIFECYCLE PROGRESSION (Spacious 2-Row Layout) */}
+      {/* 3. SLEEK PIPELINE TRACKER */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800">
-          <div>
-            <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-              <Sparkles size={17} className="text-emerald-400" />
-              10-Stage Statutory Survey Lifecycle Progression
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              Active Survey: <strong className="text-emerald-300 font-mono">SUR-2026-001 (Haripura Agricultural Resurvey Pilot)</strong>
-            </p>
+      <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div className="flex items-center gap-2">
+            <Sparkles size={15} className="text-emerald-400" />
+            <span className="text-xs font-semibold text-white uppercase tracking-wider">
+              Survey Statutory Lifecycle
+            </span>
           </div>
-          <span className="px-3 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-bold font-mono w-fit">
-            STAGE 6: SURVEYOR_REVIEW (60% COMPLETE)
+          <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full w-fit">
+            Stage 6 / 10: Surveyor Review (60%)
           </span>
         </div>
 
-        {/* 10 Clean Grid Tiles (5 columns on desktop, 2 on mobile) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {stages.map((st, idx) => {
-            const isCompleted = idx < 5;
-            const isCurrent = idx === 5;
+        {/* Progress Bar with Steps */}
+        <div className="relative pt-2 pb-1">
+          {/* Background Track */}
+          <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden mb-3">
+            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '60%' }} />
+          </div>
 
-            return (
-              <div
-                key={st.num}
-                className={`p-4 rounded-xl border flex flex-col justify-between transition-all ${
-                  isCurrent
-                    ? 'bg-purple-500/15 border-purple-400 shadow-lg shadow-purple-500/10'
-                    : isCompleted
-                    ? 'bg-emerald-500/10 border-emerald-500/25'
-                    : 'bg-slate-950/40 border-slate-800/80 opacity-70'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span
-                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold font-mono ${
+          {/* Stepper Dots & Labels */}
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-1 text-center">
+            {stages.map((st, idx) => {
+              const isPast = idx < 5;
+              const isCurrent = idx === 5;
+              return (
+                <div key={st.num} className="flex flex-col items-center">
+                  <div
+                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold font-mono transition-all ${
                       isCurrent
-                        ? 'bg-purple-500 text-white animate-pulse'
-                        : isCompleted
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-800 text-slate-400'
+                        ? 'bg-emerald-500 text-slate-950 ring-2 ring-emerald-500/40'
+                        : isPast
+                        ? 'bg-slate-700 text-emerald-400'
+                        : 'bg-slate-800 text-slate-500'
                     }`}
                   >
-                    {isCompleted ? '✓' : st.num}
-                  </span>
+                    {isPast ? '✓' : st.num}
+                  </div>
                   <span
-                    className={`text-[10px] font-bold font-mono uppercase ${
-                      isCurrent ? 'text-purple-300' : isCompleted ? 'text-emerald-400' : 'text-slate-500'
+                    className={`text-[10px] mt-1 truncate w-full ${
+                      isCurrent
+                        ? 'font-bold text-white'
+                        : isPast
+                        ? 'text-slate-400'
+                        : 'text-slate-600'
                     }`}
                   >
-                    {isCurrent ? 'ACTIVE' : isCompleted ? 'DONE' : 'PENDING'}
+                    {st.name}
                   </span>
                 </div>
-
-                <div>
-                  <div className="text-xs font-bold text-white leading-snug">
-                    {st.title}
-                  </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5 leading-tight">
-                    {st.desc}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 4. DUAL TELEMETRY & CLOUDFLARE R2 STATUS CARDS (Clean 2x2 Inner Grids) */}
+      {/* 4. BALANCED 2-COLUMN DUAL PANELS */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Section A: Live Drone Avionics Cluster */}
-        <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30">
-                <Radio size={18} />
+        {/* Panel A: Live Drone Flight Status */}
+        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-col justify-between space-y-4">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800/80">
+              <div className="flex items-center gap-2">
+                <Radio size={15} className="text-cyan-400" />
+                <span className="text-xs font-semibold text-white uppercase tracking-wider">
+                  Drone Flight &amp; Telemetry
+                </span>
               </div>
-              <div>
-                <h3 className="font-extrabold text-white text-base">Drone Flight Avionics (10 Hz)</h3>
-                <p className="text-xs text-slate-400">DJI Matrice 350 RTK (DRN-001) via 5G Bridge</p>
-              </div>
+              <span className="text-[11px] font-mono text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded">
+                {isSimRunning ? 'SIMULATOR' : '5G TELEMETRY'}
+              </span>
             </div>
-            <Badge variant={isSimRunning ? 'amber' : 'emerald'} size="sm" dot>
-              {isSimRunning ? 'SIMULATOR ACTIVE' : '5G CONNECTED'}
-            </Badge>
-          </div>
 
-          <div className="grid grid-cols-2 gap-3.5">
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">RTK Carrier</div>
-              <div className="font-mono text-sm font-bold text-emerald-400 flex items-center gap-1.5">
-                <Crosshair size={14} /> FIXED (1.4 cm)
+            <div className="divide-y divide-slate-800/60 text-xs">
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">Drone Hardware</span>
+                <span className="text-slate-200 font-medium">DJI Matrice 350 RTK</span>
               </div>
-            </div>
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">Altitude MSL</div>
-              <div className="font-mono text-base font-bold text-white">
-                {(latestTel?.altitude ?? simStatus?.current_alt ?? 122.5).toFixed(1)} m
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">RTK Carrier Solution</span>
+                <span className="text-emerald-400 font-mono font-semibold flex items-center gap-1">
+                  <CheckCircle2 size={12} /> Fixed (1.4 cm accuracy)
+                </span>
               </div>
-            </div>
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">Ground Speed</div>
-              <div className="font-mono text-base font-bold text-cyan-300">
-                {(latestTel?.speed ?? 9.2).toFixed(1)} m/s
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">Altitude MSL / Speed</span>
+                <span className="text-slate-200 font-mono">
+                  {(latestTel?.altitude ?? simStatus?.current_alt ?? 122.5).toFixed(1)} m · {(latestTel?.speed ?? 9.2).toFixed(1)} m/s
+                </span>
               </div>
-            </div>
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">Battery Level</div>
-              <div className="font-mono text-base font-bold text-emerald-400">
-                {(latestTel?.battery_percent ?? simStatus?.battery ?? 100).toFixed(0)}%
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">Battery Level</span>
+                <span className="text-emerald-400 font-mono font-semibold">
+                  {(latestTel?.battery_percent ?? simStatus?.battery ?? 100).toFixed(0)}%
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-950/50 border border-slate-800/80 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-slate-400">Active Flight: </span>
-              <span className="text-white font-mono font-bold">{activeMission?.mission_id || 'MIS-2026-HARIPURA-002'}</span>
-            </div>
+          <div className="pt-2 flex items-center justify-between text-xs border-t border-slate-800/80">
+            <span className="text-slate-500 font-mono truncate">
+              Mission: {activeMission?.mission_id || 'MIS-2026-HARIPURA-002'}
+            </span>
             <button
               onClick={() => onNavigate('gis')}
-              className="text-cyan-400 hover:text-cyan-300 font-bold flex items-center gap-1 text-xs hover:underline cursor-pointer"
+              className="text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1 cursor-pointer"
             >
               <span>View Map Track</span>
-              <ArrowRight size={13} />
+              <ChevronRight size={14} />
             </button>
           </div>
         </div>
 
-        {/* Section B: Cloudflare R2 Ingestion & Processing Pipeline */}
-        <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center border border-purple-500/30">
-                <Cloud size={18} />
+        {/* Panel B: Cloudflare R2 Ingestion */}
+        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-col justify-between space-y-4">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800/80">
+              <div className="flex items-center gap-2">
+                <Cloud size={15} className="text-purple-400" />
+                <span className="text-xs font-semibold text-white uppercase tracking-wider">
+                  Cloudflare R2 Object Store
+                </span>
               </div>
-              <div>
-                <h3 className="font-extrabold text-white text-base">Cloudflare R2 Storage</h3>
-                <p className="text-xs text-slate-400">Zero-Egress Ingestion &amp; OpenDroneMap Gateway</p>
+              <span className="text-[11px] font-mono text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                BUCKET READY
+              </span>
+            </div>
+
+            <div className="divide-y divide-slate-800/60 text-xs">
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">Ingested Imagery Frames</span>
+                <span className="text-slate-200 font-mono font-semibold">
+                  {activeMission?.total_objects ?? 59} frames
+                </span>
+              </div>
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">Total Volume Ingested</span>
+                <span className="text-slate-200 font-mono">
+                  {(((activeMission?.total_bytes ?? 0) || 41943040) / (1024 * 1024)).toFixed(1)} MB
+                </span>
+              </div>
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">Streaming Throughput</span>
+                <span className="text-slate-200 font-mono">
+                  {health?.upload_rate_mbps ?? 4.82} Mbps
+                </span>
+              </div>
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-slate-400">Integrity Checksum</span>
+                <span className="text-emerald-400 font-mono flex items-center gap-1">
+                  <CheckCircle2 size={12} /> SHA-256 Verified
+                </span>
               </div>
             </div>
-            <Badge variant="emerald" size="sm">
-              Bucket Active
-            </Badge>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5">
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">Ingested Frames</div>
-              <div className="font-mono text-base font-bold text-white">
-                {activeMission?.total_objects ?? 59} frames
-              </div>
-            </div>
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">Data Volume</div>
-              <div className="font-mono text-base font-bold text-purple-300">
-                {(((activeMission?.total_bytes ?? 0) || 41943040) / (1024 * 1024)).toFixed(1)} MB
-              </div>
-            </div>
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">Upload Rate</div>
-              <div className="font-mono text-base font-bold text-emerald-400">
-                {health?.upload_rate_mbps ?? 4.82} Mbps
-              </div>
-            </div>
-            <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80">
-              <div className="text-xs text-slate-400 font-bold uppercase mb-1">Integrity Check</div>
-              <div className="font-mono text-xs font-bold text-emerald-400 flex items-center gap-1.5 mt-0.5">
-                <CheckCircle2 size={13} /> SHA-256 OK
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-950/50 border border-slate-800/80 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-slate-400">Photogrammetry: </span>
-              <span className="text-emerald-400 font-mono font-bold">11/11 Stages Complete (100%)</span>
-            </div>
+          <div className="pt-2 flex items-center justify-between text-xs border-t border-slate-800/80">
+            <span className="text-slate-500 font-mono truncate">
+              Photogrammetry: 11/11 Complete
+            </span>
             <button
               onClick={() => onNavigate('gis')}
-              className="text-purple-400 hover:text-purple-300 font-bold flex items-center gap-1 text-xs hover:underline cursor-pointer"
+              className="text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 cursor-pointer"
             >
               <span>View Orthomosaic</span>
-              <ArrowRight size={13} />
+              <ChevronRight size={14} />
             </button>
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 5. 4 PRIMARY WORKSTATIONS (Spacious 2x2 Hub) */}
+      {/* 5. WORKSTATIONS DIRECTORY */}
       {/* ========================================================================= */}
       <div>
-        <h3 className="text-lg font-extrabold text-white mb-4 flex items-center gap-2">
-          <Layers size={18} className="text-cyan-400" />
-          Primary Operational Workstations
-        </h3>
+        <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+          Primary Workstations
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Workstation 1: GIS Workbench */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div
             onClick={() => onNavigate('gis')}
-            className="p-6 sm:p-7 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 transition-all duration-200 shadow-xl cursor-pointer group flex flex-col justify-between"
+            className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/30 group-hover:scale-105 transition-transform">
-                  <MapPin size={22} />
-                </div>
-                <span className="text-xs font-bold font-mono px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                  CORE WORKSPACE
-                </span>
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-2.5">
+                <MapPin size={16} />
               </div>
-              <h4 className="text-lg font-bold text-white group-hover:text-emerald-300 transition-colors">
-                Cadastral GIS Workbench
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-                24-layer interactive Leaflet map, real-time drone flight telemetry HUD, dynamic 2D orthomosaic tiles, DEM elevation mesh, and surveyor vertex editor.
+              <div className="text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors">
+                GIS Workbench
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                24-layer Leaflet map, flight HUD, orthomosaics &amp; boundary editing.
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-emerald-400">
-              <span>Open Map &amp; Layers &rarr;</span>
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+            <div className="mt-3 text-xs font-medium text-emerald-400 flex items-center gap-1">
+              <span>Open &rarr;</span>
             </div>
           </div>
 
-          {/* Workstation 2: Land Registry */}
           <div
             onClick={() => onNavigate('land-registry')}
-            className="p-6 sm:p-7 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 transition-all duration-200 shadow-xl cursor-pointer group flex flex-col justify-between"
+            className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30 group-hover:scale-105 transition-transform">
-                  <ShieldCheck size={22} />
-                </div>
-                <span className="text-xs font-bold font-mono px-2.5 py-1 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                  REVENUE RECORDS
-                </span>
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2.5">
+                <ShieldCheck size={16} />
               </div>
-              <h4 className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
-                Authoritative Land Registry
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-                Khasra plot search, Khatedar ownership records, spatial geometric difference calculation, boundary dispute arbitration, and verification sign-offs.
+              <div className="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors">
+                Land Registry
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Khasra plots, landowner titles, and area discrepancy calculations.
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-cyan-400">
-              <span>Search &amp; Inspect Parcels &rarr;</span>
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+            <div className="mt-3 text-xs font-medium text-cyan-400 flex items-center gap-1">
+              <span>Inspect &rarr;</span>
             </div>
           </div>
 
-          {/* Workstation 3: AI Intelligence */}
           <div
             onClick={() => onNavigate('gis')}
-            className="p-6 sm:p-7 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all duration-200 shadow-xl cursor-pointer group flex flex-col justify-between"
+            className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center border border-purple-500/30 group-hover:scale-105 transition-transform">
-                  <Zap size={22} />
-                </div>
-                <span className="text-xs font-bold font-mono px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">
-                  AI INFERENCE
-                </span>
+              <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center mb-2.5">
+                <Layers size={16} />
               </div>
-              <h4 className="text-lg font-bold text-white group-hover:text-purple-300 transition-colors">
-                AI Boundary Extraction &amp; LULC
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-                Automated Meta Segment Anything (SAM ViT) farm bund extraction, SegFormer 8-class agricultural land-use prediction, and boundary change detection.
+              <div className="text-sm font-semibold text-white group-hover:text-purple-300 transition-colors">
+                AI Segmentation
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Meta SAM ViT farm bund extraction &amp; SegFormer LULC classification.
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-purple-400">
-              <span>Run AI Segmentation &rarr;</span>
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+            <div className="mt-3 text-xs font-medium text-purple-400 flex items-center gap-1">
+              <span>Run AI &rarr;</span>
             </div>
           </div>
 
-          {/* Workstation 4: Reports & Exports */}
           <div
             onClick={() => onNavigate('reports')}
-            className="p-6 sm:p-7 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 transition-all duration-200 shadow-xl cursor-pointer group flex flex-col justify-between"
+            className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
-                  <FileText size={22} />
-                </div>
-                <span className="text-xs font-bold font-mono px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                  EXPORT DOSSIERS
-                </span>
+              <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center mb-2.5">
+                <FileText size={16} />
               </div>
-              <h4 className="text-lg font-bold text-white group-hover:text-amber-300 transition-colors">
-                Reports &amp; Revenue Dossiers
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-                Compile statutory Form 1-A revenue dossiers with cryptographic SHA-256 seal, Google Earth KML files, GeoJSON vectors, and landowner CSV tables.
+              <div className="text-sm font-semibold text-white group-hover:text-amber-300 transition-colors">
+                Reports &amp; Dossiers
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Statutory Form 1-A PDF, Google Earth KML, and revenue CSV exports.
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-amber-400">
-              <span>Generate &amp; Download Reports &rarr;</span>
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+            <div className="mt-3 text-xs font-medium text-amber-400 flex items-center gap-1">
+              <span>Download &rarr;</span>
             </div>
           </div>
         </div>
