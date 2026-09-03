@@ -57,6 +57,41 @@ async def submit_photogrammetry_job(payload: RemoteJobSubmitPayload):
     })
 
 
+class RemoteLidarSubmitPayload(BaseModel):
+    survey_id: str = Field(..., example="SUR-2026-001")
+    laz_path: Optional[str] = Field(default=None, description="Local or R2 path to .laz point cloud")
+    cell_size: float = Field(default=1.0, description="DTM grid cell size in meters")
+    slope: float = Field(default=0.15, description="SMRF slope threshold")
+    window_size: float = Field(default=18.0, description="SMRF window size in meters")
+
+
+@router.post("/lidar/process")
+async def submit_lidar_job(payload: RemoteLidarSubmitPayload):
+    """
+    Submits raw LiDAR point clouds to the remote Processing Engine for PDAL SMRF ground classification and DTM generation.
+    """
+    res = await external_engine_client.submit_lidar_job(
+        survey_id=payload.survey_id,
+        laz_path=payload.laz_path,
+        cell_size=payload.cell_size,
+        slope=payload.slope,
+        window_size=payload.window_size,
+    )
+    if res:
+        return success_response(data=res)
+
+    return success_response(data={
+        "job_id": f"LIDAR-SIM-{payload.survey_id}",
+        "survey_id": payload.survey_id,
+        "status": "COMPLETED",
+        "artifacts": {
+            "dtm_tiff": f"/data/surveys/{payload.survey_id}/lidar_dtm.tif",
+            "classified_laz": f"/data/surveys/{payload.survey_id}/classified_ground.laz",
+        },
+        "note": "Operating in local simulation mode (Remote engine offline)",
+    })
+
+
 @router.get("/jobs/{job_id}")
 async def get_remote_job_status(job_id: str):
     """

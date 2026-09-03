@@ -117,6 +117,35 @@ class ExternalEngineClient:
             pass
         return None
 
+    async def submit_lidar_job(
+        self,
+        survey_id: str,
+        laz_path: Optional[str] = None,
+        cell_size: float = 1.0,
+        slope: float = 0.15,
+        window_size: float = 18.0,
+    ) -> Optional[Dict[str, Any]]:
+        """Submit a LiDAR ground classification & DTM job to remote engine."""
+        payload = {
+            "survey_id": survey_id,
+            "laz_path": laz_path,
+            "cell_size": cell_size,
+            "slope": slope,
+            "window_size": window_size,
+        }
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                res = await client.post(
+                    f"{self.base_url}/lidar/process",
+                    json=payload,
+                    headers=self.headers,
+                )
+                if res.status_code in (200, 201, 202):
+                    return res.json()
+        except Exception as e:
+            logger.warning(f"Failed to submit LiDAR job to external engine: {e}")
+        return None
+
     async def cancel_job(self, job_id: str) -> Optional[Dict[str, Any]]:
         """Cancel a running photogrammetry job on remote engine."""
         try:
