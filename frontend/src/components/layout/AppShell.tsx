@@ -29,13 +29,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       />
 
       {/* Main View Area */}
-      <div
-        className="main-content flex flex-col flex-1 min-h-screen"
-        style={{
-          marginLeft: isCollapsed ? 76 : 260,
-          width: `calc(100% - ${isCollapsed ? 76 : 260}px)`,
-        }}
-      >
+      <div className="main-content flex flex-col flex-1 min-w-0 min-h-screen">
         <Header
           currentTab={currentTab}
           onNavigate={onSelectTab}
