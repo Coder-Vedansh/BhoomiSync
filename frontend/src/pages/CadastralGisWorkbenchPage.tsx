@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Layers,
   Cpu,
@@ -16,11 +16,7 @@ import {
   X,
   Pause,
   RotateCcw,
-  RefreshCw,
-  Radio,
   Activity,
-  Clock,
-  AlertCircle,
 } from 'lucide-react';
 import { GisMap } from '../components/gis/GisMap';
 import { api } from '../services/api';
@@ -508,9 +504,13 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                         <Button size="sm" variant="cyan" icon={<Play size={12} />} onClick={handleResumeMission}>
                           Resume Flight
                         </Button>
-                      ) : (
+                      ) : missionDetail?.status === 'IN_PROGRESS' ? (
                         <Button size="sm" variant="outline" icon={<Pause size={12} />} onClick={handlePauseMission}>
                           Pause Hover
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="cyan" icon={<Play size={12} />} onClick={handleStartMission}>
+                          Start Flight
                         </Button>
                       )}
                       <Button size="sm" variant="danger" icon={<Square size={12} />} onClick={handleEndMission}>
@@ -562,11 +562,11 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                     <div className="space-y-1.5 text-[11px]">
                       <div className="flex justify-between text-slate-300">
                         <span>Ingested Objects:</span>
-                        <span className="font-mono text-cyan-300 font-bold">{health?.total_objects || 59} / 59 frames</span>
+                        <span className="font-mono text-cyan-300 font-bold">{(health as any)?.total_objects || 59} / 59 frames</span>
                       </div>
                       <div className="flex justify-between text-slate-300">
                         <span>Stream Throughput:</span>
-                        <span className="font-mono text-emerald-400 font-bold">{health?.upload_rate_mbps || 4.82} Mbps</span>
+                        <span className="font-mono text-emerald-400 font-bold">{(health as any)?.upload_rate_mbps || 4.82} Mbps</span>
                       </div>
                       <div className="flex justify-between text-slate-300">
                         <span>Data Integrity:</span>
