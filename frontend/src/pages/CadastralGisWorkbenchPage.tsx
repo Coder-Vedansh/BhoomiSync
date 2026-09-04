@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Layers,
@@ -95,6 +95,88 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
   const toggleGroup = (key: string) => {
     setCollapsedGroups((prev) => ({ ...prev, [key]: !prev[key] }));
   };
+
+  // Base Layer & 24-Layer Geospatial Visibility State
+  const [activeBaseLayer, setActiveBaseLayer] = useState<'satellite' | 'osm'>('satellite');
+  const [layerVisibility, setLayerVisibility] = useState<Record<string, boolean>>({
+    // Base Maps
+    'base-satellite': true,
+    'base-osm': false,
+    // Survey Data
+    'orthomosaic-raster': true,
+    'dem-elevation': true,
+    'lidar-point-cloud': true,
+    'flight-trajectory': true,
+    'raw-camera-shots': true,
+    // Cadastral
+    'official-cadastral-parcels': true,
+    'detected-parcels': true,
+    'historical-cadastral-1998': true,
+    // AI & Analysis
+    'ai-land-classification': true,
+    'ai-candidate-boundaries': true,
+    'historical-change-layer': true,
+    'potential-encroachments': true,
+    'parcel-conflict-layer': true,
+    // Live Operations
+    'live-drone-vector': true,
+    'realtime-trajectory': true,
+    'esp32-telemetry-stream': true,
+  });
+
+  const toggleLayer = (key: string) => {
+    if (key === 'base-satellite') {
+      setActiveBaseLayer('satellite');
+      setLayerVisibility((prev) => ({ ...prev, 'base-satellite': true, 'base-osm': false }));
+      return;
+    }
+    if (key === 'base-osm') {
+      setActiveBaseLayer('osm');
+      setLayerVisibility((prev) => ({ ...prev, 'base-satellite': false, 'base-osm': true }));
+      return;
+    }
+    if (key === 'potential-encroachments') {
+      setLayerVisibility((prev) => {
+        const nextVal = !prev['potential-encroachments'];
+        return {
+          ...prev,
+          'potential-encroachments': nextVal,
+          'parcel-conflict-layer': nextVal,
+        };
+      });
+      return;
+    }
+    setLayerVisibility((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const surveyActiveCount = useMemo(() => [
+    layerVisibility['orthomosaic-raster'],
+    layerVisibility['dem-elevation'],
+    layerVisibility['lidar-point-cloud'],
+    layerVisibility['flight-trajectory'],
+    layerVisibility['raw-camera-shots'],
+  ].filter(Boolean).length, [layerVisibility]);
+
+  const cadastralActiveCount = useMemo(() => [
+    layerVisibility['official-cadastral-parcels'],
+    layerVisibility['detected-parcels'],
+    layerVisibility['historical-cadastral-1998'],
+  ].filter(Boolean).length, [layerVisibility]);
+
+  const aiActiveCount = useMemo(() => [
+    layerVisibility['ai-land-classification'],
+    layerVisibility['ai-candidate-boundaries'],
+    layerVisibility['historical-change-layer'],
+    layerVisibility['potential-encroachments'],
+  ].filter(Boolean).length, [layerVisibility]);
+
+  const liveActiveCount = useMemo(() => [
+    layerVisibility['live-drone-vector'],
+    layerVisibility['realtime-trajectory'],
+    layerVisibility['esp32-telemetry-stream'],
+  ].filter(Boolean).length, [layerVisibility]);
+
+  const totalActiveLayers = 1 + surveyActiveCount + cadastralActiveCount + aiActiveCount + liveActiveCount;
 
   // Load Survey & GIS Data
   const loadGisData = async () => {
@@ -471,6 +553,15 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
           hideCoordinateBar={true}
           hideLayerHud={true}
           onCoordinatesChange={(lat, lng) => setLiveCoords({ lat, lng })}
+          layerVisibility={layerVisibility}
+          onToggleLayer={toggleLayer}
+          activeBaseLayer={activeBaseLayer}
+          onSelectBaseLayer={setActiveBaseLayer}
+          droneLocation={{
+            lat: latestTel?.latitude && latestTel.latitude > 0 ? latestTel.latitude : 24.5854,
+            lng: latestTel?.longitude && latestTel.longitude > 0 ? latestTel.longitude : 73.7125,
+            heading: currentHeading,
+          }}
         />
       </div>
 
@@ -554,7 +645,7 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                     24-Layer Geospatial Stack
                   </span>
                   <span className="text-[10px] font-mono text-sky-400 font-medium px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">
-                    5 Groups · Active
+                    {totalActiveLayers} of 17 Active
                   </span>
                 </div>
 
@@ -569,16 +660,26 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                         {collapsedGroups.base ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
                         <span className="font-medium text-slate-200 text-xs">Base Maps</span>
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">2 layers</span>
+                      <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">1 layer</span>
                     </button>
                     {!collapsedGroups.base && (
                       <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-sky-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={activeBaseLayer === 'satellite'}
+                            onChange={() => toggleLayer('base-satellite')}
+                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Satellite Imagery (Esri / Maxar)</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" className="rounded accent-sky-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={activeBaseLayer === 'osm'}
+                            onChange={() => toggleLayer('base-osm')}
+                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Street Basemap (OSM Vector)</span>
                         </label>
                       </div>
@@ -595,28 +696,55 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                         {collapsedGroups.survey ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
                         <span className="font-medium text-slate-200 text-xs">Survey Data</span>
                       </div>
-                      <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">5 layers</span>
+                      <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
+                        {surveyActiveCount}/5 active
+                      </span>
                     </button>
                     {!collapsedGroups.survey && (
                       <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-sky-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['orthomosaic-raster']}
+                            onChange={() => toggleLayer('orthomosaic-raster')}
+                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>2D Orthomosaic (2.5cm GSD)</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-sky-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['dem-elevation']}
+                            onChange={() => toggleLayer('dem-elevation')}
+                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Bare-Earth DEM (50cm)</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-sky-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['lidar-point-cloud']}
+                            onChange={() => toggleLayer('lidar-point-cloud')}
+                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>3D LiDAR Footprint</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-sky-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['flight-trajectory']}
+                            onChange={() => toggleLayer('flight-trajectory')}
+                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Flight Trajectory</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-sky-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['raw-camera-shots']}
+                            onChange={() => toggleLayer('raw-camera-shots')}
+                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Raw Camera Positions (EXIF)</span>
                         </label>
                       </div>
@@ -633,20 +761,37 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                         {collapsedGroups.cadastral ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
                         <span className="font-medium text-slate-200 text-xs">Cadastral</span>
                       </div>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">3 layers</span>
+                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                        {cadastralActiveCount}/3 active
+                      </span>
                     </button>
                     {!collapsedGroups.cadastral && (
                       <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-emerald-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['official-cadastral-parcels']}
+                            onChange={() => toggleLayer('official-cadastral-parcels')}
+                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Authoritative Khasra Boundaries</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-emerald-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['detected-parcels']}
+                            onChange={() => toggleLayer('detected-parcels')}
+                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Registered Field Parcels</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-amber-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['historical-cadastral-1998']}
+                            onChange={() => toggleLayer('historical-cadastral-1998')}
+                            className="rounded accent-amber-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Historical 1975 Baseline</span>
                         </label>
                       </div>
@@ -663,24 +808,46 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                         {collapsedGroups.ai ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
                         <span className="font-medium text-slate-200 text-xs">AI &amp; Analysis</span>
                       </div>
-                      <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">4 layers</span>
+                      <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">
+                        {aiActiveCount}/4 active
+                      </span>
                     </button>
                     {!collapsedGroups.ai && (
                       <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-purple-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['ai-land-classification']}
+                            onChange={() => toggleLayer('ai-land-classification')}
+                            className="rounded accent-purple-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>LULC Land-Use (8-Class)</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-purple-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['ai-candidate-boundaries']}
+                            onChange={() => toggleLayer('ai-candidate-boundaries')}
+                            className="rounded accent-purple-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>AI Candidate Bund Boundaries</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-purple-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['historical-change-layer']}
+                            onChange={() => toggleLayer('historical-change-layer')}
+                            className="rounded accent-purple-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Historical Change Shifts</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-rose-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['potential-encroachments']}
+                            onChange={() => toggleLayer('potential-encroachments')}
+                            className="rounded accent-rose-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Encroachment Risk Alerts</span>
                         </label>
                       </div>
@@ -697,20 +864,37 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                         {collapsedGroups.live ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
                         <span className="font-medium text-slate-200 text-xs">Live Operations</span>
                       </div>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">3 layers</span>
+                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                        {liveActiveCount}/3 active
+                      </span>
                     </button>
                     {!collapsedGroups.live && (
                       <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-emerald-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['live-drone-vector']}
+                            onChange={() => toggleLayer('live-drone-vector')}
+                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Live Drone Vector ({currentHeading.toFixed(0)}°)</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-emerald-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['realtime-trajectory']}
+                            onChange={() => toggleLayer('realtime-trajectory')}
+                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>Real-time Trajectory Track</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                          <input type="checkbox" defaultChecked className="rounded accent-emerald-500" />
+                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                          <input
+                            type="checkbox"
+                            checked={!!layerVisibility['esp32-telemetry-stream']}
+                            onChange={() => toggleLayer('esp32-telemetry-stream')}
+                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                          />
                           <span>ESP32-S3 Telemetry Sensor Stream</span>
                         </label>
                       </div>

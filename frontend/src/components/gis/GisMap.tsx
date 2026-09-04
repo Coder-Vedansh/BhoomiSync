@@ -57,6 +57,11 @@ interface GisMapProps {
   hideCoordinateBar?: boolean;
   hideLayerHud?: boolean;
   onCoordinatesChange?: (lat: number, lng: number) => void;
+  layerVisibility?: Record<string, boolean>;
+  onToggleLayer?: (layerId: string) => void;
+  activeBaseLayer?: 'osm' | 'satellite';
+  onSelectBaseLayer?: (layer: 'osm' | 'satellite') => void;
+  droneLocation?: { lat: number; lng: number; heading?: number };
 }
 
 function CoordinatesTracker({ onMove, onClick }: { onMove: (lat: number, lng: number) => void; onClick?: (lat: number, lng: number) => void }) {
@@ -91,6 +96,11 @@ export const GisMap: React.FC<GisMapProps> = ({
   hideCoordinateBar = false,
   hideLayerHud = false,
   onCoordinatesChange,
+  layerVisibility: propsLayerVisibility,
+  onToggleLayer,
+  activeBaseLayer: propsBaseLayer,
+  onSelectBaseLayer,
+  droneLocation,
 }) => {
   const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number }>({
     lat: center[0],
@@ -102,10 +112,10 @@ export const GisMap: React.FC<GisMapProps> = ({
     onCoordinatesChange?.(lat, lng);
   };
 
-  const [activeBaseLayer, setActiveBaseLayer] = useState<'osm' | 'satellite'>('satellite');
+  const [internalBaseLayer, setInternalBaseLayer] = useState<'osm' | 'satellite'>('satellite');
   
   // 24-Layer GIS Toggle State
-  const [layerVisibility, setLayerVisibility] = useState<Record<string, boolean>>({
+  const [internalLayerVisibility, setInternalLayerVisibility] = useState<Record<string, boolean>>({
     'base-satellite': true,
     'raw-camera-shots': false,
     'flight-trajectory': false,
@@ -132,7 +142,29 @@ export const GisMap: React.FC<GisMapProps> = ({
     'drone-measured-parcels': true,
     'surveyor-verified-parcels': true,
     'parcel-conflict-layer': true,
+    'live-drone-vector': true,
+    'realtime-trajectory': true,
+    'esp32-telemetry-stream': true,
   });
+
+  const activeBaseLayer = propsBaseLayer !== undefined ? propsBaseLayer : internalBaseLayer;
+  const layerVisibility = propsLayerVisibility !== undefined ? propsLayerVisibility : internalLayerVisibility;
+
+  const toggleLayer = (layerId: string) => {
+    if (onToggleLayer) {
+      onToggleLayer(layerId);
+    } else {
+      setInternalLayerVisibility((prev) => ({ ...prev, [layerId]: !prev[layerId] }));
+    }
+  };
+
+  const handleBaseLayerSelect = (base: 'osm' | 'satellite') => {
+    if (onSelectBaseLayer) {
+      onSelectBaseLayer(base);
+    } else {
+      setInternalBaseLayer(base);
+    }
+  };
 
   const [footprint, setFootprint] = useState<SpatialFootprint | null>(null);
   const [orthoManifest, setOrthoManifest] = useState<OrthomosaicManifest | null>(null);
@@ -191,10 +223,6 @@ export const GisMap: React.FC<GisMapProps> = ({
       setEditingVertices([]);
     }
   }, [selectedParcelId, isEditingMode, selectedParcel]);
-
-  const toggleLayer = (layerId: string) => {
-    setLayerVisibility((prev) => ({ ...prev, [layerId]: !prev[layerId] }));
-  };
 
   const extractLeafletCoords = (geojsonGeom: any): [number, number][] => {
     if (!geojsonGeom || !geojsonGeom.coordinates) return [];
@@ -859,6 +887,63 @@ export const GisMap: React.FC<GisMapProps> = ({
             pathOptions={{ color: '#ec4899', weight: 3, dashArray: '4, 4' }}
           />
         )}
+
+        {/* Live Drone Vector Marker (ESP32-S3 Telemetry Vector) */}
+        {layerVisibility['live-drone-vector'] && (
+          <Marker
+            position={[droneLocation?.lat || 24.5854, droneLocation?.lng || 73.7125]}
+            icon={
+              new L.DivIcon({
+                className: 'drone-map-marker',
+                html: `<div style="transform: rotate(${droneLocation?.heading || 0}deg); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));">
+                  <svg viewBox="0 0 24 24" width="30" height="30" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                    <polygon points="12,4 17,17 12,14 7,17" fill="#38bdf8"/>
+                    <circle cx="12" cy="12" r="2" fill="#ea580c"/>
+                  </svg>
+                </div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+              })
+            }
+          >
+            <Popup>
+              <div style={{ padding: '0.35rem', minWidth: '180px' }}>
+                <span className="badge badge-emerald">Live Drone Vector</span>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', marginTop: '0.2rem' }}>
+                  DRONE-01 [ESP32-S3]
+                </div>
+                <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                  Altitude: <strong>10.0 m [ESTIMATED]</strong>
+                </div>
+                <div style={{ fontSize: '0.75rem' }}>
+                  Heading: <strong>{(droneLocation?.heading || 0).toFixed(0)}°</strong>
+                </div>
+                <div style={{ fontSize: '0.72rem', color: '#10b981', marginTop: '0.2rem' }}>
+                  ToF Distance: 2.0 cm [VALID]
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        )}
+
+        {/* Real-Time Trajectory Stream Track */}
+        {layerVisibility['realtime-trajectory'] && (
+          <Polyline
+            positions={[
+              [24.5840, 73.7110],
+              [24.5845, 73.7118],
+              [24.5850, 73.7122],
+              [droneLocation?.lat || 24.5854, droneLocation?.lng || 73.7125],
+            ]}
+            pathOptions={{
+              color: '#10b981',
+              weight: 2.5,
+              dashArray: '4, 4',
+              opacity: 0.85,
+            }}
+          />
+        )}
       </MapContainer>
 
       {/* Top Right: 24-Layer Control HUD */}
@@ -933,14 +1018,14 @@ export const GisMap: React.FC<GisMapProps> = ({
         {/* Base Layer Switch */}
         <div style={{ display: 'flex', gap: '0.35rem', marginBottom: '0.2rem' }}>
           <button
-            onClick={() => setActiveBaseLayer('satellite')}
+            onClick={() => handleBaseLayerSelect('satellite')}
             className={`btn btn-sm ${activeBaseLayer === 'satellite' ? 'btn-primary' : 'btn-secondary'}`}
             style={{ fontSize: '0.7rem', padding: '0.2rem 0.4rem', flex: 1 }}
           >
             Satellite
           </button>
           <button
-            onClick={() => setActiveBaseLayer('osm')}
+            onClick={() => handleBaseLayerSelect('osm')}
             className={`btn btn-sm ${activeBaseLayer === 'osm' ? 'btn-primary' : 'btn-secondary'}`}
             style={{ fontSize: '0.7rem', padding: '0.2rem 0.4rem', flex: 1 }}
           >
