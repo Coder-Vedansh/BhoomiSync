@@ -1,4 +1,5 @@
 import React from 'react';
+import { TableSkeleton } from './Skeleton';
 
 export interface Column<T> {
   header: React.ReactNode;
@@ -12,6 +13,8 @@ export interface DataTableProps<T> {
   data: T[];
   keyExtractor: (item: T, index: number) => string | number;
   onRowClick?: (item: T) => void;
+  selectedRowKey?: string | number;
+  isRowSelected?: (item: T, index: number) => boolean;
   emptyMessage?: string;
   loading?: boolean;
   className?: string;
@@ -22,6 +25,8 @@ export function DataTable<T>({
   data,
   keyExtractor,
   onRowClick,
+  selectedRowKey,
+  isRowSelected,
   emptyMessage = 'No records found',
   loading = false,
   className = '',
@@ -40,14 +45,7 @@ export function DataTable<T>({
         </thead>
         <tbody>
           {loading ? (
-            <tr>
-              <td colSpan={columns.length} className="text-center py-8 text-slate-400">
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                  <span>Loading table records...</span>
-                </div>
-              </td>
-            </tr>
+            <TableSkeleton rows={5} columns={columns.length} />
           ) : data.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="text-center py-8 text-slate-500 italic">
@@ -55,27 +53,33 @@ export function DataTable<T>({
               </td>
             </tr>
           ) : (
-            data.map((item, rowIdx) => (
-              <tr
-                key={keyExtractor(item, rowIdx)}
-                onClick={() => onRowClick?.(item)}
-                className={onRowClick ? 'cursor-pointer' : ''}
-              >
-                {columns.map((col, colIdx) => {
-                  const content =
-                    typeof col.accessor === 'function'
-                      ? col.accessor(item, rowIdx)
-                      : col.accessor
-                      ? (item[col.accessor] as React.ReactNode)
-                      : null;
-                  return (
-                    <td key={colIdx} className={col.className}>
-                      {content}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))
+            data.map((item, rowIdx) => {
+              const rowKey = keyExtractor(item, rowIdx);
+              const isSelected = isRowSelected
+                ? isRowSelected(item, rowIdx)
+                : selectedRowKey !== undefined && selectedRowKey === rowKey;
+              return (
+                <tr
+                  key={rowKey}
+                  onClick={() => onRowClick?.(item)}
+                  className={`${onRowClick ? 'cursor-pointer' : ''} ${isSelected ? 'selected' : ''}`}
+                >
+                  {columns.map((col, colIdx) => {
+                    const content =
+                      typeof col.accessor === 'function'
+                        ? col.accessor(item, rowIdx)
+                        : col.accessor
+                        ? (item[col.accessor] as React.ReactNode)
+                        : null;
+                    return (
+                      <td key={colIdx} className={col.className}>
+                        {content}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })
           )}
         </tbody>
       </table>

@@ -351,6 +351,8 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
           ]}
           data={parcels}
           keyExtractor={(p) => p.parcel_id}
+          selectedRowKey={selectedParcel?.parcel_id}
+          onRowClick={handleRowClick}
           loading={loading}
           emptyMessage="No cadastral parcels match the selected filters."
         />

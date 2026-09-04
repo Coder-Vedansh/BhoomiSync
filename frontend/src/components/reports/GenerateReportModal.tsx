@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { reportApi } from '../../services/reportApi';
 import { ReportCreatePayload, ReportType } from '../../types/report';
+import { ProgressOperationBanner } from '../ui';
 
 interface GenerateReportModalProps {
   isOpen: boolean;
@@ -46,8 +48,6 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
     }
   }, [parcelId]);
 
-  if (!isOpen) return null;
-
   const handleToggleSection = (key: string) => {
     if (selectedSections.includes(key)) {
       setSelectedSections(selectedSections.filter((k) => k !== key));
@@ -81,16 +81,28 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
   };
 
   return (
-    <div className="modal-overlay" style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(4px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
-    }}>
-      <div className="modal-card" style={{
-        background: '#1e293b', border: '1px solid #334155', borderRadius: '12px',
-        width: '680px', maxWidth: '95vw', maxHeight: '90vh', overflowY: 'auto',
-        color: '#f8fafc', padding: '24px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-      }}>
+    <AnimatePresence>
+      {isOpen && (
+        <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+          {/* Backdrop (opacity: 0 -> 1, 180ms) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm pointer-events-auto"
+            onClick={onClose}
+          />
+
+          {/* Modal Card (opacity: 0 -> 1, scale: 0.98 -> 1, y: 4px -> 0, 200ms) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98, y: 4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98, y: 4 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="modal-card relative z-10 w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] text-slate-100 p-6 pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '14px', marginBottom: '18px' }}>
           <div>
@@ -335,25 +347,36 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
                 type="button"
                 onClick={handleGenerate}
                 disabled={isSubmitting}
+                className="btn btn-primary"
                 style={{
-                  padding: '10px 24px', background: isSubmitting ? '#059669' : '#10b981',
-                  border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 600, cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: '8px',
+                  padding: '10px 24px',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
                 }}
               >
-                {isSubmitting ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
-                    Generating Snapshot &amp; Exports...
-                  </>
-                ) : (
-                  '🚀 Generate Digital Survey Dossier'
-                )}
+                {isSubmitting ? 'Generating Snapshot & Exports...' : '🚀 Generate Digital Survey Dossier'}
               </button>
             </div>
+
+            {isSubmitting && (
+              <ProgressOperationBanner
+                title="Processing survey & generating dossier..."
+                stageName="Cryptographic SHA-256 anchoring & multi-format export"
+                stageIndex={3}
+                totalStages={5}
+                progressPercent={68}
+                className="mt-4"
+              />
+            )}
           </div>
         )}
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };

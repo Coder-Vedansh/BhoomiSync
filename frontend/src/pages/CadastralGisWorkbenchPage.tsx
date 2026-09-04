@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Layers,
   Cpu,
@@ -459,11 +460,16 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
       </div>
 
       {/* Floating Workstation Drawer (Right Dock, Figma/Mapbox Style) */}
-      {drawerOpen && (
-        <aside
-          className="absolute right-3 top-14 bottom-14 w-84 sm:w-96 rounded-xl bg-slate-900/95 backdrop-blur-md border border-slate-800/90 shadow-2xl flex flex-col overflow-hidden animate-fade-in pointer-events-auto"
-          style={{ zIndex: 1200 }}
-        >
+      <AnimatePresence>
+        {drawerOpen && (
+          <motion.aside
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 12 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute right-3 top-14 bottom-14 w-84 sm:w-96 rounded-xl bg-slate-900/95 backdrop-blur-md border border-slate-800/90 shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
+            style={{ zIndex: 1200 }}
+          >
           {/* Drawer Header with Tabs */}
           <div className="p-2.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/40">
             <Tabs
@@ -912,8 +918,9 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
               );
             })()}
           </div>
-        </aside>
-      )}
+          </motion.aside>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
