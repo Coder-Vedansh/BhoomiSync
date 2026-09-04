@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DroneAnimation } from './DroneAnimation';
-import { Radio, ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Check, Layers, MapPin } from 'lucide-react';
 
 export type DroneTransitionVariant =
+  | 'pipeline'
   | 'navigation'
   | 'mission-start'
   | 'survey-complete'
@@ -12,29 +13,39 @@ export type DroneTransitionVariant =
 export interface DroneTransitionProps {
   isActive: boolean;
   variant?: DroneTransitionVariant;
-  duration?: number; // Total duration in ms (default 850ms)
+  duration?: number; // Total duration in ms (default 1600ms for pipeline/navigation)
   showLabel?: boolean;
   label?: string;
   subtitle?: string;
   onComplete?: () => void;
   isSim?: boolean;
   isLive?: boolean;
-  hasGnss?: boolean;
+  hasGnss?: boolean; // Strictly adheres to hardware honesty: False until Phase 2 hardware
+  tofDistanceCm?: number | string; // Real ToF measurement, default '2 cm'
+  tofStatus?: 'VALID' | 'INVALID' | 'CALIBRATING'; // Default 'VALID'
+  gnssStatus?: string; // Default 'NOT AVAILABLE'
+  khasraNumber?: string; // Default '105'
+  surveyedArea?: string; // Default '1.47 ha'
 }
 
 export const DroneTransition: React.FC<DroneTransitionProps> = ({
   isActive,
   variant = 'navigation',
-  duration = 850,
+  duration = 1600,
   showLabel = true,
   label,
   subtitle,
   onComplete,
   isSim = false,
   isLive = true,
-  hasGnss = false, // Strictly adheres to hardware honesty: False until Phase 2 hardware
+  hasGnss = false,
+  tofDistanceCm = '2 cm',
+  tofStatus = 'VALID',
+  gnssStatus = 'NOT AVAILABLE',
+  khasraNumber = '105',
+  surveyedArea = '1.47 ha',
 }) => {
-  const [missionStepIndex, setMissionStepIndex] = useState(0);
+  const [pipelineStage, setPipelineStage] = useState(0);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
 
   // Check prefers-reduced-motion
@@ -48,18 +59,35 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
     }
   }, []);
 
-  // Multi-step lifecycle for "mission-start"
+  // Multi-step lifecycle for pipeline & mission
   useEffect(() => {
     if (!isActive) {
-      setMissionStepIndex(0);
+      setPipelineStage(0);
       return;
     }
 
-    if (variant === 'mission-start') {
+    if (variant === 'pipeline' || variant === 'navigation') {
+      const step1 = Math.round(duration * 0.18);
+      const step2 = Math.round(duration * 0.40);
+      const step3 = Math.round(duration * 0.65);
+      const step4 = Math.round(duration * 0.84);
+
+      const t1 = setTimeout(() => setPipelineStage(1), step1);
+      const t2 = setTimeout(() => setPipelineStage(2), step2);
+      const t3 = setTimeout(() => setPipelineStage(3), step3);
+      const t4 = setTimeout(() => setPipelineStage(4), step4);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+        clearTimeout(t4);
+      };
+    } else if (variant === 'mission-start') {
       const stepInterval = duration / 4;
-      const t1 = setTimeout(() => setMissionStepIndex(1), stepInterval);
-      const t2 = setTimeout(() => setMissionStepIndex(2), stepInterval * 2);
-      const t3 = setTimeout(() => setMissionStepIndex(3), stepInterval * 3);
+      const t1 = setTimeout(() => setPipelineStage(1), stepInterval);
+      const t2 = setTimeout(() => setPipelineStage(2), stepInterval * 2);
+      const t3 = setTimeout(() => setPipelineStage(3), stepInterval * 3);
       return () => {
         clearTimeout(t1);
         clearTimeout(t2);
@@ -83,7 +111,7 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
 
   if (!isActive) return null;
 
-  // Reduced motion: simple high-performance fade
+  // Accessibility: Reduced motion simple high-performance fade
   if (isReducedMotion) {
     return (
       <AnimatePresence>
@@ -96,7 +124,7 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
         >
           <div className="flex flex-col items-center gap-2">
             <span className="text-sm font-semibold tracking-wide text-slate-200 uppercase">
-              {label || 'Transitioning Workspace...'}
+              {label || 'Transitioning to GIS Cadastral Map...'}
             </span>
           </div>
         </motion.div>
@@ -104,14 +132,15 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
     );
   }
 
+  const isPipeline = variant === 'pipeline' || variant === 'navigation';
+
   const missionSteps = [
     'DRONE-01',
     'Survey Initializing',
     'Establishing Capture',
     'Survey Ready',
   ];
-
-  const currentMissionText = missionSteps[missionStepIndex] || missionSteps[0];
+  const currentMissionText = missionSteps[pipelineStage] || missionSteps[0];
 
   return (
     <AnimatePresence>
@@ -120,108 +149,245 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
-        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#070b14]/85 backdrop-blur-xs select-none pointer-events-none overflow-hidden"
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#060a14]/85 backdrop-blur-xs select-none pointer-events-none p-4 overflow-hidden"
       >
         {/* Subtle Background Cadastral Grid Projection */}
-        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px]" />
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px]" />
 
         {/* =========================================================================
-            VARIANT 1: NAVIGATION (Flight Path -> Cadastral Boundary -> Map)
+            PRIMARY WORKFLOW: SIGNATURE DRONE-TO-CADASTRAL PIPELINE STORY
+            DRONE → IMAGE CAPTURE → TOF DATA → PROCESSING → ORTHOMOSAIC → CADASTRAL PARCEL
             ========================================================================= */}
-        {variant === 'navigation' && (
-          <div className="relative w-full max-w-lg h-64 flex items-center justify-center">
-            {/* SVG Flight Path evolving into Cadastral Boundary */}
-            <svg
-              className="absolute inset-0 w-full h-full overflow-visible"
-              viewBox="0 0 500 240"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Step A: Dotted Flight Path */}
-              <motion.path
-                d="M 50 140 C 150 90, 220 160, 320 100 L 420 110"
-                stroke="#38bdf8"
-                strokeWidth="1.75"
-                strokeDasharray="6 4"
-                initial={{ pathLength: 0, opacity: 0.3 }}
-                animate={{ pathLength: 1, opacity: 0.85 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-              />
+        {isPipeline && (
+          <motion.div
+            initial={{ scale: 0.96, opacity: 0, y: 8 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-xl rounded-2xl bg-[#0c1220]/95 border border-[#22334d] shadow-2xl p-6 flex flex-col gap-4 text-slate-200"
+          >
+            {/* Top Pipeline Flow Badges */}
+            <div className="flex items-center justify-between border-b border-[#1b263b] pb-3 text-[11px] font-mono">
+              <span className="text-slate-400 font-semibold tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                STATUTORY CADASTRAL PIPELINE
+              </span>
+              <span className="text-slate-500">BhoomiSync Core v2.4</span>
+            </div>
 
-              {/* Waypoint nodes */}
-              <motion.circle
-                cx="50"
-                cy="140"
-                r="3.5"
-                fill="#38bdf8"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.05 }}
-              />
-              <motion.circle
-                cx="200"
-                cy="130"
-                r="3.5"
-                fill="#38bdf8"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.25 }}
-              />
-              <motion.circle
-                cx="320"
-                cy="100"
-                r="3.5"
-                fill="#10b981"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.45 }}
-              />
+            {/* STAGE 1: SURVEY DRONE + IMAGE CAPTURE ACTIVE */}
+            <div className="flex items-center justify-between gap-4 bg-[#080d1a] border border-[#1b273d] rounded-xl p-3">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-lg bg-[#141d2f] border border-[#233550] flex items-center justify-center flex-shrink-0">
+                  <DroneAnimation
+                    size={42}
+                    heading={0}
+                    isScanning={true}
+                    statusLed="live"
+                  />
+                </div>
+                <div>
+                  <div className="text-xs font-mono font-bold text-white tracking-wider uppercase">
+                    SURVEY DRONE
+                  </div>
+                  <div className="text-[11px] text-amber-400/90 flex items-center gap-1.5 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                    <span>Image capture active</span>
+                  </div>
+                </div>
+              </div>
 
-              {/* Step B: Morphing into Cadastral Boundary Polygon */}
-              <motion.polygon
-                points="240,70 380,50 410,140 260,160"
-                stroke="#10b981"
-                strokeWidth="2"
-                strokeDasharray="4 2"
-                fill="rgba(16, 185, 129, 0.09)"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.42, duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-              />
+              {/* STAGE 3: TOF MEASUREMENT & HARDWARE HONESTY READOUT */}
+              <div className="flex items-center gap-2">
+                <div className="px-2.5 py-1.5 rounded-lg bg-[#0e172a] border border-[#233550] text-right">
+                  <div className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">ToF Sensor</div>
+                  <div className="flex items-center gap-1 text-xs font-mono font-bold text-emerald-400">
+                    <span>{tofDistanceCm}</span>
+                    <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300">
+                      {tofStatus}
+                    </span>
+                  </div>
+                </div>
+                <div className="px-2.5 py-1.5 rounded-lg bg-[#0e172a] border border-[#233550] text-right">
+                  <div className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">GNSS / RTK</div>
+                  <div className="text-xs font-mono font-semibold text-slate-400">
+                    {hasGnss ? 'FIXED' : gnssStatus}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              {/* Cadastral Parcel Label */}
-              <motion.text
-                x="330"
-                y="110"
-                fill="#10b981"
-                fontSize="10"
-                fontFamily="monospace"
-                textAnchor="middle"
-                fontWeight="600"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                KHASRA #102 [0.82 HA]
-              </motion.text>
-            </svg>
+            {/* STAGE 2: CAPTURED IMAGE FRAMES (Subtle 3-frame sequence) */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                <span>IMAGE FRAMES (AERIAL PAYLOAD)</span>
+                <span className="text-emerald-400 text-[10px]">
+                  {pipelineStage >= 1 ? '3 FRAMES INGESTED' : 'Awaiting capture...'}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2.5">
+                {[
+                  { id: 'IMG_0104.RAW', time: '10.0m [SIM]', gsd: '2.5cm' },
+                  { id: 'IMG_0105.RAW', time: '10.0m [SIM]', gsd: '2.5cm' },
+                  { id: 'IMG_0106.RAW', time: '10.0m [SIM]', gsd: '2.5cm' },
+                ].map((frame, idx) => {
+                  const isVisible = pipelineStage >= 1;
+                  return (
+                    <motion.div
+                      key={frame.id}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: isVisible ? 1 : 0.3, y: isVisible ? 0 : 4 }}
+                      transition={{ delay: idx * 0.08, duration: 0.2 }}
+                      className={`p-2 rounded-lg border text-left transition-colors ${
+                        isVisible
+                          ? 'bg-[#101728] border-[#293c5c]'
+                          : 'bg-[#0a0f1c] border-[#182338]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-mono font-semibold text-slate-200">
+                          {frame.id}
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80" />
+                      </div>
+                      <div className="mt-1 flex items-center justify-between text-[9px] font-mono text-slate-400">
+                        <span>GSD {frame.gsd}</span>
+                        <span>{frame.time}</span>
+                      </div>
+                      {/* Subtle wireframe imagery thumbnail */}
+                      <div className="mt-1.5 h-6 rounded bg-[#090d17] border border-[#1b263b] flex items-center justify-center overflow-hidden">
+                        <div className="w-full h-full opacity-30 bg-[repeating-linear-gradient(45deg,#38bdf8_0,#38bdf8_1px,transparent_0,transparent_6px)]" />
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
 
-            {/* The Traversing Survey Drone */}
-            <motion.div
-              className="absolute"
-              initial={{ x: -180, y: 30, scale: 0.85 }}
-              animate={{ x: 140, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <DroneAnimation
-                size={76}
-                heading={24}
-                isScanning={true}
-                statusLed="live"
-              />
-            </motion.div>
-          </div>
+            {/* STAGE 4: DATA FLOW → PROCESSING SURVEY DATA (Restrained progress & real stages) */}
+            <div className="space-y-2 bg-[#080d1a] border border-[#1b273d] rounded-xl p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-white tracking-wider uppercase flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+                  PROCESSING SURVEY DATA
+                </span>
+                <span className="text-[11px] font-mono text-sky-400 font-semibold">
+                  {pipelineStage >= 3
+                    ? '100% COMPLETE'
+                    : pipelineStage >= 2
+                    ? '75% PROCESSING'
+                    : 'INITIALIZING'}
+                </span>
+              </div>
+
+              {/* Progress Line */}
+              <div className="w-full h-1.5 bg-[#141e30] rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-500"
+                  initial={{ width: '10%' }}
+                  animate={{
+                    width:
+                      pipelineStage >= 3
+                        ? '100%'
+                        : pipelineStage >= 2
+                        ? '75%'
+                        : pipelineStage >= 1
+                        ? '35%'
+                        : '10%',
+                  }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                />
+              </div>
+
+              {/* The 4 Real Statutory Processing Stages */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1 text-[10px] font-mono">
+                {[
+                  { name: 'Image validation', activeStage: 1 },
+                  { name: 'Image alignment', activeStage: 2 },
+                  { name: 'Feature extraction', activeStage: 2 },
+                  { name: '2D reconstruction', activeStage: 3 },
+                ].map((st) => {
+                  const isDone = pipelineStage >= st.activeStage;
+                  return (
+                    <div
+                      key={st.name}
+                      className={`flex items-center gap-1 px-1.5 py-1 rounded transition-colors ${
+                        isDone
+                          ? 'text-emerald-300 bg-emerald-500/10 border border-emerald-500/20'
+                          : 'text-slate-500 bg-[#0c1220] border border-transparent'
+                      }`}
+                    >
+                      {isDone ? (
+                        <Check size={10} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <span className="w-2 h-2 rounded-full border border-slate-600 flex-shrink-0" />
+                      )}
+                      <span className="truncate">{st.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* STAGE 5 & 6: 2D SURVEY MAP & CADASTRAL TRANSFORMATION */}
+            <div className="bg-[#080d1a] border border-[#1b273d] rounded-xl p-3.5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-white tracking-wider">
+                  <Layers size={13} className="text-emerald-400" />
+                  <span>2D SURVEY MAP</span>
+                </div>
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/25">
+                  ORTHOMOSAIC RESOLVED
+                </span>
+              </div>
+
+              {/* Map Surface Graphic & Cadastral Boundary */}
+              <div className="relative h-20 w-full rounded-lg bg-[#0e172a] border border-[#233550] overflow-hidden flex items-center justify-center">
+                {/* Geographic background grid */}
+                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]" />
+
+                {/* Cadastral Parcel Polygon Overlay */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{
+                    opacity: pipelineStage >= 3 ? 1 : 0.2,
+                    scale: pipelineStage >= 3 ? 1 : 0.95,
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="relative z-10 w-4/5 h-14 rounded-md border-2 border-emerald-400 bg-emerald-500/10 flex items-center justify-between px-3 shadow-sm"
+                >
+                  <div className="flex items-center gap-2">
+                    <MapPin size={14} className="text-emerald-400 flex-shrink-0" />
+                    <div>
+                      <div className="text-xs font-mono font-bold text-white tracking-wide">
+                        KHASRA {khasraNumber}
+                      </div>
+                      <div className="text-[10px] font-mono text-slate-300">
+                        SURVEYED AREA: <span className="text-emerald-300 font-bold">{surveyedArea}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right font-mono text-[9px] text-slate-400 hidden sm:block">
+                    <div>IoU Match: 96.4%</div>
+                    <div>PostGIS Polygon Sealed</div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Bottom Story Guidance */}
+            {showLabel && (
+              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 font-mono">
+                <span className="truncate">
+                  {pipelineStage >= 4
+                    ? 'Cadastral workspace ready. Transferring controls...'
+                    : 'Drone Data → Image Capture → ToF → Processing → Cadastre'}
+                </span>
+                <span className="text-slate-500 whitespace-nowrap">Haripura Pilot</span>
+              </div>
+            )}
+          </motion.div>
         )}
 
         {/* =========================================================================
@@ -229,7 +395,6 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
             ========================================================================= */}
         {variant === 'mission-start' && (
           <div className="relative flex flex-col items-center justify-center gap-6">
-            {/* Drone Launching and Ascending to 10.0m Ceiling */}
             <motion.div
               initial={{ scale: 0.65, y: 40, opacity: 0.8 }}
               animate={{ scale: 1.05, y: -10, opacity: 1 }}
@@ -239,7 +404,7 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
               <DroneAnimation
                 size={96}
                 heading={0}
-                isScanning={missionStepIndex >= 2}
+                isScanning={pipelineStage >= 2}
                 statusLed={isSim ? 'sim' : isLive ? 'live' : 'standby'}
                 showCrosshair={true}
               />
@@ -272,7 +437,7 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
                 {isSim ? 'SIMULATION' : isLive ? 'LIVE' : 'STANDBY'}
               </span>
               <span className="text-slate-600">|</span>
-              <span className="text-slate-400">ToF 2.0 cm [VALID]</span>
+              <span className="text-slate-400">ToF {tofDistanceCm} [{tofStatus}]</span>
               <span className="text-slate-600">|</span>
               <span className="flex items-center gap-1 text-amber-400">
                 <ShieldAlert size={12} />
@@ -314,26 +479,6 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
               </p>
             </div>
           </div>
-        )}
-
-        {/* Bottom Status / Guidance Label */}
-        {showLabel && variant === 'navigation' && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.25 }}
-            className="mt-4 flex flex-col items-center gap-1"
-          >
-            <div className="flex items-center gap-2">
-              <Radio size={14} className="text-sky-400 animate-pulse" />
-              <span className="text-xs font-mono uppercase tracking-wider text-slate-200">
-                {label || 'Drone Data → Cadastral Map'}
-              </span>
-            </div>
-            <span className="text-[11px] text-slate-400">
-              {subtitle || 'Synchronizing aerial vector with PostGIS parcel boundary'}
-            </span>
-          </motion.div>
         )}
       </motion.div>
     </AnimatePresence>

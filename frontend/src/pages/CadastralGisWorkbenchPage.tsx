@@ -17,6 +17,7 @@ import {
   ChevronDown,
   ChevronRight,
   Download,
+  Radio,
 } from 'lucide-react';
 import { GisMap } from '../components/gis/GisMap';
 import { api } from '../services/api';
@@ -408,6 +409,30 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
         >
           <Zap size={13} className={isProcessing ? 'animate-spin' : ''} />
           <span className="hidden sm:inline">{isProcessing ? 'AI Processing...' : 'Run AI & Fusion'}</span>
+        </button>
+
+        {/* Drone-to-Cadastral Pipeline Story Visualization Trigger */}
+        <button
+          onClick={() =>
+            triggerDroneTransition({
+              variant: 'pipeline',
+              duration: 1600,
+              label: 'Drone-to-Cadastral Pipeline Story',
+              subtitle: 'Drone → Image Capture → ToF → Processing → 2D Map → Cadastre',
+              tofDistanceCm: '2 cm',
+              tofStatus: 'VALID',
+              gnssStatus: 'NOT AVAILABLE',
+              khasraNumber: selectedParcel?.parcel_id?.replace(/\D/g, '') || '105',
+              surveyedArea: selectedParcel?.area_hectares
+                ? `${selectedParcel.area_hectares.toFixed(2)} ha`
+                : '1.47 ha',
+            })
+          }
+          className="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-[#0e1626]/90 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/15 shadow-md backdrop-blur-md transition-all cursor-pointer"
+          title="Visualize statutory data story: Drone → Image Capture → ToF → Processing → 2D Map → Cadastral Parcel"
+        >
+          <Radio size={13} className="text-emerald-400" />
+          <span className="hidden sm:inline">Pipeline Story</span>
         </button>
 
         {/* Drawer Panels Toggle Button */}

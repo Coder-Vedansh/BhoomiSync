@@ -10,6 +10,11 @@ export interface TriggerTransitionOptions {
   isSim?: boolean;
   isLive?: boolean;
   hasGnss?: boolean;
+  tofDistanceCm?: number | string;
+  tofStatus?: 'VALID' | 'INVALID' | 'CALIBRATING';
+  gnssStatus?: string;
+  khasraNumber?: string;
+  surveyedArea?: string;
   onComplete?: () => void;
 }
 
@@ -32,12 +37,15 @@ export const DroneTransitionProvider: React.FC<DroneTransitionProviderProps> = (
   const [isActive, setIsActive] = useState(false);
   const [options, setOptions] = useState<TriggerTransitionOptions>({
     variant: 'navigation',
-    duration: 850,
+    duration: 1600,
   });
 
   const triggerDroneTransition = useCallback(
     (opts: TriggerTransitionOptions) => {
-      const dur = opts.duration || 850;
+      const isPipeline = opts.variant === 'pipeline' || opts.variant === 'navigation';
+      const defaultDuration = isPipeline ? 1600 : 950;
+      const dur = opts.duration || defaultDuration;
+
       setOptions({
         variant: opts.variant || 'navigation',
         duration: dur,
@@ -46,12 +54,17 @@ export const DroneTransitionProvider: React.FC<DroneTransitionProviderProps> = (
         isSim: opts.isSim ?? false,
         isLive: opts.isLive ?? true,
         hasGnss: opts.hasGnss ?? false,
+        tofDistanceCm: opts.tofDistanceCm ?? '2 cm',
+        tofStatus: opts.tofStatus ?? 'VALID',
+        gnssStatus: opts.gnssStatus ?? 'NOT AVAILABLE',
+        khasraNumber: opts.khasraNumber ?? '105',
+        surveyedArea: opts.surveyedArea ?? '1.47 ha',
       });
       setIsActive(true);
 
-      // Perform workspace route switch midway through transition (at 60% mark)
-      // so the new map / workbench is mounted and rendered before overlay fades out
-      const switchDelay = Math.round(dur * 0.58);
+      // Perform workspace route switch midway through transition (at 65% mark)
+      // so the new map / workbench is mounted and rendered before overlay dissolves
+      const switchDelay = Math.round(dur * 0.65);
       const switchTimer = setTimeout(() => {
         if (opts.targetTab && onNavigateTab) {
           onNavigateTab(opts.targetTab);
@@ -91,6 +104,11 @@ export const DroneTransitionProvider: React.FC<DroneTransitionProviderProps> = (
         isSim={options.isSim}
         isLive={options.isLive}
         hasGnss={options.hasGnss}
+        tofDistanceCm={options.tofDistanceCm}
+        tofStatus={options.tofStatus}
+        gnssStatus={options.gnssStatus}
+        khasraNumber={options.khasraNumber}
+        surveyedArea={options.surveyedArea}
       />
     </DroneTransitionContext.Provider>
   );

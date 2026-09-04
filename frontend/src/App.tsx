@@ -34,10 +34,15 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
     if (isTransitionToGis) {
       triggerDroneTransition({
         targetTab,
-        variant: 'navigation',
-        duration: 850,
+        variant: 'pipeline',
+        duration: 1600,
         label: 'Drone Flight Path → Cadastral Map',
         subtitle: 'Drone data becomes geographic information',
+        tofDistanceCm: '2 cm',
+        tofStatus: 'VALID',
+        gnssStatus: 'NOT AVAILABLE',
+        khasraNumber: '105',
+        surveyedArea: '1.47 ha',
       });
     } else if (isTransitionToLiveMission) {
       triggerDroneTransition({
