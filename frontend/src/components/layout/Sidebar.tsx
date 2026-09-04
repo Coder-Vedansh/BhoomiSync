@@ -142,9 +142,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={`sidebar ${mobileOpen ? 'mobile-open' : ''} ${
           isCollapsed ? 'collapsed' : ''
-        } flex flex-col justify-between z-40 bg-slate-900 border-r border-slate-800/80`}
+        } fixed top-0 bottom-0 left-0 h-screen h-[100dvh] flex flex-col justify-between z-40 bg-[#0d1322] border-r border-[#1e2c42]`}
       >
-        <div className="overflow-y-auto px-3 py-3.5 space-y-4">
+        <div className="flex-1 min-h-0 overflow-y-auto px-3 py-3.5 space-y-4">
           {/* Brand Logo Header */}
           <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
             <div
