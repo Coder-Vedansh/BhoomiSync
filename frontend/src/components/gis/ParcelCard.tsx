@@ -61,7 +61,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
         cursor: 'pointer',
         borderColor: isSelected ? 'var(--accent-emerald)' : undefined,
         backgroundColor: isSelected ? 'var(--bg-card-hover)' : undefined,
-        boxShadow: isSelected ? '0 0 12px var(--accent-emerald-glow)' : undefined,
+        boxShadow: isSelected ? 'inset 3px 0 0 var(--accent-emerald)' : undefined,
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
