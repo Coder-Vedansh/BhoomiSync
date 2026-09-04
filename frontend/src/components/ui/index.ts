@@ -14,3 +14,5 @@ export * from './PipelineTracker';
 export * from './Drawer';
 export * from './Tooltip';
 export * from './Skeleton';
+export * from './DroneAnimation';
+export * from './DroneTransition';

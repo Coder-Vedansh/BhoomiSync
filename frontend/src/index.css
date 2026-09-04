@@ -727,6 +727,70 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
+   BHOOMISYNC SIGNATURE DRONE ROTOR & FLIGHT PATH ANIMATIONS
+   ========================================================================== */
+@keyframes rotor-spin-cw {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotor-spin-ccw {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.drone-rotor-cw {
+  animation: rotor-spin-cw 0.35s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.drone-rotor-ccw {
+  animation: rotor-spin-ccw 0.35s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes flight-path-draw {
+  0% {
+    stroke-dashoffset: 600;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.flight-path-animated {
+  stroke-dasharray: 8 6;
+  animation: flight-path-draw 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes beacon-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.drone-beacon-pulse {
+  animation: beacon-pulse 1.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ==========================================================================
    ACCESSIBILITY: PREFERS-REDUCED-MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {

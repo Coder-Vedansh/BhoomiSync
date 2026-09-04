@@ -37,6 +37,7 @@ import {
   Button,
   Tabs,
 } from '../components/ui';
+import { useDroneTransition } from '../context/DroneTransitionContext';
 
 interface CadastralGisWorkbenchPageProps {
   onNavigate?: (tab: string, id?: string) => void;
@@ -48,6 +49,7 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
   defaultTab = 'layers',
 }) => {
   const { activeRole } = useAuth();
+  const { triggerDroneTransition } = useDroneTransition();
 
   // Selected Survey Context
   const [selectedSurveyId] = useState<string>('SUR-2026-001');
@@ -183,14 +185,24 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
 
   // Mission Control Handlers
   const handleStartMission = async () => {
-    try {
-      await droneMissionApi.startMission(selectedMissionId);
-      setAlertMessage('Drone flight mission initiated.');
-      loadDroneData();
-      setTimeout(() => setAlertMessage(null), 4000);
-    } catch (err: any) {
-      alert(`Start mission error: ${err.message}`);
-    }
+    triggerDroneTransition({
+      variant: 'mission-start',
+      duration: 1000,
+      label: 'LIVE SURVEY',
+      subtitle: 'DRONE-01 establishing capture over Haripura revenue area...',
+      isLive: true,
+      hasGnss: false,
+      onComplete: async () => {
+        try {
+          await droneMissionApi.startMission(selectedMissionId);
+          setAlertMessage('Drone flight mission initiated.');
+          loadDroneData();
+          setTimeout(() => setAlertMessage(null), 4000);
+        } catch (err: any) {
+          alert(`Start mission error: ${err.message}`);
+        }
+      },
+    });
   };
 
   const handlePauseMission = async () => {
@@ -216,29 +228,45 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
   };
 
   const handleEndMission = async () => {
-    try {
-      await droneMissionApi.endMission(selectedMissionId);
-      setAlertMessage('Drone flight mission completed.');
-      loadDroneData();
-      setTimeout(() => setAlertMessage(null), 4000);
-    } catch (err: any) {
-      alert(`End mission error: ${err.message}`);
-    }
+    triggerDroneTransition({
+      variant: 'survey-complete',
+      duration: 900,
+      label: 'Survey Complete → Reconciling Cadastre',
+      subtitle: 'Reconciling flight trajectory into PostGIS boundary polygons',
+      onComplete: async () => {
+        try {
+          await droneMissionApi.endMission(selectedMissionId);
+          setAlertMessage('Drone flight mission completed.');
+          loadDroneData();
+          setTimeout(() => setAlertMessage(null), 4000);
+        } catch (err: any) {
+          alert(`End mission error: ${err.message}`);
+        }
+      },
+    });
   };
 
   const handleTriggerAiPipeline = async () => {
-    setIsProcessing(true);
-    setAlertMessage('Running AI Boundary Detection & Sensor Fusion...');
-    try {
-      await api.startGeospatialProcessing(selectedSurveyId, { target_gsd_cm: 1.2, target_dem_res_m: 0.5 });
-      setAlertMessage('AI Processing complete! Orthomosaic & bund boundaries updated.');
-      await loadGisData();
-      setTimeout(() => setAlertMessage(null), 5000);
-    } catch (err: any) {
-      setAlertMessage(`Processing error: ${err.message}`);
-    } finally {
-      setIsProcessing(false);
-    }
+    triggerDroneTransition({
+      variant: 'processing',
+      duration: 850,
+      label: 'Geospatial Sensor Fusion',
+      subtitle: 'Meta Segment Anything (SAM ViT) & LULC classification',
+      onComplete: async () => {
+        setIsProcessing(true);
+        setAlertMessage('Running AI Boundary Detection & Sensor Fusion...');
+        try {
+          await api.startGeospatialProcessing(selectedSurveyId, { target_gsd_cm: 1.2, target_dem_res_m: 0.5 });
+          setAlertMessage('AI Processing complete! Orthomosaic & bund boundaries updated.');
+          await loadGisData();
+          setTimeout(() => setAlertMessage(null), 5000);
+        } catch (err: any) {
+          setAlertMessage(`Processing error: ${err.message}`);
+        } finally {
+          setIsProcessing(false);
+        }
+      },
+    });
   };
 
   const handleSelectParcel = (p: Parcel) => {

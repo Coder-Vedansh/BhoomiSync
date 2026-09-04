@@ -9,16 +9,62 @@ import { ReportsPage } from './pages/ReportsPage';
 import { ReportDetailPage } from './pages/ReportDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { SecurityAdminPage } from './pages/SecurityAdminPage';
+import { DroneTransitionProvider, useDroneTransition } from './context/DroneTransitionContext';
 
-function AppContent() {
-  const [currentTab, setCurrentTab] = useState<string>('dashboard');
+interface AppContentProps {
+  currentTab: string;
+  setCurrentTab: (tab: string) => void;
+}
+
+function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
   const [selectedReportId, setSelectedReportId] = useState<string>('REP-2026-0001');
+  const { triggerDroneTransition } = useDroneTransition();
+
+  // Intelligent signature drone transition handler for major workflows
+  const handleSelectTabWithDrone = (targetTab: string, reportId?: string) => {
+    if (targetTab === 'report-detail' && reportId) {
+      setSelectedReportId(reportId);
+    }
+
+    // Identify major cadastral/GIS workflows that warrant the signature drone transition
+    const isTransitionToGis = ['gis', 'workbench', 'gis-workbench'].includes(targetTab) && currentTab === 'dashboard';
+    const isTransitionToLiveMission = targetTab === 'drone-mission' && currentTab !== 'drone-mission';
+    const isTransitionFromMissionToGis = currentTab === 'drone-mission' && ['gis', 'workbench'].includes(targetTab);
+
+    if (isTransitionToGis) {
+      triggerDroneTransition({
+        targetTab,
+        variant: 'navigation',
+        duration: 850,
+        label: 'Drone Flight Path → Cadastral Map',
+        subtitle: 'Drone data becomes geographic information',
+      });
+    } else if (isTransitionToLiveMission) {
+      triggerDroneTransition({
+        targetTab,
+        variant: 'mission-start',
+        duration: 950,
+        label: 'Live Survey',
+        subtitle: 'Connecting to drone...',
+        isLive: true,
+        hasGnss: false,
+      });
+    } else if (isTransitionFromMissionToGis) {
+      triggerDroneTransition({
+        targetTab,
+        variant: 'survey-complete',
+        duration: 850,
+        label: 'Aerial Survey → Authoritative Cadastre',
+        subtitle: 'Reconciling flight vector with PostGIS parcel boundaries',
+      });
+    } else {
+      // Standard subtlest crossfade without drone transition (preserves speed on standard clicks)
+      setCurrentTab(targetTab);
+    }
+  };
 
   const handleNavigate = (tab: string, id?: string) => {
-    if (tab === 'report-detail' && id) {
-      setSelectedReportId(id);
-    }
-    setCurrentTab(tab);
+    handleSelectTabWithDrone(tab, id);
   };
 
   // Helper to determine active workspace
@@ -59,7 +105,7 @@ function AppContent() {
     : currentTab;
 
   return (
-    <AppShell currentTab={currentTab} onSelectTab={(tab) => setCurrentTab(tab)}>
+    <AppShell currentTab={currentTab} onSelectTab={handleSelectTabWithDrone}>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={activeWorkspaceKey}
@@ -107,10 +153,20 @@ function AppContent() {
   );
 }
 
+function MainApp() {
+  const [currentTab, setCurrentTab] = useState<string>('dashboard');
+
+  return (
+    <DroneTransitionProvider onNavigateTab={setCurrentTab}>
+      <AppContent currentTab={currentTab} setCurrentTab={setCurrentTab} />
+    </DroneTransitionProvider>
+  );
+}
+
 export function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <MainApp />
     </AuthProvider>
   );
 }

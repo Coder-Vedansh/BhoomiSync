@@ -24,12 +24,14 @@ import { droneMissionApi } from '../services/droneMissionApi';
 import { Survey } from '../types';
 import { DroneMission, TelemetryRecord, MissionHealth, SimulatorStatus } from '../types/droneMission';
 import { DataProvenanceBadge } from '../components/ui';
+import { useDroneTransition } from '../context/DroneTransitionContext';
 
 interface DashboardPageProps {
   onNavigate: (tab: string, id?: string) => void;
 }
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
+  const { triggerDroneTransition } = useDroneTransition();
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [, setLoading] = useState(true);
   const [missions, setMissions] = useState<DroneMission[]>([]);
@@ -84,11 +86,30 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     try {
       if (isSimRunning) {
         await droneMissionApi.stopSimulator();
+        const s = await droneMissionApi.getSimulatorStatus();
+        setSimStatus(s);
       } else {
-        await droneMissionApi.startSimulator({ mission_id: activeMission?.mission_id || 'MIS-2026-HARIPURA-002' });
+        triggerDroneTransition({
+          variant: 'mission-start',
+          duration: 950,
+          label: 'SIMULATION FLIGHT',
+          subtitle: 'Calibrating virtual quadcopter to 10.0m ceiling...',
+          isSim: true,
+          isLive: false,
+          hasGnss: false,
+          onComplete: async () => {
+            try {
+              await droneMissionApi.startSimulator({
+                mission_id: activeMission?.mission_id || 'MIS-2026-HARIPURA-002',
+              });
+              const s = await droneMissionApi.getSimulatorStatus();
+              setSimStatus(s);
+            } catch (err) {
+              console.error('Failed to start simulator', err);
+            }
+          },
+        });
       }
-      const s = await droneMissionApi.getSimulatorStatus();
-      setSimStatus(s);
     } catch (e) {
       alert('Simulator state error');
     }
