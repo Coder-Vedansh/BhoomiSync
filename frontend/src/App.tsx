@@ -51,7 +51,18 @@ function AppContent() {
       {isDashboardWorkspace && <DashboardPage onNavigate={handleNavigate} />}
 
       {/* 2. Primary Workspace #2: Cadastral GIS & Mission Workbench */}
-      {isGisWorkspace && <CadastralGisWorkbenchPage onNavigate={handleNavigate} />}
+      {isGisWorkspace && (
+        <CadastralGisWorkbenchPage
+          onNavigate={handleNavigate}
+          defaultTab={
+            currentTab === 'ai-analysis'
+              ? 'ai'
+              : currentTab === 'drone-mission'
+              ? 'mission'
+              : 'layers'
+          }
+        />
+      )}
 
       {/* 3. Primary Workspace #3: Authoritative Land Registry */}
       {isLandRegistryWorkspace && <UnifiedLandRegistryPage onNavigate={handleNavigate} />}

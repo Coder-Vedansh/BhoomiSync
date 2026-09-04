@@ -11,3 +11,4 @@ export * from './PageHeader';
 export * from './StatGrid';
 export * from './EmptyState';
 export * from './PipelineTracker';
+export * from './Drawer';

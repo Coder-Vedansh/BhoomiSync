@@ -136,7 +136,7 @@ export const api = {
   getGisStatus: () => fetchJson<GISStatus>('/gis/status'),
 
   // ---------------------------------------------------------------------------
-  // Prompt 2: Drone Ingestion & Cloud Storage APIs
+  // Drone Ingestion & Cloud Storage Services
   // ---------------------------------------------------------------------------
   getSensors: () => fetchJson<Sensor[]>('/sensors'),
 
@@ -189,7 +189,7 @@ export const api = {
     fetchJson<SpatialFootprint>(`/surveys/${surveyId}/spatial-footprint`),
 
   // ---------------------------------------------------------------------------
-  // Prompt 3: Geospatial Processing & 2D GIS Map APIs
+  // Geospatial Processing & 2D GIS Map Services
   // ---------------------------------------------------------------------------
   startGeospatialProcessing: (surveyId: string, options?: { target_gsd_cm?: number; target_dem_res_m?: number }) =>
     fetchJson<any>(`/surveys/${surveyId}/processing/start`, {
@@ -228,7 +228,7 @@ export const api = {
     fetchJson<DetectedBoundary[]>(`/surveys/${surveyId}/boundaries`),
 
   // ---------------------------------------------------------------------------
-  // Prompt 4: AI Intelligence, Boundary Detection & Historical Changes
+  // AI Geospatial Intelligence, Boundary Extraction & Historical Changes
   // ---------------------------------------------------------------------------
   getAIModels: () =>
     fetchJson<{ total_models: number; models: AIModelRecord[] }>('/ai/models'),
@@ -306,7 +306,7 @@ export const api = {
     }),
 
   // ---------------------------------------------------------------------------
-  // Prompt 5: Land Records, Ownership & Cadastral Intelligence APIs
+  // Land Records, Ownership & Cadastral Intelligence APIs
   // ---------------------------------------------------------------------------
   getLandParcels: (
     filters?: {
@@ -414,7 +414,9 @@ export const api = {
       headers: { 'X-User-Role': role },
     }),
 
-  // Prompt 11: End-to-End System Health & Survey Lifecycle
+  // ---------------------------------------------------------------------------
+  // End-to-End System Health & Survey Lifecycle
+  // ---------------------------------------------------------------------------
   getSystemHealth: () =>
     fetchJson<any>('/system/health'),
 

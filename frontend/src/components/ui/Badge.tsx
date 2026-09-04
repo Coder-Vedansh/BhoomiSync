@@ -73,9 +73,53 @@ export const StatusBadge: React.FC<{
   };
 
   return (
-    <Badge variant={variant} dot={norm.includes('RUN') || norm.includes('PROCESS') || norm.includes('LIVE')} className={className}>
+    <Badge
+      variant={variant}
+      dot={norm.includes('RUN') || norm.includes('PROCESS') || norm.includes('LIVE')}
+      className={className}
+    >
       {formatLabel(status)}
     </Badge>
   );
 };
+
+export const DataProvenanceBadge: React.FC<{
+  source: 'LIVE' | 'SIMULATED' | 'ESTIMATED' | 'UNAVAILABLE';
+  className?: string;
+}> = ({ source, className = '' }) => {
+  const config = {
+    LIVE: {
+      label: 'LIVE SENSOR',
+      variant: 'emerald' as const,
+      dot: true,
+    },
+    SIMULATED: {
+      label: 'SIMULATION',
+      variant: 'slate' as const,
+      dot: false,
+    },
+    ESTIMATED: {
+      label: 'ESTIMATED',
+      variant: 'amber' as const,
+      dot: false,
+    },
+    UNAVAILABLE: {
+      label: 'NOT AVAILABLE',
+      variant: 'slate' as const,
+      dot: false,
+    },
+  }[source];
+
+  return (
+    <Badge
+      variant={config.variant}
+      size="sm"
+      dot={config.dot}
+      className={`font-mono font-bold tracking-wider text-[9px] uppercase ${className}`}
+    >
+      {config.label}
+    </Badge>
+  );
+};
+
 

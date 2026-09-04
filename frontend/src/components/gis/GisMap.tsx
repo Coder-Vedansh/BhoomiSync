@@ -54,6 +54,9 @@ interface GisMapProps {
   aiClassifications?: AIClassificationRegion[];
   aiBoundaries?: AIBoundaryCandidate[];
   aiChanges?: AIHistoricalChange[];
+  hideCoordinateBar?: boolean;
+  hideLayerHud?: boolean;
+  onCoordinatesChange?: (lat: number, lng: number) => void;
 }
 
 function CoordinatesTracker({ onMove, onClick }: { onMove: (lat: number, lng: number) => void; onClick?: (lat: number, lng: number) => void }) {
@@ -85,11 +88,19 @@ export const GisMap: React.FC<GisMapProps> = ({
   aiClassifications: initialAiClass,
   aiBoundaries: initialAiBnd,
   aiChanges: initialAiChanges,
+  hideCoordinateBar = false,
+  hideLayerHud = false,
+  onCoordinatesChange,
 }) => {
   const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number }>({
     lat: center[0],
     lng: center[1],
   });
+
+  const handleCoordinateMove = (lat: number, lng: number) => {
+    setCurrentCoords({ lat, lng });
+    onCoordinatesChange?.(lat, lng);
+  };
 
   const [activeBaseLayer, setActiveBaseLayer] = useState<'osm' | 'satellite'>('satellite');
   
@@ -107,14 +118,14 @@ export const GisMap: React.FC<GisMapProps> = ({
     'manually-edited': true,
     'land-classification': false,
     'historical-cadastre': false,
-    // Prompt 4 AI Layers (13-18)
+    // AI Geospatial Intelligence Layers (13-18)
     'ai-land-classification': true,
     'ai-candidate-boundaries': true,
     'ai-confidence-heatmap': false,
     'historical-change-layer': true,
     'potential-encroachments': true,
     'ai-audit-history': false,
-    // Prompt 5 Cadastral & Land Record Layers (19-24)
+    // Cadastral & Land Record Intelligence Layers (19-24)
     'official-cadastral-parcels': true,
     'parcel-ownership-status': true,
     'historical-cadastral-1998': false,
@@ -263,7 +274,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         style={{ width: '100%', height: '100%', cursor: isMeasuring ? 'crosshair' : 'default' }}
       >
         <CoordinatesTracker
-          onMove={(lat, lng) => setCurrentCoords({ lat, lng })}
+          onMove={handleCoordinateMove}
           onClick={handleMapClick}
         />
 
@@ -443,7 +454,7 @@ export const GisMap: React.FC<GisMapProps> = ({
             );
           })}
 
-        {/* 13. Prompt 4 AI Land Classification Segmentation Polygons */}
+        {/* 13. AI Land Classification Segmentation Polygons */}
         {layerVisibility['ai-land-classification'] &&
           aiClassifications.map((region, idx) => {
             const positions = extractLeafletCoords(region.geometry);
@@ -484,7 +495,7 @@ export const GisMap: React.FC<GisMapProps> = ({
             );
           })}
 
-        {/* 14. Prompt 4 AI Candidate Boundaries */}
+        {/* 14. AI Candidate Boundaries */}
         {layerVisibility['ai-candidate-boundaries'] &&
           aiBoundaries.map((bnd) => {
             const positions = extractLeafletCoords(bnd.geometry);
@@ -529,7 +540,7 @@ export const GisMap: React.FC<GisMapProps> = ({
             );
           })}
 
-        {/* 16 & 17. Prompt 4 Historical Change & Potential Encroachment Layer */}
+        {/* 16 & 17. Historical Change & Potential Encroachment Layer */}
         {layerVisibility['historical-change-layer'] &&
           aiChanges.map((chg) => {
             const positions = extractLeafletCoords(chg.geometry);
@@ -627,7 +638,7 @@ export const GisMap: React.FC<GisMapProps> = ({
             );
           })}
 
-        {/* 19–24. Prompt 5 Cadastral & Land Record Intelligence Layers */}
+        {/* 19–24. Cadastral & Land Record Intelligence Layers */}
         {layerVisibility['official-cadastral-parcels'] &&
           landParcels.map((lp) => {
             const positions = extractLeafletCoords(lp.cadastral_geometry);
@@ -735,7 +746,7 @@ export const GisMap: React.FC<GisMapProps> = ({
             );
           })}
 
-        {/* 22. Drone Measured Geometry (Prompt 3 Fusion) */}
+        {/* 22. Drone Measured Geometry (Sensor Fusion) */}
         {layerVisibility['drone-measured-parcels'] &&
           landParcels
             .filter((lp) => lp.current_geometry)
@@ -851,7 +862,7 @@ export const GisMap: React.FC<GisMapProps> = ({
       </MapContainer>
 
       {/* Top Right: 24-Layer Control HUD */}
-      {!isHudOpen ? (
+      {!hideLayerHud && (!isHudOpen ? (
         <button
           onClick={() => setIsHudOpen(true)}
           style={{
@@ -1014,25 +1025,25 @@ export const GisMap: React.FC<GisMapProps> = ({
           <span style={{ color: '#34d399' }}>2. Photo Shots</span>
         </label>
       </div>
-      )}
+      ))}
 
 
-      {/* Top Left: GIS Tool HUD */}
+      {/* Top Left: GIS Tool HUD (Clean Floating Pill below Avionics) */}
       <div
         style={{
           position: 'absolute',
-          top: '1rem',
-          left: '1rem',
+          top: '3.25rem',
+          left: '0.75rem',
           zIndex: 1000,
-          backgroundColor: 'rgba(17, 26, 36, 0.94)',
-          backdropFilter: 'blur(8px)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 'var(--radius-md)',
-          padding: '0.5rem 0.75rem',
+          backgroundColor: 'rgba(15, 23, 42, 0.85)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: '9999px',
+          padding: '0.25rem 0.6rem',
           display: 'flex',
-          gap: '0.5rem',
+          gap: '0.4rem',
           alignItems: 'center',
-          boxShadow: 'var(--shadow-md)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
         }}
       >
         <button
@@ -1058,31 +1069,33 @@ export const GisMap: React.FC<GisMapProps> = ({
       </div>
 
       {/* Bottom Coordinate Tracking & Scale-Invariance HUD */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '1rem',
-          left: '1rem',
-          zIndex: 1000,
-          backgroundColor: 'rgba(17, 26, 36, 0.94)',
-          backdropFilter: 'blur(8px)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '0.35rem 0.75rem',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.74rem',
-          color: 'var(--text-emerald)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-          boxShadow: 'var(--shadow-sm)',
-        }}
-      >
-        <span>LAT: <strong>{currentCoords.lat.toFixed(6)}° N</strong></span>
-        <span>LON: <strong>{currentCoords.lng.toFixed(6)}° E</strong></span>
-        <span style={{ color: 'var(--text-muted)' }}>CRS: EPSG:4326 (WGS84)</span>
-        <span style={{ color: '#38bdf8' }}>Scale Invariance: 1m = 1.000m Ground Truth</span>
-      </div>
+      {!hideCoordinateBar && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '1rem',
+            left: '1rem',
+            zIndex: 1000,
+            backgroundColor: 'rgba(15, 23, 42, 0.88)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '0.35rem 0.75rem',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.74rem',
+            color: '#38bdf8',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            boxShadow: 'var(--shadow-sm)',
+          }}
+        >
+          <span>LAT: <strong>{currentCoords.lat.toFixed(6)}° N</strong></span>
+          <span>LON: <strong>{currentCoords.lng.toFixed(6)}° E</strong></span>
+          <span style={{ color: 'var(--text-muted)' }}>CRS: EPSG:4326 (WGS84)</span>
+          <span style={{ color: '#94a3b8' }}>Scale Invariance: 1m = 1.000m Ground Truth</span>
+        </div>
+      )}
     </div>
   );
 };

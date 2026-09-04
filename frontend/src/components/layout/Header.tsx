@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   Radio,
-  Database,
-  Cloud,
-  RefreshCw,
   User,
   ChevronDown,
   Menu,
   CheckCircle2,
-  Trees,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { SystemHealth } from '../../types';
@@ -19,28 +17,28 @@ interface HeaderProps {
   currentTab: string;
   onNavigate?: (tab: string) => void;
   onToggleMobileMenu?: () => void;
+  isSidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentTab,
   onNavigate,
   onToggleMobileMenu,
+  isSidebarCollapsed,
+  onToggleSidebar,
 }) => {
   const [health, setHealth] = useState<SystemHealth | null>(null);
-  const [loading, setLoading] = useState(false);
   const [showRoleMenu, setShowRoleMenu] = useState(false);
 
   const { user, isAuthenticated, activeRole, switchRoleDev } = useAuth();
 
   const fetchHealth = async () => {
     try {
-      setLoading(true);
       const data = await api.getHealth();
       setHealth(data);
     } catch (e) {
       console.error('Health fetch failed', e);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -58,171 +56,150 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   const pageTitleMap: Record<string, string> = {
-    dashboard: 'Dashboard',
-    'drone-mission': 'Live Drone Mission',
+    dashboard: 'Command Center',
+    'drone-mission': 'Live Telemetry',
     surveys: 'Surveys & Missions',
     'survey-detail': 'Survey Mission Dossier',
-    'land-records': 'Authoritative Land Registry',
-    'parcel-detail': 'Cadastral Parcel Inspector',
-    'gis-workbench': 'GIS Map Workbench',
+    'land-records': 'Land Registry',
+    'land-registry': 'Land Registry',
+    'parcel-detail': 'Parcel Inspector',
+    'gis-workbench': 'GIS Workbench',
+    gis: 'GIS Workbench',
+    workbench: 'GIS Workbench',
     geospatial: 'Geospatial Fusion',
     'ai-modules': 'AI Intelligence',
+    'ai-analysis': 'AI Bund Analysis',
     reports: 'Reports & Exports',
     'report-detail': 'Survey Dossier Detail',
     ingestion: 'Drone Ingestion',
-    datasets: 'Raw Sensor Datasets',
+    datasets: 'Sensor Datasets',
     comparison: 'Historical Cadastre',
     'system-status': 'System Infrastructure',
-    'security-admin': 'Security & RBAC Admin',
+    'security-admin': 'Security Admin',
     login: 'Auth Profile',
   };
 
   const currentTitle = pageTitleMap[currentTab] || currentTab.replace('-', ' ');
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 py-2.5 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-sm">
-      {/* Left: Mobile Hamburger & Clean Breadcrumb */}
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 h-13 flex items-center justify-between px-3 sm:px-6 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 shadow-xs flex-shrink-0">
+      {/* Left: Sidebar Toggle & Clean Breadcrumb */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Mobile menu trigger */}
         <button
           onClick={onToggleMobileMenu}
-          className="p-2 rounded-lg text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700 lg:hidden flex items-center justify-center"
+          className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 lg:hidden flex items-center justify-center"
           title="Toggle Navigation Menu"
         >
           <Menu size={18} />
         </button>
 
+        {/* Desktop Sidebar Collapse button */}
+        {onToggleSidebar && (
+          <button
+            onClick={onToggleSidebar}
+            className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 hidden lg:flex items-center justify-center transition-colors"
+            title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          >
+            {isSidebarCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
+          </button>
+        )}
+
+        {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs">
-          <div className="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-            <Trees size={13} />
-          </div>
-          <span className="text-slate-400 font-semibold hidden sm:inline">BhoomiSync</span>
+          <span className="text-slate-400 font-medium hidden sm:inline">BhoomiSync</span>
           <span className="text-slate-600 hidden sm:inline">/</span>
-          <span className="text-emerald-400 font-bold tracking-tight text-sm capitalize">
+          <span className="text-slate-200 font-semibold tracking-tight text-xs sm:text-sm">
             {currentTitle}
           </span>
         </div>
       </div>
 
-      {/* Center: System Health Badges (ESP32/5G, R2 Storage, PostGIS) */}
-      <div className="hidden lg:flex items-center gap-2.5">
-        {/* Gateway */}
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800 text-xs">
-          <Radio size={13} className="text-emerald-400" />
-          <span className="text-slate-400 text-[11px]">Gateway:</span>
-          <span className="font-semibold text-slate-200 font-mono text-[11px]">
-            {health?.gateway_type === 'ESP32_PHONE' ? 'ESP32 / 5G' : 'Companion'}
-          </span>
+      {/* Center: Survey Selector */}
+      <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-950/70 border border-slate-800 text-xs">
+          <span className="text-slate-500 text-[11px] font-medium hidden sm:inline">Survey:</span>
+          <select
+            className="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer"
+            defaultValue="SUR-2026-001"
+            onChange={() => onNavigate?.('gis')}
+          >
+            <option value="SUR-2026-001" className="bg-slate-900 text-slate-200">
+              SUR-2026-001 (Haripura Pilot 125.4 ha)
+            </option>
+            <option value="SUR-2026-002" className="bg-slate-900 text-slate-200">
+              SUR-2026-002 (Kolaras North 88.2 ha)
+            </option>
+          </select>
+        </div>
+
+        {/* Honest Single Hardware Chip */}
+        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-950/70 border border-slate-800 text-[11px]">
+          <Radio size={11} className="text-sky-400" />
+          <span className="text-slate-400">{health?.gateway_type ? 'ESP32 Cam + ToF' : 'ESP32 Cam + ToF'}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="text-[10px] text-emerald-400 font-mono font-medium">[LIVE]</span>
         </div>
-
-        {/* Storage */}
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800 text-xs">
-          <Cloud size={13} className="text-cyan-400" />
-          <span className="text-slate-400 text-[11px]">Storage:</span>
-          <span className="font-semibold text-slate-200 font-mono text-[11px]">Cloudflare R2</span>
-        </div>
-
-        {/* Database */}
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800 text-xs">
-          <Database size={13} className="text-amber-400" />
-          <span className="text-slate-400 text-[11px]">Spatial DB:</span>
-          <span className="font-semibold text-slate-200 font-mono text-[11px]">PostGIS</span>
-        </div>
-
-        {/* Refresh */}
-        <button
-          onClick={fetchHealth}
-          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-          title="Refresh System Health"
-        >
-          <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
-        </button>
       </div>
 
       {/* Right: Active Role & User Profile Switcher */}
       <div className="relative">
         <button
           onClick={() => setShowRoleMenu(!showRoleMenu)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 hover:border-slate-600 transition-all text-xs font-semibold text-white shadow-sm"
+          className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 hover:border-slate-600 transition-all text-xs font-medium text-slate-200 cursor-pointer"
         >
-          <div className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 font-bold">
-            <User size={12} />
+          <div className="w-5 h-5 rounded-full bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold text-[10px]">
+            <User size={11} />
           </div>
-          <div className="text-left">
-            <div className="text-[11px] text-slate-300 font-medium leading-none">
-              {isAuthenticated ? (user?.full_name || user?.username) : 'Active Role'}
-            </div>
-            <div
-              className={`text-[10px] font-mono font-bold leading-tight mt-0.5 ${
-                activeRole === 'ADMIN'
-                  ? 'text-purple-400'
-                  : activeRole === 'SURVEYOR'
-                  ? 'text-cyan-400'
-                  : activeRole === 'GOVERNMENT_OFFICIAL'
-                  ? 'text-amber-400'
-                  : 'text-emerald-400'
-              }`}
-            >
-              {activeRole}
-            </div>
-          </div>
-          <ChevronDown size={14} className="text-slate-400 ml-1" />
+          <span className="text-[11px] font-medium text-slate-200 hidden sm:inline">
+            {isAuthenticated ? (user?.full_name || user?.username) : 'Chief Surveyor'}
+          </span>
+          <span
+            className={`text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded ${
+              activeRole === 'ADMIN'
+                ? 'bg-purple-500/15 text-purple-300'
+                : activeRole === 'SURVEYOR'
+                ? 'bg-sky-500/15 text-sky-300'
+                : activeRole === 'GOVERNMENT_OFFICIAL'
+                ? 'bg-amber-500/15 text-amber-300'
+                : 'bg-emerald-500/15 text-emerald-300'
+            }`}
+          >
+            {activeRole}
+          </span>
+          <ChevronDown size={12} className="text-slate-400" />
         </button>
 
         {/* Dropdown Menu */}
         {showRoleMenu && (
-          <div
-            className="absolute right-0 mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-50 animate-fade-in"
-            onClick={() => setShowRoleMenu(false)}
-          >
-            <div className="px-3 py-2 border-b border-slate-800 text-xs">
-              <div className="font-bold text-white">Role-Based Access Control</div>
-              <div className="text-[11px] text-slate-400">Select active permission context:</div>
+          <div className="absolute right-0 mt-2 w-64 rounded-xl bg-slate-900 border border-slate-700/80 shadow-2xl p-2 z-50 animate-fade-in text-xs">
+            <div className="px-2.5 py-1.5 border-b border-slate-800 mb-1">
+              <div className="font-semibold text-slate-200">Switch Operational Role</div>
+              <div className="text-[11px] text-slate-400">RBAC simulation mode</div>
             </div>
 
-            <div className="py-1 flex flex-col gap-1">
-              {roles.map((r) => {
-                const isSelected = activeRole === r.role;
-                return (
-                  <button
-                    key={r.role}
-                    onClick={() => {
-                      switchRoleDev(r.role);
-                      setShowRoleMenu(false);
-                    }}
-                    className={`w-full text-left p-2.5 rounded-lg text-xs transition-colors flex items-start justify-between ${
-                      isSelected
-                        ? 'bg-emerald-500/15 border border-emerald-500/30 text-white'
-                        : 'hover:bg-slate-800 text-slate-300'
-                    }`}
-                  >
-                    <div>
-                      <div className="font-bold flex items-center gap-1.5">
-                        <span>{r.label}</span>
-                        {isSelected && <CheckCircle2 size={12} className="text-emerald-400" />}
-                      </div>
-                      <div className="text-[10px] text-slate-400 mt-0.5 leading-snug">
-                        {r.desc}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {onNavigate && (
-              <div className="pt-2 border-t border-slate-800 mt-1">
+            <div className="space-y-1">
+              {roles.map((r) => (
                 <button
+                  key={r.role}
                   onClick={() => {
-                    onNavigate('login');
+                    switchRoleDev(r.role);
                     setShowRoleMenu(false);
                   }}
-                  className="w-full text-center py-1.5 text-xs text-emerald-400 font-semibold hover:underline"
+                  className={`w-full text-left px-2.5 py-2 rounded-lg transition-colors cursor-pointer flex items-center justify-between ${
+                    activeRole === r.role
+                      ? 'bg-sky-500/15 text-sky-300 font-semibold'
+                      : 'text-slate-300 hover:bg-slate-800'
+                  }`}
                 >
-                  Manage Authentication Credentials &rarr;
+                  <div>
+                    <div className="leading-tight">{r.label}</div>
+                    <div className="text-[10px] text-slate-400 mt-0.5 leading-snug">{r.desc}</div>
+                  </div>
+                  {activeRole === r.role && <CheckCircle2 size={13} className="text-sky-400 flex-shrink-0" />}
                 </button>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         )}
       </div>

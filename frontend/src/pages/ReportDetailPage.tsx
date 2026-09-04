@@ -253,11 +253,11 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
         </div>
       </div>
 
-      {/* 3-Column Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr 320px', gap: '20px', alignItems: 'start' }}>
+      {/* Responsive 3-Column Dossier Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* ================= LEFT COLUMN: METADATA & WORKFLOW ================= */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="lg:col-span-3 flex flex-col gap-4">
           
           {/* Metadata Card */}
           <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '10px', padding: '16px' }}>
@@ -351,7 +351,7 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
         </div>
 
         {/* ================= CENTER COLUMN: TABBED DOSSIER PREVIEW ================= */}
-        <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '10px', overflow: 'hidden' }}>
+        <div className="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
           
           {/* Tabs Navigation */}
           <div style={{ display: 'flex', background: '#0f172a', borderBottom: '1px solid #334155', overflowX: 'auto' }}>
@@ -728,7 +728,7 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
         </div>
 
         {/* ================= RIGHT COLUMN: QUALITY VALIDATION & EXPORT VAULT ================= */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="lg:col-span-3 flex flex-col gap-4">
           
           {/* SHA-256 Checksum Anchor */}
           <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '10px', padding: '16px' }}>
@@ -770,7 +770,7 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
                 <span>✅</span> Closed Ring Polygon Topology (4 vertices)
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399' }}>
-                <span>✅</span> RTK GNSS Fixed Carrier Phase (1.4 cm)
+                <span>✅</span> High-Resolution Photogrammetry (GSD 2.5 cm/px)
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399' }}>
                 <span>✅</span> Coordinate System EPSG:4326 / UTM 43N

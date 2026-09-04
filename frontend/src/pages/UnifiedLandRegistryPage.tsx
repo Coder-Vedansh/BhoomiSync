@@ -7,7 +7,6 @@ import {
   AlertTriangle,
   UploadCloud,
   Map,
-  X,
 } from 'lucide-react';
 import { api } from '../services/api';
 import { LandParcelDTO } from '../types';
@@ -24,6 +23,7 @@ import {
   SearchInput,
   Select,
   Modal,
+  Drawer,
 } from '../components/ui';
 
 interface UnifiedLandRegistryPageProps {
@@ -357,87 +357,15 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
       </Card>
 
       {/* 5. Side Parcel Details & Comparison Drawer */}
-      {drawerOpen && selectedParcel && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-xl bg-slate-900 h-full overflow-y-auto border-l border-slate-800 shadow-2xl p-6 space-y-6 animate-slide-in">
-            {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-extrabold text-white font-mono">
-                    Khasra #{selectedParcel.survey_number}
-                  </h3>
-                  <Badge variant="emerald" size="sm">
-                    {selectedParcel.verification_status || 'VERIFIED'}
-                  </Badge>
-                </div>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Parcel ID: <span className="font-mono text-slate-300">{selectedParcel.parcel_id}</span> • {selectedParcel.village || 'Haripura'}
-                </p>
-              </div>
-
-              <button
-                onClick={() => setDrawerOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white bg-slate-800"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Owner Details Card */}
-            <Card title="Authoritative Title Holders" subtitle="Revenue Khatoni Record">
-              <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
-                <div className="text-xs font-semibold text-white">
-                  {selectedParcel.primary_owner_name || selectedParcel.owners?.[0]?.name || (activeRole === 'PUBLIC' ? 'R*** C***' : 'Ram Chandra s/o Mohan Lal')}
-                </div>
-                <div className="text-[11px] text-slate-400 flex justify-between">
-                  <span>Tenure Type: Khatedar (Owner)</span>
-                  <span>Share: {selectedParcel.owners?.[0]?.ownership_percentage ? `${selectedParcel.owners[0].ownership_percentage}%` : '100%'}</span>
-                </div>
-              </div>
-            </Card>
-
-            {/* 4-Way Area Comparison Matrix */}
-            <Card title="4-Way Area Comparison Matrix" subtitle="Authoritative vs Surveyed Measurements">
-              <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
-                <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block uppercase">1. Official Record</span>
-                  <span className="font-extrabold text-white text-sm">
-                    {selectedParcel.official_area_hectares ? `${selectedParcel.official_area_hectares} ha` : '1.250 ha (12,500 m²)'}
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block uppercase">2. Historical (1975)</span>
-                  <span className="font-extrabold text-slate-300 text-sm">
-                    {selectedParcel.historical_area_m2 ? `${(selectedParcel.historical_area_m2 / 10000).toFixed(3)} ha` : '1.250 ha (12,500 m²)'}
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-950/80 border border-cyan-500/30 bg-cyan-500/5">
-                  <span className="text-[10px] text-cyan-400 block uppercase">3. Drone 2D Planar</span>
-                  <span className="font-extrabold text-cyan-300 text-sm">
-                    {selectedParcel.drone_measured_area_m2 ? `${(selectedParcel.drone_measured_area_m2 / 10000).toFixed(3)} ha` : '1.245 ha (12,450 m²)'}
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-950/80 border border-emerald-500/30 bg-emerald-500/5">
-                  <span className="text-[10px] text-emerald-400 block uppercase">4. 3D Geodesic Area</span>
-                  <span className="font-extrabold text-emerald-300 text-sm">1.267 ha (12,674 m²)</span>
-                </div>
-              </div>
-
-              <div className="mt-3 p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px] space-y-1">
-                <div className="flex justify-between font-bold text-emerald-400">
-                  <span>Net Discrepancy:</span>
-                  <span>-50 m² (-0.40%) — Within Permissible Margin (±1.0%)</span>
-                </div>
-                <div className="flex justify-between text-slate-400">
-                  <span>Encroachment Status:</span>
-                  <span className="text-white font-semibold">Clean (No Boundary Overlaps)</span>
-                </div>
-              </div>
-            </Card>
-
-            {/* Actions */}
-            <div className="flex items-center gap-3 pt-2">
+      {selectedParcel && (
+        <Drawer
+          isOpen={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          title={`Khasra #${selectedParcel.survey_number}`}
+          subtitle={`Parcel ID: ${selectedParcel.parcel_id} • ${selectedParcel.village || 'Haripura'}, ${selectedParcel.tehsil || 'Girwa'}`}
+          width="xl"
+          footer={
+            <div className="flex items-center gap-3 w-full">
               <Button
                 variant="primary"
                 className="flex-1"
@@ -446,7 +374,6 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
               >
                 Verify &amp; Anchor Boundary
               </Button>
-
               <Button
                 variant="outline"
                 className="flex-1"
@@ -459,8 +386,78 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
                 Open in GIS Map
               </Button>
             </div>
-          </div>
-        </div>
+          }
+        >
+          {/* Owner Details Card */}
+          <Card title="Authoritative Title Holders" subtitle="Revenue Khatoni Record">
+            <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
+              <div className="text-xs font-semibold text-white">
+                {selectedParcel.primary_owner_name || selectedParcel.owners?.[0]?.name || (activeRole === 'PUBLIC' ? 'R*** C***' : 'Ram Chandra s/o Mohan Lal')}
+              </div>
+              <div className="text-[11px] text-slate-400 flex justify-between">
+                <span>Tenure Type: Khatedar (Owner)</span>
+                <span>Share: {selectedParcel.owners?.[0]?.ownership_percentage ? `${selectedParcel.owners[0].ownership_percentage}%` : '100%'}</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* 4-Way Area Comparison Matrix */}
+          <Card title="4-Way Area Comparison Matrix" subtitle="Authoritative vs Surveyed Measurements">
+            <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
+              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
+                <span className="text-[10px] text-slate-400 block uppercase">1. Official Record</span>
+                <span className="font-extrabold text-white text-sm">
+                  {selectedParcel.official_area_hectares ? `${selectedParcel.official_area_hectares} ha` : '1.250 ha (12,500 m²)'}
+                </span>
+              </div>
+              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
+                <span className="text-[10px] text-slate-400 block uppercase">2. Historical (1975)</span>
+                <span className="font-extrabold text-slate-300 text-sm">
+                  {selectedParcel.historical_area_m2 ? `${(selectedParcel.historical_area_m2 / 10000).toFixed(3)} ha` : '1.250 ha (12,500 m²)'}
+                </span>
+              </div>
+              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-cyan-500/30 bg-cyan-500/5">
+                <span className="text-[10px] text-cyan-400 block uppercase">3. Drone 2D Planar</span>
+                <span className="font-extrabold text-cyan-300 text-sm">
+                  {selectedParcel.drone_measured_area_m2 ? `${(selectedParcel.drone_measured_area_m2 / 10000).toFixed(3)} ha` : '1.245 ha (12,450 m²)'}
+                </span>
+              </div>
+              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-emerald-500/30 bg-emerald-500/5">
+                <span className="text-[10px] text-emerald-400 block uppercase">4. 3D Geodesic Area</span>
+                <span className="font-extrabold text-emerald-300 text-sm">1.267 ha (12,674 m²)</span>
+              </div>
+            </div>
+
+            <div className="mt-3 p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px] space-y-1">
+              <div className="flex justify-between font-bold text-emerald-400">
+                <span>Net Discrepancy:</span>
+                <span>-50 m² (-0.40%) — Within Permissible Margin (±1.0%)</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Encroachment Status:</span>
+                <span className="text-white font-semibold">Clean (No Boundary Overlaps)</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Boundary Alignment Metrics */}
+          <Card title="Boundary Quality Index" subtitle="Geometric IoU & Centroid Drift">
+            <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Intersection over Union (IoU):</span>
+                <span className="font-mono font-bold text-emerald-400">96.4% Match</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Centroid Spatial Drift:</span>
+                <span className="font-mono text-slate-200">0.8 meters</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Land Classification:</span>
+                <Badge variant="cyan" size="sm">Agricultural (Rabi Crop)</Badge>
+              </div>
+            </div>
+          </Card>
+        </Drawer>
       )}
 
       {/* 6. Batch Record Import Modal */}

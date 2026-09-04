@@ -51,7 +51,7 @@ def override_get_db():
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_db():
-    import app.models  # noqa
+    import app.models as _models  # noqa
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
     seed_mock_data(db)

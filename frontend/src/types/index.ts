@@ -541,7 +541,7 @@ export interface AISurveySummary {
 }
 
 // =============================================================================
-// PROMPT 5: Land Records, Ownership & Cadastral Intelligence Types
+// Land Records, Ownership & Cadastral Intelligence Types
 // =============================================================================
 
 export type UserRole = 'PUBLIC' | 'SURVEYOR' | 'ADMIN';
