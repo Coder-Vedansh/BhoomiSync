@@ -77,7 +77,7 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
   const handleApprove = async () => {
     setActionLoading('approve');
     try {
-      await reportApi.approveReport(reportId, approverName, 'Survey boundaries validated against RTK GCPs.');
+      await reportApi.approveReport(reportId, approverName, 'Survey boundaries validated against surveyed GCPs and ToF telemetry.');
       setShowApproveModal(false);
       await fetchReport();
     } catch (err: any) {
@@ -359,7 +359,7 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
               { id: 'executive', label: '📊 Summary' },
               { id: 'boundary', label: '🗺️ 2D Cadastral Map' },
               { id: 'classification', label: '🌾 AI Land-Use' },
-              { id: 'sensor', label: '🛰️ Drone & RTK' },
+              { id: 'sensor', label: '🛰️ Drone & Telemetry' },
               { id: 'historical', label: '⏳ Historical Evolution' },
               { id: 'disclaimer', label: '⚖️ Legal Notice' },
             ].map((t) => (
@@ -613,11 +613,11 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
               </div>
             )}
 
-            {/* TAB 4: SENSOR & RTK TELEMETRY */}
+            {/* TAB 4: SENSOR TELEMETRY */}
             {activeTab === 'sensor' && (
               <div>
                 <h3 style={{ margin: '0 0 16px', fontSize: '1.15rem', color: '#f8fafc' }}>
-                  Sensor Telemetry &amp; RTK Precision Calibration
+                  Sensor Telemetry &amp; Precision Calibration
                 </h3>
                 <div style={{ background: '#0f172a', borderRadius: '8px', border: '1px solid #334155', overflow: 'hidden' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
@@ -625,37 +625,37 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
                       <tr style={{ borderBottom: '1px solid #334155' }}>
                         <td style={{ padding: '10px 14px', color: '#94a3b8' }}>Aerial Drone Platform</td>
                         <td style={{ padding: '10px 14px', fontWeight: 600, color: '#f8fafc' }}>
-                          {sensorData.drone_model || 'DJI Matrice 350 RTK (Survey Grade Quadcopter)'}
+                          {sensorData.drone_model || 'BhoomiSync ESP32-S3 IoT Payload'}
                         </td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid #334155' }}>
                         <td style={{ padding: '10px 14px', color: '#94a3b8' }}>Photogrammetry Camera Sensor</td>
                         <td style={{ padding: '10px 14px', fontWeight: 600, color: '#38bdf8' }}>
-                          {sensorData.camera_sensor || 'Sony ILX-LR1 61MP Full-Frame RGB (35mm f/2.8 lens)'}
+                          {sensorData.camera_sensor || 'ESP32-CAM OV2640 / True-Scale Aerial RGB'}
                         </td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid #334155' }}>
-                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>LiDAR Sensor Payload</td>
+                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>Elevation Sensor Payload</td>
                         <td style={{ padding: '10px 14px', fontWeight: 600, color: '#a78bfa' }}>
-                          {sensorData.lidar_sensor || 'Hesai Pandar40P Aerial LiDAR (320,000 pts/sec)'}
+                          {sensorData.lidar_sensor || 'Time-of-Flight (ToF) VL53L0X Laser Rangefinder (2.0 cm Valid)'}
                         </td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid #334155' }}>
-                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>RTK GNSS Fix Mode</td>
-                        <td style={{ padding: '10px 14px', fontWeight: 600, color: '#34d399' }}>
-                          FIXED (Carrier Phase Dual-Frequency L1/L2)
+                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>GNSS / RTK Receiver</td>
+                        <td style={{ padding: '10px 14px', fontWeight: 600, color: '#94a3b8' }}>
+                          NOT INSTALLED <span style={{ fontSize: '0.75rem', color: '#64748b' }}>(Phase 2 Pending · GCP Controlled)</span>
                         </td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid #334155' }}>
-                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>Horizontal Accuracy (1σ)</td>
+                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>Relative Elevation Accuracy</td>
                         <td style={{ padding: '10px 14px', fontWeight: 600, color: '#34d399' }}>
-                          ± 1.4 cm (Geodetic Standard)
+                          ± 2.0 cm (ToF Calibrated)
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>Vertical Accuracy (1σ)</td>
-                        <td style={{ padding: '10px 14px', fontWeight: 600, color: '#34d399' }}>
-                          ± 2.1 cm
+                        <td style={{ padding: '10px 14px', color: '#94a3b8' }}>Flight Altitude Ceiling</td>
+                        <td style={{ padding: '10px 14px', fontWeight: 600, color: '#38bdf8' }}>
+                          10.0 m <span style={{ fontSize: '0.75rem', color: '#64748b' }}>[SIMULATED CEILING]</span>
                         </td>
                       </tr>
                     </tbody>
@@ -675,7 +675,7 @@ export const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, on
                     { year: '1998', source: 'Manual Gunter Chain & Compass Survey', area: '12,400 m²', status: 'Historical Baseline' },
                     { year: '2015', source: 'Total Station Theodolite Revenue Settlement', area: '12,456 m²', status: 'Settlement Record' },
                     { year: '2024', source: 'SVAMITVA Scheme Drone Pilot Survey', area: '12,478 m²', status: 'Drone Pilot' },
-                    { year: '2026', source: 'BhoomiSync RTK-LiDAR Resurvey Campaign', area: '12,481 m²', status: 'Active Candidate' },
+                    { year: '2026', source: 'BhoomiSync High-Resolution Drone Resurvey Campaign', area: '12,481 m²', status: 'Active Candidate' },
                   ].map((v, i) => (
                     <div key={i} style={{ background: '#0f172a', padding: '14px', borderRadius: '8px', border: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>

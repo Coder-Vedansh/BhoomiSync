@@ -130,7 +130,7 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
   const totalDisputed = parcels.filter((p) => p.verification_status === 'DISPUTED' || (p.area_difference_percentage && Math.abs(p.area_difference_percentage) > 1.0)).length;
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* 1. Page Header */}
       <PageHeader
         title="Authoritative Cadastral Land Registry"

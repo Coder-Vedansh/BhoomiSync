@@ -248,7 +248,7 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
                 ℹ️ Immutability & Cryptographic Guarantee
               </div>
               <div style={{ fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.5 }}>
-                Generating this report creates a deterministic snapshot of all sensor geometries, RTK logs, and AI inferences.
+                Generating this report creates a deterministic snapshot of all sensor geometries, flight logs, and AI inferences.
                 A SHA-256 hash anchor will be stamped across all generated formats (PDF, GeoJSON, KML, CSV, JSON).
               </div>
             </div>

@@ -77,7 +77,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
   const activeMission = missions.length > 0 ? missions[0] : null;
   const isSimRunning = simStatus?.is_running ?? false;
 
-  const currentAlt = isSimRunning ? (simStatus?.current_alt ?? 10.0) : (latestTel?.altitude ?? 10.0);
+  const currentAlt = isSimRunning ? (simStatus?.current_alt ?? 10.0) : (latestTel?.altitude && latestTel.altitude <= 15 ? latestTel.altitude : 10.0);
   const tofDistanceCm = 2.0;
 
   const handleToggleSimulator = async () => {

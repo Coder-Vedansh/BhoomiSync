@@ -104,7 +104,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
   const totalExports = reports.reduce((acc, r) => acc + (r.export_count || 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* 1. Page Header */}
       <PageHeader
         title="Survey Reports & Document Exports"

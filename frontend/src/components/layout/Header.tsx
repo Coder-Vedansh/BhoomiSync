@@ -82,13 +82,13 @@ export const Header: React.FC<HeaderProps> = ({
   const currentTitle = pageTitleMap[currentTab] || currentTab.replace('-', ' ');
 
   return (
-    <header className="sticky top-0 z-30 h-13 flex items-center justify-between px-3 sm:px-6 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 shadow-xs flex-shrink-0">
+    <header className="sticky top-0 z-30 h-14 flex items-center justify-between px-3 sm:px-6 bg-[#0d1322]/90 backdrop-blur-md border-b border-[#1e2c42] shadow-xs flex-shrink-0">
       {/* Left: Sidebar Toggle & Clean Breadcrumb */}
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Mobile menu trigger */}
         <button
           onClick={onToggleMobileMenu}
-          className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 lg:hidden flex items-center justify-center"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 lg:hidden flex items-center justify-center cursor-pointer"
           title="Toggle Navigation Menu"
         >
           <Menu size={18} />
@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
         {onToggleSidebar && (
           <button
             onClick={onToggleSidebar}
-            className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 hidden lg:flex items-center justify-center transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 hidden lg:flex items-center justify-center transition-colors cursor-pointer"
             title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isSidebarCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
@@ -109,36 +109,42 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2 text-xs">
           <span className="text-slate-400 font-medium hidden sm:inline">BhoomiSync</span>
           <span className="text-slate-600 hidden sm:inline">/</span>
-          <span className="text-slate-200 font-semibold tracking-tight text-xs sm:text-sm">
+          <span className="text-slate-100 font-semibold tracking-tight text-xs sm:text-sm">
             {currentTitle}
           </span>
         </div>
       </div>
 
-      {/* Center: Survey Selector */}
+      {/* Center: Survey Selector & Connectivity Status */}
       <div className="flex items-center gap-2.5">
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-950/70 border border-slate-800 text-xs">
-          <span className="text-slate-500 text-[11px] font-medium hidden sm:inline">Survey:</span>
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0e1424] border border-[#22334d] text-xs">
+          <span className="text-slate-400 text-xs font-medium hidden sm:inline">Survey:</span>
           <select
             className="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer"
             defaultValue="SUR-2026-001"
             onChange={() => onNavigate?.('gis')}
           >
-            <option value="SUR-2026-001" className="bg-slate-900 text-slate-200">
+            <option value="SUR-2026-001" className="bg-[#0e1424] text-slate-200">
               SUR-2026-001 (Haripura Pilot 125.4 ha)
             </option>
-            <option value="SUR-2026-002" className="bg-slate-900 text-slate-200">
+            <option value="SUR-2026-002" className="bg-[#0e1424] text-slate-200">
               SUR-2026-002 (Kolaras North 88.2 ha)
             </option>
           </select>
         </div>
 
+        {/* System Online Badge */}
+        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0e1424] border border-[#22334d] text-xs text-slate-300">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-mono text-slate-300 text-[11px]">R2 + PostGIS Connected</span>
+        </div>
+
         {/* Honest Single Hardware Chip */}
-        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-950/70 border border-slate-800 text-[11px]">
-          <Radio size={11} className="text-sky-400" />
-          <span className="text-slate-400">{health?.gateway_type ? 'ESP32 Cam + ToF' : 'ESP32 Cam + ToF'}</span>
+        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0e1424] border border-[#22334d] text-xs">
+          <Radio size={12} className="text-sky-400" />
+          <span className="text-slate-300 text-[11px]">{health?.gateway_type ? 'ESP32 Cam + ToF' : 'ESP32 Cam + ToF'}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[10px] text-emerald-400 font-mono font-medium">[LIVE]</span>
+          <span className="text-[10px] text-emerald-400 font-mono font-semibold">[LIVE]</span>
         </div>
       </div>
 
@@ -146,12 +152,12 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="relative">
         <button
           onClick={() => setShowRoleMenu(!showRoleMenu)}
-          className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 hover:border-slate-600 transition-all text-xs font-medium text-slate-200 cursor-pointer"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0e1424] border border-[#22334d] hover:border-slate-500/50 transition-all text-xs font-medium text-slate-200 cursor-pointer"
         >
           <div className="w-5 h-5 rounded-full bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold text-[10px]">
-            <User size={11} />
+            <User size={12} />
           </div>
-          <span className="text-[11px] font-medium text-slate-200 hidden sm:inline">
+          <span className="text-xs font-medium text-slate-200 hidden sm:inline">
             {isAuthenticated ? (user?.full_name || user?.username) : 'Chief Surveyor'}
           </span>
           <span

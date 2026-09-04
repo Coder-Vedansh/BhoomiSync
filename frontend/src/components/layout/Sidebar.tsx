@@ -50,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ],
     },
     {
-      section: 'SURVEY & GIS',
+      section: 'SURVEY',
       items: [
         {
           id: 'gis',
@@ -61,14 +61,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         },
         {
           id: 'drone-mission',
-          label: 'Live Telemetry',
-          subtitle: 'ESP32 Camera & ToF',
+          label: 'Live Missions',
+          subtitle: 'ESP32 Camera & ToF Flight',
           icon: Radio,
         },
       ],
     },
     {
-      section: 'LAND RECORDS',
+      section: 'LAND',
       items: [
         {
           id: 'land-registry',
@@ -79,11 +79,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ],
     },
     {
-      section: 'INTELLIGENCE',
+      section: 'ANALYSIS',
       items: [
         {
           id: 'ai-analysis',
-          label: 'AI Bund Analysis',
+          label: 'AI Geospatial Analysis',
           subtitle: 'SAM ViT & LULC 8-Class',
           icon: Zap,
         },
@@ -105,9 +105,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const handleNavClick = (id: string) => {
     if (id === 'drone-mission') {
-      onSelectTab('gis');
+      onSelectTab('drone-mission');
     } else if (id === 'ai-analysis') {
-      onSelectTab('gis');
+      onSelectTab('ai-analysis');
     } else {
       onSelectTab(id);
     }
@@ -221,45 +221,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Honest Hardware Provenance (Linear calm card) */}
           {!isCollapsed && (
-            <div className="p-2.5 bg-slate-950/60 rounded-lg border border-slate-800 text-[10px] text-slate-400 space-y-1.5">
-              <div className="font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-800/80 pb-1 flex items-center justify-between">
+            <div className="p-3 bg-[#0e1424] rounded-xl border border-[#1e2c42] text-xs text-slate-400 space-y-2">
+              <div className="font-semibold uppercase tracking-wider text-slate-300 text-[10px] border-b border-[#1e2c42] pb-1.5 flex items-center justify-between">
                 <span>Hardware Sensors</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="inline-flex items-center gap-1 text-[9px] font-mono text-emerald-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  ACTIVE
+                </span>
               </div>
 
               <div className="flex items-center justify-between pt-0.5">
                 <span className="flex items-center gap-1.5 text-slate-300">
-                  <Radio size={11} className="text-sky-400" />
+                  <Radio size={12} className="text-sky-400" />
                   <span>Camera:</span>
                 </span>
-                <span className="font-mono text-emerald-400 font-medium">
-                  ESP32 (5G LIVE)
+                <span className="font-mono text-emerald-400 font-semibold text-[11px]">
+                  ESP32 [LIVE]
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-slate-300">
-                  <Activity size={11} className="text-sky-400" />
-                  <span>ToF Sensor:</span>
+                  <Activity size={12} className="text-sky-400" />
+                  <span>ToF Distance:</span>
                 </span>
-                <span className="font-mono text-emerald-400 font-medium">
-                  2.0 cm (VALID)
+                <span className="font-mono text-emerald-400 font-semibold text-[11px]">
+                  2.0 cm [LIVE]
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="text-slate-400">GNSS / RTK:</span>
-                <span className="font-mono text-[9px] text-slate-400">
-                  PHASE 2
+                <span className="font-mono text-[10px] text-slate-400 bg-[#141b2e] px-1.5 py-0.5 rounded border border-[#1e2c42]">
+                  NOT AVAILABLE
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-slate-300">
-                  <Cloud size={11} className="text-purple-400" />
-                  <span>R2 Store:</span>
+                  <Cloud size={12} className="text-purple-400" />
+                  <span>R2 Cloud:</span>
                 </span>
-                <span className="font-mono text-purple-300 font-medium">
+                <span className="font-mono text-purple-300 font-medium text-[11px]">
                   CONNECTED
                 </span>
               </div>
