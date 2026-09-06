@@ -947,11 +947,19 @@ def _seed_land_records_for_survey(db: Session, survey: Survey) -> None:
             continue
 
         # Create Owner
+        from app.models.land_records.models import (
+            LandStatus as LRLandStatus,
+            RecordStatus as LRRecordStatus,
+            VerificationStatus as LRVerificationStatus,
+            MatchStatus as LRMatchStatus,
+            OwnershipType as LROwnershipType,
+        )
+
         owner_name = p_data.get("owner_name", "Registered Khatedar")
         owner_ref = f"OWN-HR-{idx:03d}"
-        o_type = OwnershipType.INDIVIDUAL
+        o_type = LROwnershipType.INDIVIDUAL
         try:
-            o_type = OwnershipType[p_data.get("owner_type", "INDIVIDUAL")]
+            o_type = LROwnershipType[p_data.get("owner_type", "INDIVIDUAL")]
         except Exception:
             pass
 
@@ -969,8 +977,8 @@ def _seed_land_records_for_survey(db: Session, survey: Survey) -> None:
         db.flush()
 
         # Create LandParcel
-        v_stat = VerificationStatus.SURVEYOR_VERIFIED if p_data.get("verified_area_m2") else VerificationStatus.PENDING
-        m_stat = MatchStatus[p_data.get("match_status", "MATCHED")] if p_data.get("match_status") in MatchStatus.__members__ else MatchStatus.MATCHED
+        v_stat = LRVerificationStatus.SURVEYOR_VERIFIED if p_data.get("verified_area_m2") else LRVerificationStatus.PENDING
+        m_stat = LRMatchStatus[p_data.get("match_status", "MATCHED")] if p_data.get("match_status") in LRMatchStatus.__members__ else LRMatchStatus.MATCHED
 
         parcel = LandParcel(
             parcel_id=p_id,
@@ -991,12 +999,12 @@ def _seed_land_records_for_survey(db: Session, survey: Survey) -> None:
             current_geometry=p_data.get("current_geometry"),
             verified_geometry=p_data.get("verified_geometry"),
             geometry_source="REVENUE_CADASTRAL_MAP",
-            land_status=LandStatus.ACTIVE,
+            land_status=LRLandStatus.ACTIVE,
             land_use=p_data["land_use"],
             ai_detected_land_use=p_data.get("ai_detected_land_use"),
             classification_confidence=p_data.get("classification_confidence", 0.92),
             ownership_status=p_data.get("ownership_status", "CLEAR_TITLED"),
-            record_status=RecordStatus.OFFICIAL,
+            record_status=LRRecordStatus.OFFICIAL,
             verification_status=v_stat,
             match_status=m_stat,
             match_confidence=p_data.get("match_confidence", 0.95),

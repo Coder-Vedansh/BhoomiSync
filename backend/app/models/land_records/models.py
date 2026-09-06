@@ -106,7 +106,7 @@ class LandParcel(Base):
     verified_geometry = Column(JSON, nullable=True)       # Surveyor certified boundary
     geometry_source = Column(String(64), default="REVENUE_CADASTRAL_MAP")
     
-    land_status = Column(Enum(LandStatus), default=LandStatus.ACTIVE, nullable=False)
+    land_status = Column(Enum(LandStatus, native_enum=False), default=LandStatus.ACTIVE, nullable=False)
     land_use = Column(String(64), default="AGRICULTURAL")
     ai_detected_land_use = Column(String(64), nullable=True)
     classification_confidence = Column(Float, default=0.92)
@@ -116,10 +116,10 @@ class LandParcel(Base):
     historical_area_m2 = Column(Float, nullable=True)
     
     ownership_status = Column(String(64), default="CLEAR_TITLED")
-    record_status = Column(Enum(RecordStatus), default=RecordStatus.OFFICIAL, nullable=False)
-    verification_status = Column(Enum(VerificationStatus), default=VerificationStatus.PENDING, nullable=False)
+    record_status = Column(Enum(RecordStatus, native_enum=False), default=RecordStatus.OFFICIAL, nullable=False)
+    verification_status = Column(Enum(VerificationStatus, native_enum=False), default=VerificationStatus.PENDING, nullable=False)
     
-    match_status = Column(Enum(MatchStatus), default=MatchStatus.MATCHED, nullable=False)
+    match_status = Column(Enum(MatchStatus, native_enum=False), default=MatchStatus.MATCHED, nullable=False)
     match_confidence = Column(Float, default=0.95)
     
     notes = Column(Text, nullable=True)
@@ -145,7 +145,7 @@ class LandOwner(Base):
     owner_id = Column(String(64), unique=True, index=True, nullable=False)
     owner_reference = Column(String(64), unique=True, index=True, nullable=False)  # Privacy-masked reference (e.g. OWN-HR-001)
     name = Column(String(128), nullable=False)                                      # Real name (e.g. Ramesh Chandra Patel)
-    ownership_type = Column(Enum(OwnershipType), default=OwnershipType.INDIVIDUAL, nullable=False)
+    ownership_type = Column(Enum(OwnershipType, native_enum=False), default=OwnershipType.INDIVIDUAL, nullable=False)
     ownership_percentage = Column(Float, default=100.0)
     contact_reference = Column(String(64), nullable=True)                          # Privacy masked phone/email hash
     record_source = Column(String(128), default="Apna Khata Land Registry")
