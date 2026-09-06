@@ -325,7 +325,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         {layerVisibility['orthomosaic-raster'] && (
           <TileLayer
             attribution='&copy; <a href="#">BhoomiSync Photogrammetry Engine</a>'
-            url={`/api/v1/engine/tiles/${survey?.survey_id || 'SUR-2026-001'}/{z}/{x}/{y}.png`}
+            url={`${import.meta.env.VITE_API_URL || ''}/api/v1/engine/tiles/${survey?.survey_id || 'SUR-2026-001'}/{z}/{x}/{y}.png`}
             opacity={0.85}
             zIndex={10}
             maxZoom={22}

@@ -6,7 +6,7 @@ import {
   SimulatorStatus,
 } from "../types/droneMission";
 
-const API_BASE = "/api/v1/drone";
+const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api/v1/drone';
 
 export const droneMissionApi = {
   async listDrones(): Promise<Drone[]> {
@@ -144,9 +144,22 @@ export const droneMissionApi = {
     onMessage: (data: any) => void,
     onError?: (err: any) => void
   ): { close: () => void } {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const host = window.location.host;
-    const wsUrl = `${protocol}//${host}/ws/missions/${missionId}`;
+    const rawApiUrl = import.meta.env.VITE_API_URL;
+    let wsUrl: string;
+    if (rawApiUrl) {
+      try {
+        const parsed = new URL(rawApiUrl, window.location.href);
+        const protocol = parsed.protocol === "https:" ? "wss:" : "ws:";
+        wsUrl = `${protocol}//${parsed.host}/ws/missions/${missionId}`;
+      } catch {
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        wsUrl = `${protocol}//${window.location.host}/ws/missions/${missionId}`;
+      }
+    } else {
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      const host = window.location.host;
+      wsUrl = `${protocol}//${host}/ws/missions/${missionId}`;
+    }
     
     let ws: WebSocket | null = null;
     let reconnectTimeout: any = null;
