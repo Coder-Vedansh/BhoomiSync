@@ -1,5 +1,9 @@
 # BhoomiSync: Rural Agricultural Land Survey, Resurvey & Cadastral Mapping Platform
 
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Frontend%20Live-brightgreen?logo=vercel)](https://bhoomifrontend.vercel.app)
+[![Render Backend](https://img.shields.io/badge/Render-Backend%20Live-46E3B7?logo=render)](https://bhoomisync-backend.onrender.com)
+[![Cloudflare R2](https://img.shields.io/badge/Cloudflare_R2-Object_Storage-F38020?logo=cloudflare)](https://dash.cloudflare.com)
+
 > **IMPORTANT ARCHITECTURAL NOTICE:**  
 > **DRONE FLIGHT CONTROL IS STRICTLY NOT IMPLEMENTED IN THIS SYSTEM.**  
 > BhoomiSync contains no MAVLink, ArduPilot, PX4, ROS 2, autonomous waypoint navigation, or flight control systems.  
