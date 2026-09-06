@@ -46,14 +46,27 @@ def _run_auto_migrations():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown events."""
+    import logging
+    logger = logging.getLogger("bhoomisync.startup")
     # Initialize DB Schema
-    init_db()
+    try:
+        init_db()
+    except Exception as e:
+        logger.error(f"Error during init_db: {e}", exc_info=True)
+
     # Run any pending schema migrations (idempotent)
-    _run_auto_migrations()
+    try:
+        _run_auto_migrations()
+    except Exception as e:
+        logger.warning(f"Error during _run_auto_migrations: {e}")
+
     # Seed mock data
     db = SessionLocal()
     try:
         seed_mock_data(db)
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error during seed_mock_data: {e}", exc_info=True)
     finally:
         db.close()
     yield
@@ -71,10 +84,12 @@ app = FastAPI(
 )
 
 # Configure CORS Middleware
+_origins = settings.cors_origin_list
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origin_list,
-    allow_credentials=True,
+    allow_origins=_origins if "*" not in _origins else ["*"],
+    allow_credentials=True if "*" not in _origins else False,
+    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.onrender\.com|https://.*\.amplifyapp\.com|http://localhost:\d+|http://127\.0\.0\.1:\d+",
     allow_methods=["*"],
     allow_headers=["*"],
 )

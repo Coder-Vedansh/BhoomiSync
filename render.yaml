@@ -1,0 +1,62 @@
+services:
+  # ----------------------------------------------------------------------------
+  # BhoomiSync Backend Web Service (FastAPI + Geospatial + Drone + AI)
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: bhoomisync-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bhoomisync-postgres
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "120"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: CORS_ORIGINS
+        value: "*"
+      # Cloudflare R2 Storage configuration (Decoupled - configure via Dashboard)
+      - key: STORAGE_PROVIDER
+        value: R2
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET_NAME
+        value: bhoomisync-drone-data
+      - key: R2_ENDPOINT_URL
+        sync: false
+      - key: SIMULATED_PROCESSING
+        value: "true"
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+
+# ------------------------------------------------------------------------------
+# Managed PostgreSQL Database on Render
+# ------------------------------------------------------------------------------
+databases:
+  - name: bhoomisync-postgres
+    databaseName: bhoomisync
+    user: bhoomi_admin
+    plan: free
+    region: oregon
+    postgresMajorVersion: "16"
