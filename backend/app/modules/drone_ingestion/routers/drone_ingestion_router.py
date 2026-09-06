@@ -289,12 +289,30 @@ def get_mission_health(mission_id: str, db: Session = Depends(get_db)):
 
 
 # ---------------------------------------------------------
-# Cloudflare R2 Real-Time Storage Statistics
+# Cloudflare R2 Real-Time Storage Statistics & Frame Indexing
 # ---------------------------------------------------------
 @router.get("/storage/stats", response_model=R2StorageStatsResponse)
 def get_r2_storage_stats(refresh: bool = False):
     """Returns live real-time statistics directly from the Cloudflare R2 bucket."""
     return R2StorageService.get_bucket_stats(force_refresh=refresh)
+
+
+@router.get("/storage/frames")
+def list_r2_camera_frames(
+    survey_id: Optional[str] = Query(None, description="Filter by survey ID e.g. SUR-2026-001"),
+    limit: int = Query(100, ge=1, le=500, description="Max frames to return")
+):
+    """
+    Fetches raw camera frames directly from the Cloudflare R2 bucket.
+    Supports hybrid ingestion where the ESP32 pushes to R2 and BhoomiSync fetches the objects.
+    """
+    frames = R2StorageService.list_r2_frames(survey_id=survey_id, limit=limit)
+    return {
+        "success": True,
+        "bucket": "bhoomisync-drone-raw-data",
+        "total_frames": len(frames),
+        "data": frames,
+    }
 
 
 # ---------------------------------------------------------

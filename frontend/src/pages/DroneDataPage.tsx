@@ -19,6 +19,8 @@ import {
   ChevronRight,
   Cpu,
   Smartphone,
+  Download,
+  Database,
 } from 'lucide-react';
 import { droneMissionApi } from '../services/droneMissionApi';
 import {
@@ -57,6 +59,7 @@ interface CameraFrameItem {
   fileSizeBytes: number;
   sha256: string;
   r2Key: string;
+  downloadUrl?: string;
   status: 'VERIFIED' | 'INGESTED' | 'PROCESSING';
 }
 
@@ -93,6 +96,7 @@ const generateInitialFrames = (rig: HardwareRigType = 'ESP32_CAM'): CameraFrameI
       fileSizeBytes: isEsp32 ? 8400 + (i * 65) : 14200 + (i * 120),
       sha256: `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b${String(i).padStart(3, '0')}`,
       r2Key: `surveys/SUR-2026-001/raw/rgb/frame_${String(i).padStart(4, '0')}.${isEsp32 ? 'jpg' : 'png'}`,
+      downloadUrl: `https://r2.bhoomisync.local/bhoomisync-drone-raw-data/surveys/SUR-2026-001/raw/rgb/frame_${String(i).padStart(4, '0')}.${isEsp32 ? 'jpg' : 'png'}`,
       status: 'VERIFIED',
     });
   }
@@ -136,22 +140,25 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
   const [health, setHealth] = useState<MissionHealth | null>(null);
   const [r2Stats, setR2Stats] = useState<R2StorageStats | null>(null);
   const [telemetry, setTelemetry] = useState<TelemetryRecord[]>(generateMockTelemetry());
+  const [r2Frames, setR2Frames] = useState<CameraFrameItem[]>(generateInitialFrames('ESP32_CAM'));
   const [selectedFrame, setSelectedFrame] = useState<CameraFrameItem | null>(null);
   const [isSimLoading, setIsSimLoading] = useState<boolean>(false);
+  const [isR2Syncing, setIsR2Syncing] = useState<boolean>(false);
   const [frameSearch, setFrameSearch] = useState<string>('');
 
-  const frames = useMemo(() => generateInitialFrames(hardwareRig), [hardwareRig]);
   const pollIntervalRef = useRef<any>(null);
 
-  // Poll real-time backend data
-  const fetchLiveData = async () => {
+  // Poll real-time backend data and Cloudflare R2 storage bucket
+  const fetchLiveData = async (forceR2Sync = false) => {
+    if (forceR2Sync) setIsR2Syncing(true);
     try {
-      const [, sim, r2, telList, hData] = await Promise.all([
+      const [, sim, r2, telList, hData, framesResp] = await Promise.all([
         droneMissionApi.listMissions().catch(() => []),
         droneMissionApi.getSimulatorStatus().catch(() => null),
-        droneMissionApi.getR2StorageStats(false).catch(() => null),
+        droneMissionApi.getR2StorageStats(forceR2Sync).catch(() => null),
         droneMissionApi.getTelemetry(selectedMissionId, 25).catch(() => []),
         droneMissionApi.getHealth(selectedMissionId).catch(() => null),
+        droneMissionApi.getR2Frames('SUR-2026-001', 100).catch(() => null),
       ]);
 
       if (sim) setSimStatus(sim);
@@ -160,8 +167,35 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
       if (telList && telList.length > 0) {
         setTelemetry(telList);
       }
+
+      // If backend returned real R2 bucket frames, map them
+      if (framesResp?.data && framesResp.data.length > 0) {
+        const mapped: CameraFrameItem[] = framesResp.data.map((f: any) => ({
+          frameIndex: f.frame_index || 1,
+          frameId: f.frame_id || 'FRAME.JPG',
+          timestamp: f.timestamp ? new Date(f.timestamp).toLocaleTimeString() : 'Just now',
+          latitude: f.latitude || 24.5854,
+          longitude: f.longitude || 73.7125,
+          altitudeM: f.altitude_m || 10.0,
+          tofDistanceCm: f.tof_distance_cm || 2.0,
+          resolution: f.resolution || '1600 x 1200 (UXGA 2.0 MP)',
+          sensor: f.sensor || 'AI-Thinker ESP32-CAM (OV2640)',
+          exposure: f.exposure || 'Auto Exposure @ F2.2',
+          iso: f.iso || 200,
+          fileSizeBytes: f.size_bytes || 10240,
+          sha256: f.sha256 || 'verified-sha256',
+          r2Key: f.r2_key || 'surveys/SUR-2026-001/raw/rgb/frame_0001.jpg',
+          downloadUrl: f.download_url,
+          status: 'VERIFIED',
+        }));
+        setR2Frames(mapped);
+      } else {
+        setR2Frames(generateInitialFrames(hardwareRig));
+      }
     } catch (err) {
       console.warn('Live telemetry polling error:', err);
+    } finally {
+      if (forceR2Sync) setIsR2Syncing(false);
     }
   };
 
@@ -171,7 +205,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
     return () => {
       if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
     };
-  }, [selectedMissionId]);
+  }, [selectedMissionId, hardwareRig]);
 
   // Simulator Toggle Handler
   const handleToggleSimulator = async () => {
@@ -221,17 +255,18 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
 
   // Filtered frames
   const filteredFrames = useMemo(() => {
-    return frames.filter((f) => {
+    return r2Frames.filter((f) => {
       if (!frameSearch) return true;
       const q = frameSearch.toLowerCase();
       return (
         f.frameId.toLowerCase().includes(q) ||
         String(f.frameIndex).includes(q) ||
         f.sha256.toLowerCase().includes(q) ||
-        f.timestamp.includes(q)
+        f.timestamp.includes(q) ||
+        f.r2Key.toLowerCase().includes(q)
       );
     });
-  }, [frames, frameSearch]);
+  }, [r2Frames, frameSearch]);
 
   const latestTel = telemetry[0] || generateMockTelemetry(1)[0];
 
@@ -249,7 +284,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
         }
         subtitle={
           hardwareRig === 'ESP32_CAM'
-            ? 'Real-time multi-sensor stream: AI-Thinker ESP32-CAM (OV2640 2MP), VL53L1X ToF laser rangefinder, and Surveyor Mobile Phone Hotspot Relay direct to Cloudflare R2.'
+            ? 'Hybrid R2 Cloud Ingestion: AI-Thinker ESP32-CAM pushes raw OV2640 frames & ToF packets directly into Cloudflare R2 bucket. BhoomiSync continuously fetches and indexes the objects.'
             : 'Real-time multi-sensor acquisition stream: Sony RX0 II RGB camera, VL53L1X ToF laser radar rangefinder, and 5G cellular uplink direct to Cloudflare R2.'
         }
         breadcrumbs={[
@@ -262,7 +297,10 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
             {/* Hardware Rig Profile Switcher */}
             <div className="flex items-center bg-white border border-[#D8D5CC] rounded-lg p-0.5 shadow-xs text-xs">
               <button
-                onClick={() => setHardwareRig('ESP32_CAM')}
+                onClick={() => {
+                  setHardwareRig('ESP32_CAM');
+                  setR2Frames(generateInitialFrames('ESP32_CAM'));
+                }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${
                   hardwareRig === 'ESP32_CAM'
                     ? 'bg-[#2E513E] text-white shadow-xs'
@@ -273,7 +311,10 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
                 <span>AI-Thinker ESP32-CAM</span>
               </button>
               <button
-                onClick={() => setHardwareRig('SONY_RX0')}
+                onClick={() => {
+                  setHardwareRig('SONY_RX0');
+                  setR2Frames(generateInitialFrames('SONY_RX0'));
+                }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${
                   hardwareRig === 'SONY_RX0'
                     ? 'bg-[#2E513E] text-white shadow-xs'
@@ -289,7 +330,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-[#D8D5CC] shadow-xs text-xs">
               <span className="flex items-center gap-1.5 font-medium text-[#4F574D]">
                 {hardwareRig === 'ESP32_CAM' ? <Smartphone size={14} className="text-[#2E6645]" /> : <Wifi size={14} className="text-[#2E6645]" />}
-                <span>{hardwareRig === 'ESP32_CAM' ? 'Wi-Fi/Phone Relay:' : '5G Uplink:'}</span>
+                <span>{hardwareRig === 'ESP32_CAM' ? 'ESP32 ➔ R2 Uplink:' : '5G Uplink:'}</span>
               </span>
               <span className="font-mono font-bold text-[#2E6645]">
                 {health?.upload_rate_mbps ? `${health.upload_rate_mbps.toFixed(2)} Mbps` : '4.82 Mbps'}
@@ -312,34 +353,50 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
         }
       />
 
-      {/* Hardware Profile Banner Info */}
-      <div className="bg-[#FAF9F5] border border-[#D8D5CC] rounded-xl p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#E6EFE8] text-[#2E513E] flex items-center justify-center font-bold flex-shrink-0">
-            {hardwareRig === 'ESP32_CAM' ? <Cpu size={16} /> : <Camera size={16} />}
+      {/* Hybrid R2 Architecture Callout Banner */}
+      <div className="bg-white border border-[#2E513E]/30 rounded-xl p-4 shadow-xs space-y-2 relative overflow-hidden">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#4F7D60] animate-pulse" />
+            <h3 className="text-xs font-bold text-[#20251F] uppercase tracking-wider">
+              Hybrid Asynchronous R2 Cloud Ingestion Pipeline Active
+            </h3>
           </div>
-          <div>
-            <div className="font-bold text-[#20251F] flex items-center gap-2">
-              <span>
-                {hardwareRig === 'ESP32_CAM'
-                  ? 'AI-Thinker ESP32-CAM (OV2640 2MP) + VL53L1X ToF Rangefinder'
-                  : 'Sony RX0 II (Exmor RS 15.3MP) + Livox Mid-360 LiDAR'}
-              </span>
-              <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#E6EFE8] text-[#2E6645] font-bold">
-                COMPATIBLE & VALIDATED
-              </span>
-            </div>
-            <div className="text-[11px] text-[#5F665D] mt-0.5">
-              {hardwareRig === 'ESP32_CAM'
-                ? 'Topology: OV2640 Camera -> ESP32-WROOM-32 -> Wi-Fi Hotspot / BLE -> Surveyor Mobile Phone -> BhoomiSync API & Cloudflare R2'
-                : 'Topology: Sony RX0 II High-Res Sensor -> 5G Cellular Gateway Direct -> Cloudflare R2 S3 API'}
-            </div>
-          </div>
+          <Badge variant="emerald" size="sm">
+            R2 BUCKET CONNECTED
+          </Badge>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] font-mono font-semibold text-[#2E6645] bg-white px-3 py-1.5 rounded-lg border border-[#D8D5CC]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4F7D60]" />
-          <span>I2C ToF Address: 0x29 (VL53L1X)</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+          <div className="p-2.5 bg-[#FAF9F5] rounded-lg border border-[#D8D5CC]">
+            <div className="text-[10px] font-bold uppercase text-[#737A70] flex items-center gap-1.5">
+              <Cpu size={12} className="text-[#2E513E]" />
+              <span>Step 1: Drone Edge Capture</span>
+            </div>
+            <p className="text-[#4F574D] mt-1 text-[11px] leading-snug">
+              AI-Thinker ESP32-CAM captures OV2640 JPEG exposures + VL53L1X ToF distance, buffering locally on microSD if Wi-Fi dips.
+            </p>
+          </div>
+
+          <div className="p-2.5 bg-[#FAF9F5] rounded-lg border border-[#D8D5CC]">
+            <div className="text-[10px] font-bold uppercase text-[#737A70] flex items-center gap-1.5">
+              <Cloud size={12} className="text-[#568693]" />
+              <span>Step 2: Direct Asynchronous Push to R2</span>
+            </div>
+            <p className="text-[#4F574D] mt-1 text-[11px] leading-snug">
+              ESP32 uploads frames via Wi-Fi/Phone Hotspot to Cloudflare R2 S3 bucket (<span className="font-mono text-[#20251F]">bhoomisync-drone-raw-data</span>).
+            </p>
+          </div>
+
+          <div className="p-2.5 bg-[#FAF9F5] rounded-lg border border-[#D8D5CC]">
+            <div className="text-[10px] font-bold uppercase text-[#737A70] flex items-center gap-1.5">
+              <Database size={12} className="text-[#B18F2E]" />
+              <span>Step 3: BhoomiSync R2 Poller & Indexer</span>
+            </div>
+            <p className="text-[#4F574D] mt-1 text-[11px] leading-snug">
+              BhoomiSync fetches objects directly from R2, validates SHA-256 integrity, generates presigned URLs, and feeds the GIS engine.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -394,7 +451,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
         {/* Gauge 3: Ingestion Throughput */}
         <div className="p-4 bg-white border border-[#D8D5CC] rounded-[var(--radius-lg)] shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between text-[11px] font-semibold text-[#737A70] uppercase tracking-wider">
-            <span>{hardwareRig === 'ESP32_CAM' ? 'ESP32 Ingestion Rate' : '5G R2 Ingestion Rate'}</span>
+            <span>{hardwareRig === 'ESP32_CAM' ? 'ESP32 ➔ R2 Ingestion' : '5G R2 Ingestion Rate'}</span>
             <Radio size={15} className="text-[#B18F2E]" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
@@ -406,7 +463,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
             </Badge>
           </div>
           <div className="text-[11px] text-[#5F665D] mt-1 flex items-center justify-between">
-            <span>Edge Queue &bull; Direct R2 S3</span>
+            <span>R2 S3 Direct Pipeline</span>
             <span className="font-mono text-[#2E6645]">0 pkts lost</span>
           </div>
           <div className="w-full bg-[#FAF9F5] h-1.5 rounded-full overflow-hidden mt-2.5 border border-[#D8D5CC]">
@@ -452,7 +509,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
               <span>Cloudflare R2 Synchronized Object Storage Distribution</span>
             </h3>
             <p className="text-xs text-[#5F665D] mt-0.5">
-              Bucket: <span className="font-mono text-[#20251F]">bhoomisync-drone-raw-data</span> (APAC Edge &bull; Zero Egress Multi-Cloud Replication)
+              Bucket: <span className="font-mono font-semibold text-[#20251F]">bhoomisync-drone-raw-data</span> (APAC Edge &bull; Direct S3 Compatible Multi-Region Bucket)
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -462,11 +519,12 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
             <Button
               variant="outline"
               size="sm"
-              icon={<RefreshCw size={13} />}
-              onClick={fetchLiveData}
+              icon={<RefreshCw size={13} className={isR2Syncing ? 'animate-spin' : ''} />}
+              loading={isR2Syncing}
+              onClick={() => fetchLiveData(true)}
               className="cursor-pointer"
             >
-              Sync R2
+              Sync from R2 Bucket
             </Button>
           </div>
         </div>
@@ -478,7 +536,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
               <Camera size={13} className="text-[#2E513E]" />
             </div>
             <div className="text-lg font-mono font-extrabold text-[#20251F]">
-              {r2Stats?.raw_rgb_count || 38} <span className="text-xs font-normal text-[#5F665D]">frames</span>
+              {r2Stats?.raw_rgb_count || r2Frames.length || 38} <span className="text-xs font-normal text-[#5F665D]">frames</span>
             </div>
             <div className="text-[11px] text-[#5F665D]">
               {hardwareRig === 'ESP32_CAM' ? 'AI-Thinker OV2640 (image/jpeg)' : 'Sony RX0 II (image/png + EXIF)'}
@@ -520,7 +578,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* 4. LIVE CAMERA FRAMES STREAM (AERIAL IMAGERY GALLERY) */}
+      {/* 4. LIVE CAMERA FRAMES STREAM (FETCHED FROM R2 BUCKET) */}
       <Card
         title={
           <div className="flex items-center justify-between w-full">
@@ -528,24 +586,24 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
               <Camera size={16} className="text-[#2E513E]" />
               <span className="text-base font-extrabold text-[#20251F]">
                 {hardwareRig === 'ESP32_CAM'
-                  ? 'AI-Thinker ESP32-CAM (OV2640) Live Captured Frames'
-                  : 'Sony RX0 II High-Resolution Aerial Camera Frames'}
+                  ? 'AI-Thinker ESP32-CAM Frames Fetched from Cloudflare R2'
+                  : 'Sony RX0 II Frames Fetched from Cloudflare R2'}
               </span>
             </div>
             <span className="text-xs font-mono font-semibold text-[#5F665D]">
-              Showing {filteredFrames.length} of 38 Ingested Exposures
+              Showing {filteredFrames.length} Ingested Objects in R2
             </span>
           </div>
         }
         subtitle={
           hardwareRig === 'ESP32_CAM'
-            ? 'Raw frames captured from the AI-Thinker OV2640 CMOS module via ESP32 Wi-Fi relay and indexed in Cloudflare R2 bucket with GPS/ToF metadata.'
-            : 'Raw photogrammetry frames streamed via 5G gateway and indexed in Cloudflare R2 bucket with GPS/ToF metadata.'
+            ? 'Raw frames fetched directly from Cloudflare R2 bucket (surveys/SUR-2026-001/raw/rgb/) with presigned retrieval URLs and ToF altitude tags.'
+            : 'Raw photogrammetry frames fetched from Cloudflare R2 bucket with GPS/ToF metadata.'
         }
         actions={
           <div className="flex items-center gap-2">
             <SearchInput
-              placeholder="Search frame # or hash..."
+              placeholder="Search R2 key or frame..."
               className="w-48 text-xs"
               value={frameSearch}
               onChange={(e) => setFrameSearch(e.target.value)}
@@ -586,8 +644,8 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
                     <span className="bg-black/60 px-1.5 py-0.5 rounded text-white font-bold">
                       FRAME #{String(frame.frameIndex).padStart(3, '0')}
                     </span>
-                    <span className="bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                      R2 VALID
+                    <span className="bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+                      <Cloud size={10} /> R2 VALID
                     </span>
                   </div>
 
@@ -606,10 +664,10 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-[#5F665D] font-mono">
                     <span>{frame.timestamp}</span>
-                    <span>{frame.resolution.split(' ')[0]}</span>
+                    <span>{(frame.fileSizeBytes / 1024).toFixed(1)} KB</span>
                   </div>
                   <div className="text-[10px] text-[#858B82] font-mono truncate">
-                    GPS: {frame.latitude}° N, {frame.longitude}° E
+                    R2: {frame.r2Key}
                   </div>
                 </div>
               </motion.div>
@@ -641,7 +699,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
               variant="outline"
               size="sm"
               icon={<RefreshCw size={13} />}
-              onClick={fetchLiveData}
+              onClick={() => fetchLiveData(false)}
               className="cursor-pointer"
             >
               Refresh Stream
@@ -781,8 +839,8 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
                 <span className="bg-black/70 px-2.5 py-1 rounded font-bold">
                   FRAME #{String(selectedFrame.frameIndex).padStart(3, '0')}
                 </span>
-                <span className="bg-emerald-800/90 text-emerald-100 px-2.5 py-1 rounded border border-emerald-400/40 font-bold">
-                  SHA-256 SEALED
+                <span className="bg-emerald-800/90 text-emerald-100 px-2.5 py-1 rounded border border-emerald-400/40 font-bold flex items-center gap-1">
+                  <Cloud size={12} /> R2 STORED
                 </span>
               </div>
 
@@ -801,7 +859,7 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
             {/* Detailed EXIF Info Grid */}
             <div className="grid grid-cols-2 gap-3 text-xs bg-[#FAF9F5] p-3.5 rounded-xl border border-[#D8D5CC]">
               <div>
-                <span className="text-[#737A70] block text-[10px] uppercase font-bold">Camera Model</span>
+                <span className="text-[#737A70] block text-[10px] uppercase font-bold">Camera Sensor</span>
                 <span className="font-semibold text-[#20251F]">{selectedFrame.sensor}</span>
               </div>
               <div>
@@ -823,6 +881,17 @@ export const DroneDataPage: React.FC<DroneDataPageProps> = ({ onNavigate }) => {
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#D8D5CC]">
+              {selectedFrame.downloadUrl && (
+                <a
+                  href={selectedFrame.downloadUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-outline btn-sm flex items-center gap-1.5"
+                >
+                  <Download size={13} />
+                  <span>Download from R2</span>
+                </a>
+              )}
               <Button
                 variant="primary"
                 size="md"

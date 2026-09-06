@@ -146,6 +146,13 @@ export const droneMissionApi = {
     return res.json();
   },
 
+  async getR2Frames(surveyId?: string, limit = 100): Promise<{ success: boolean; bucket: string; total_frames: number; data: any[] }> {
+    const qs = surveyId ? `?survey_id=${encodeURIComponent(surveyId)}&limit=${limit}` : `?limit=${limit}`;
+    const res = await fetch(`${API_BASE}/storage/frames${qs}`);
+    if (!res.ok) throw new Error("Failed to fetch R2 camera frames");
+    return res.json();
+  },
+
   createWebSocket(
     missionId: string,
     onMessage: (data: any) => void,
