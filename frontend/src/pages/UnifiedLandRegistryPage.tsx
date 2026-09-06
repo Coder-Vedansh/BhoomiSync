@@ -168,7 +168,7 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
       <StatGrid columns={4}>
         <MetricCard
           label="Total Registered Parcels"
-          value={<span className="font-mono text-2xl font-extrabold">{totalParcels}</span>}
+          value={<span className="font-mono text-2xl font-extrabold text-[#20251F]">{totalParcels}</span>}
           subtitle="Khasra revenue parcels"
           icon={<ShieldCheck size={16} />}
           variant="emerald"
@@ -176,8 +176,8 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
         <MetricCard
           label="Total Revenue Area"
           value={
-            <span className="font-mono text-2xl font-extrabold text-cyan-400">
-              {totalRegisteredArea.toFixed(1)} <span className="text-sm text-slate-400 font-normal">ha</span>
+            <span className="font-mono text-2xl font-extrabold text-[#385963]">
+              {totalRegisteredArea.toFixed(1)} <span className="text-sm text-[#5F665D] font-normal">ha</span>
             </span>
           }
           subtitle="Registered land holdings"
@@ -186,14 +186,14 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
         />
         <MetricCard
           label="Surveyor Verified"
-          value={<span className="font-mono text-2xl font-extrabold text-emerald-400">{totalVerified}</span>}
+          value={<span className="font-mono text-2xl font-extrabold text-[#2E6645]">{totalVerified}</span>}
           subtitle="Legally signed &amp; certified"
           icon={<CheckCircle2 size={16} />}
           variant="emerald"
         />
         <MetricCard
           label="Discrepancy / Alerts"
-          value={<span className="font-mono text-2xl font-extrabold text-amber-400">{totalDisputed}</span>}
+          value={<span className="font-mono text-2xl font-extrabold text-[#927323]">{totalDisputed}</span>}
           subtitle="Area &gt; 1% or encroachment"
           icon={<AlertTriangle size={16} />}
           variant="amber"
@@ -212,7 +212,7 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap w-full lg:w-auto">
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 flex-shrink-0">
+            <div className="flex items-center gap-1.5 text-xs text-[#5F665D] flex-shrink-0">
               <Filter size={13} />
               <span>Filters:</span>
             </div>
@@ -265,8 +265,8 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
               header: 'Khasra #',
               accessor: (p) => (
                 <div>
-                  <span className="font-mono font-bold text-emerald-400 text-xs">#{p.survey_number}</span>
-                  <div className="text-[10px] text-slate-400 font-mono">{p.parcel_id}</div>
+                  <span className="font-mono font-bold text-[#2E513E] text-xs">#{p.survey_number}</span>
+                  <div className="text-[10px] text-[#5F665D] font-mono">{p.parcel_id}</div>
                 </div>
               ),
               width: '120px',
@@ -275,8 +275,8 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
               header: 'Village / Tehsil',
               accessor: (p) => (
                 <div>
-                  <div className="font-semibold text-white text-xs">{p.village || 'Haripura'}</div>
-                  <div className="text-[10px] text-slate-400">{p.tehsil || 'Girwa'}, {p.district || 'Udaipur'}</div>
+                  <div className="font-semibold text-[#20251F] text-xs">{p.village || 'Haripura'}</div>
+                  <div className="text-[10px] text-[#5F665D]">{p.tehsil || 'Girwa'}, {p.district || 'Udaipur'}</div>
                 </div>
               ),
               width: '140px',
@@ -285,17 +285,17 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
               header: 'Title Holder (RBAC Masked)',
               accessor: (p) => (
                 <div className="truncate max-w-xs">
-                  <div className="text-xs font-medium text-slate-200 truncate">
+                  <div className="text-xs font-medium text-[#20251F] truncate">
                     {p.primary_owner_name || p.owners?.[0]?.name || (activeRole === 'PUBLIC' ? 'R*** C***' : 'Ram Chandra s/o Mohan Lal')}
                   </div>
-                  <div className="text-[10px] text-slate-400">Share: {p.owners?.[0]?.ownership_percentage ? `${p.owners[0].ownership_percentage}%` : '100%'}</div>
+                  <div className="text-[10px] text-[#5F665D]">Share: {p.owners?.[0]?.ownership_percentage ? `${p.owners[0].ownership_percentage}%` : '100%'}</div>
                 </div>
               ),
             },
             {
               header: 'Official Area',
               accessor: (p) => (
-                <span className="font-mono text-xs">
+                <span className="font-mono text-xs text-[#20251F]">
                   {p.official_area_hectares ? `${p.official_area_hectares} ha` : '1.25 ha'}
                 </span>
               ),
@@ -304,7 +304,7 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
             {
               header: 'Surveyed Area',
               accessor: (p) => (
-                <span className="font-mono text-xs text-cyan-300 font-bold">
+                <span className="font-mono text-xs text-[#385963] font-bold">
                   {p.drone_measured_area_m2 ? `${(p.drone_measured_area_m2 / 10000).toFixed(3)} ha` : '1.245 ha'}
                 </span>
               ),
@@ -318,7 +318,7 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
                 const sign = diff > 0 ? '+' : '';
                 const pct = p.area_difference_percentage !== undefined ? `${p.area_difference_percentage > 0 ? '+' : ''}${p.area_difference_percentage.toFixed(1)}%` : '-0.4%';
                 return (
-                  <span className={`font-mono text-xs font-bold ${isHigh ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  <span className={`font-mono text-xs font-bold ${isHigh ? 'text-[#914B38]' : 'text-[#2E6645]'}`}>
                     {sign}{diff.toFixed(0)} m² ({pct})
                   </span>
                 );
@@ -392,11 +392,11 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
         >
           {/* Owner Details Card */}
           <Card title="Authoritative Title Holders" subtitle="Revenue Khatoni Record">
-            <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
-              <div className="text-xs font-semibold text-white">
+            <div className="p-3 bg-[#FAF9F5] rounded-xl border border-[#D8D5CC] space-y-2">
+              <div className="text-xs font-semibold text-[#20251F]">
                 {selectedParcel.primary_owner_name || selectedParcel.owners?.[0]?.name || (activeRole === 'PUBLIC' ? 'R*** C***' : 'Ram Chandra s/o Mohan Lal')}
               </div>
-              <div className="text-[11px] text-slate-400 flex justify-between">
+              <div className="text-[11px] text-[#5F665D] flex justify-between">
                 <span>Tenure Type: Khatedar (Owner)</span>
                 <span>Share: {selectedParcel.owners?.[0]?.ownership_percentage ? `${selectedParcel.owners[0].ownership_percentage}%` : '100%'}</span>
               </div>
@@ -406,55 +406,55 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
           {/* 4-Way Area Comparison Matrix */}
           <Card title="4-Way Area Comparison Matrix" subtitle="Authoritative vs Surveyed Measurements">
             <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
-              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
-                <span className="text-[10px] text-slate-400 block uppercase">1. Official Record</span>
-                <span className="font-extrabold text-white text-sm">
+              <div className="p-2.5 rounded-lg bg-white border border-[#D8D5CC] shadow-sm">
+                <span className="text-[10px] text-[#5F665D] block uppercase">1. Official Record</span>
+                <span className="font-extrabold text-[#20251F] text-sm">
                   {selectedParcel.official_area_hectares ? `${selectedParcel.official_area_hectares} ha` : '1.250 ha (12,500 m²)'}
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
-                <span className="text-[10px] text-slate-400 block uppercase">2. Historical (1975)</span>
-                <span className="font-extrabold text-slate-300 text-sm">
+              <div className="p-2.5 rounded-lg bg-[#FAF9F5] border border-[#D8D5CC] shadow-sm">
+                <span className="text-[10px] text-[#5F665D] block uppercase">2. Historical (1975)</span>
+                <span className="font-extrabold text-[#4F574D] text-sm">
                   {selectedParcel.historical_area_m2 ? `${(selectedParcel.historical_area_m2 / 10000).toFixed(3)} ha` : '1.250 ha (12,500 m²)'}
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-cyan-500/30 bg-cyan-500/5">
-                <span className="text-[10px] text-cyan-400 block uppercase">3. Drone 2D Planar</span>
-                <span className="font-extrabold text-cyan-300 text-sm">
+              <div className="p-2.5 rounded-lg bg-[#EFF5F7] border border-[#BDD7DE] shadow-sm">
+                <span className="text-[10px] text-[#385963] block uppercase">3. Drone 2D Planar</span>
+                <span className="font-extrabold text-[#24383E] text-sm">
                   {selectedParcel.drone_measured_area_m2 ? `${(selectedParcel.drone_measured_area_m2 / 10000).toFixed(3)} ha` : '1.245 ha (12,450 m²)'}
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-emerald-500/30 bg-emerald-500/5">
-                <span className="text-[10px] text-emerald-400 block uppercase">4. 3D Geodesic Area</span>
-                <span className="font-extrabold text-emerald-300 text-sm">1.267 ha (12,674 m²)</span>
+              <div className="p-2.5 rounded-lg bg-[#E6EFE8] border border-[#BBD4C1] shadow-sm">
+                <span className="text-[10px] text-[#2E6645] block uppercase">4. 3D Geodesic Area</span>
+                <span className="font-extrabold text-[#0E1D18] text-sm">1.267 ha (12,674 m²)</span>
               </div>
             </div>
 
-            <div className="mt-3 p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px] space-y-1">
-              <div className="flex justify-between font-bold text-emerald-400">
+            <div className="mt-3 p-2.5 rounded-lg bg-[#FAF9F5] border border-[#D8D5CC] text-[11px] space-y-1">
+              <div className="flex justify-between font-bold text-[#2E6645]">
                 <span>Net Discrepancy:</span>
                 <span>-50 m² (-0.40%) — Within Permissible Margin (±1.0%)</span>
               </div>
-              <div className="flex justify-between text-slate-400">
+              <div className="flex justify-between text-[#5F665D]">
                 <span>Encroachment Status:</span>
-                <span className="text-white font-semibold">Clean (No Boundary Overlaps)</span>
+                <span className="text-[#20251F] font-semibold">Clean (No Boundary Overlaps)</span>
               </div>
             </div>
           </Card>
 
           {/* Boundary Alignment Metrics */}
           <Card title="Boundary Quality Index" subtitle="Geometric IoU & Centroid Drift">
-            <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2 text-xs">
+            <div className="p-3 bg-[#FAF9F5] rounded-xl border border-[#D8D5CC] space-y-2 text-xs">
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Intersection over Union (IoU):</span>
-                <span className="font-mono font-bold text-emerald-400">96.4% Match</span>
+                <span className="text-[#5F665D]">Intersection over Union (IoU):</span>
+                <span className="font-mono font-bold text-[#2E6645]">96.4% Match</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Centroid Spatial Drift:</span>
-                <span className="font-mono text-slate-200">0.8 meters</span>
+                <span className="text-[#5F665D]">Centroid Spatial Drift:</span>
+                <span className="font-mono text-[#20251F]">0.8 meters</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Land Classification:</span>
+                <span className="text-[#5F665D]">Land Classification:</span>
                 <Badge variant="cyan" size="sm">Agricultural (Rabi Crop)</Badge>
               </div>
             </div>
@@ -471,14 +471,14 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
       >
         <div className="space-y-4 text-xs">
           {importStatusMessage && (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded-lg font-semibold flex items-center gap-2">
+            <div className="p-3 bg-[#E6EFE8] border border-[#BBD4C1] text-[#2E6645] rounded-lg font-semibold flex items-center gap-2">
               <CheckCircle2 size={15} />
               {importStatusMessage}
             </div>
           )}
 
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Batch / Source Name</label>
+            <label className="block text-[#20251F] font-semibold mb-1">Batch / Source Name</label>
             <input
               type="text"
               value={importSourceName}
@@ -488,7 +488,7 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
           </div>
 
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Source Format</label>
+            <label className="block text-[#20251F] font-semibold mb-1">Source Format</label>
             <Select
               value={importSourceType}
               onChange={(e) => setImportSourceType(e.target.value)}
@@ -501,7 +501,7 @@ export const UnifiedLandRegistryPage: React.FC<UnifiedLandRegistryPageProps> = (
           </div>
 
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Paste CSV / GeoJSON Content</label>
+            <label className="block text-[#20251F] font-semibold mb-1">Paste CSV / GeoJSON Content</label>
             <textarea
               rows={6}
               value={importRawContent}

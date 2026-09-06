@@ -20,8 +20,10 @@ from app.modules.drone_ingestion.schemas.ingestion_schemas import (
     MissionHealthResponse,
     SimulatorStartRequest,
     SimulatorStatusResponse,
+    R2StorageStatsResponse,
 )
 from app.modules.drone_ingestion.services.ingestion_service import IngestionService
+from app.modules.drone_ingestion.services.r2_storage_service import R2StorageService
 from app.modules.drone_ingestion.services.processing_trigger_service import ProcessingTriggerService
 from app.modules.drone_ingestion.simulator.drone_simulator import DroneSimulator
 from app.modules.drone_ingestion.workers.processing_worker import ProcessingWorker
@@ -284,6 +286,15 @@ def get_mission_health(mission_id: str, db: Session = Depends(get_db)):
         return IngestionService.get_mission_health(db, mission_id)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+# ---------------------------------------------------------
+# Cloudflare R2 Real-Time Storage Statistics
+# ---------------------------------------------------------
+@router.get("/storage/stats", response_model=R2StorageStatsResponse)
+def get_r2_storage_stats(refresh: bool = False):
+    """Returns live real-time statistics directly from the Cloudflare R2 bucket."""
+    return R2StorageService.get_bucket_stats(force_refresh=refresh)
 
 
 # ---------------------------------------------------------

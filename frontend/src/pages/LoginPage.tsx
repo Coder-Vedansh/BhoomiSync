@@ -116,44 +116,44 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F3F1EB] text-[#20251F] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Subtle technical background cadastral grid */}
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+      <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#4F7D60_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl z-10 px-4">
         {/* Branding Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <ShieldCheck size={14} /> BhoomiSync Security & RBAC Gateway
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E6EFE8] border border-[#BBD4C1] text-[#2E6645] text-xs font-semibold uppercase tracking-wider mb-4">
+            <ShieldCheck size={14} /> BhoomiSync Security &amp; RBAC Gateway
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex items-center justify-center gap-3">
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#20251F] tracking-tight flex items-center justify-center gap-3">
+            <span className="text-[#2E513E]">
               BhoomiSync
             </span>{" "}
             Identity Access
           </h1>
-          <p className="mt-2 text-sm text-slate-400 max-w-xl mx-auto">
+          <p className="mt-2 text-sm text-[#5F665D] max-w-xl mx-auto">
             Production-grade authenticated session management, cryptographic JWT tokens, and fine-grained Role-Based Access Control.
           </p>
         </div>
 
         {/* Current Active Session Status Banner */}
         {isAuthenticated && user && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between backdrop-blur-md">
+          <div className="mb-6 p-4 rounded-xl bg-[#E6EFE8] border border-[#BBD4C1] flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="text-emerald-400" size={20} />
+              <CheckCircle2 className="text-[#2E6645]" size={20} />
               <div>
-                <div className="text-sm font-semibold text-white">
-                  Active Session: <span className="text-emerald-300">{user.full_name || user.username}</span>
+                <div className="text-sm font-semibold text-[#20251F]">
+                  Active Session: <span className="text-[#2E513E]">{user.full_name || user.username}</span>
                 </div>
-                <div className="text-xs text-slate-400">
-                  Role: <span className="text-emerald-400 font-mono">{user.roles?.join(", ") || "SURVEYOR"}</span> • Email: {user.email}
+                <div className="text-xs text-[#5F665D]">
+                  Role: <span className="text-[#2E6645] font-mono font-semibold">{user.roles?.join(", ") || "SURVEYOR"}</span> • Email: {user.email}
                 </div>
               </div>
             </div>
             <button
               onClick={() => logout()}
-              className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 text-xs font-semibold transition"
+              className="px-3 py-1.5 rounded-lg bg-[#FAEAE5] hover:bg-[#F2DDD3] text-[#914B38] border border-[#E6C0B1] text-xs font-semibold transition cursor-pointer"
             >
               Sign Out
             </button>
@@ -164,11 +164,11 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
           {/* Left Column: Quick Demo Login Cards */}
           <div className="lg:col-span-7 space-y-4">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
-                <Sparkles size={16} className="text-amber-400" />
+              <h2 className="text-base font-semibold text-[#20251F] flex items-center gap-2">
+                <Sparkles size={16} className="text-[#B18F2E]" />
                 1-Click Quick Demo Sign-In
               </h2>
-              <span className="text-xs text-slate-400">Select any role to test RBAC</span>
+              <span className="text-xs text-[#5F665D]">Select any role to test RBAC</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -176,26 +176,26 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                 <div
                   key={preset.role}
                   onClick={() => !isSubmitting && handleDemoLogin(preset)}
-                  className="p-4 rounded-xl bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-600 transition-all cursor-pointer group relative overflow-hidden backdrop-blur-md shadow-lg"
+                  className="p-4 rounded-xl bg-white hover:bg-[#FAF9F5] border border-[#D8D5CC] hover:border-[#BBD4C1] transition-all cursor-pointer group relative overflow-hidden shadow-xs"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <div className="p-2 rounded-lg bg-slate-800/80 group-hover:scale-105 transition">
+                    <div className="p-2 rounded-lg bg-[#FAF8F3] group-hover:scale-105 transition">
                       {getRoleIcon(preset.icon)}
                     </div>
-                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#EFEEE8] border border-[#D8D5CC] text-[#5F665D]">
                       {preset.badge}
                     </span>
                   </div>
 
-                  <h3 className="font-semibold text-white text-sm group-hover:text-emerald-300 transition">
+                  <h3 className="font-semibold text-[#20251F] text-sm group-hover:text-[#2E513E] transition">
                     {preset.title}
                   </h3>
-                  <div className="text-xs font-mono text-slate-400 mb-1.5">{preset.email}</div>
-                  <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+                  <div className="text-xs font-mono text-[#5F665D] mb-1.5">{preset.email}</div>
+                  <p className="text-[11px] text-[#5F665D] line-clamp-2 leading-relaxed">
                     {preset.description}
                   </p>
 
-                  <div className="mt-3 pt-2 border-t border-slate-800/60 flex items-center justify-between text-xs text-emerald-400 font-medium">
+                  <div className="mt-3 pt-2 border-t border-[#E5DED0] flex items-center justify-between text-xs text-[#2E6645] font-semibold">
                     <span>Instant Login</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition" />
                   </div>
@@ -203,28 +203,28 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
               ))}
             </div>
 
-            <div className="p-3 rounded-lg bg-blue-950/30 border border-blue-800/30 text-xs text-blue-300 flex items-start gap-2.5">
-              <Info size={16} className="shrink-0 mt-0.5 text-blue-400" />
+            <div className="p-3 rounded-lg bg-[#E8F1F3] border border-[#BDD7DE] text-xs text-[#385963] flex items-start gap-2.5">
+              <Info size={16} className="shrink-0 mt-0.5 text-[#385963]" />
               <div>
-                <strong>Zero Password Typing in Demo:</strong> Clicking any preset authenticates against the server with Argon2/Bcrypt hash verification, obtains a JWT access token & rotatable refresh token, and applies strict server-side permissions.
+                <strong>Zero Password Typing in Demo:</strong> Clicking any preset authenticates against the server with Argon2/Bcrypt hash verification, obtains a JWT access token &amp; rotatable refresh token, and applies strict server-side permissions.
               </div>
             </div>
           </div>
 
           {/* Right Column: Credentials Login & Register Form */}
-          <div className="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl shadow-2xl">
+          <div className="lg:col-span-5 bg-white border border-[#D8D5CC] rounded-2xl p-6 shadow-sm">
             {/* Tabs */}
-            <div className="flex border-b border-slate-800 mb-6">
+            <div className="flex border-b border-[#D8D5CC] mb-6">
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab("login");
                   setErrorMessage(null);
                 }}
-                className={`pb-3 text-sm font-semibold flex-1 text-center transition border-b-2 ${
+                className={`pb-3 text-sm font-semibold flex-1 text-center transition border-b-2 cursor-pointer ${
                   activeTab === "login"
-                    ? "border-emerald-500 text-emerald-400"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
+                    ? "border-[#2E513E] text-[#2E513E]"
+                    : "border-transparent text-[#5F665D] hover:text-[#20251F]"
                 }`}
               >
                 Sign In
@@ -235,10 +235,10 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                   setActiveTab("register");
                   setErrorMessage(null);
                 }}
-                className={`pb-3 text-sm font-semibold flex-1 text-center transition border-b-2 ${
+                className={`pb-3 text-sm font-semibold flex-1 text-center transition border-b-2 cursor-pointer ${
                   activeTab === "register"
-                    ? "border-emerald-500 text-emerald-400"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
+                    ? "border-[#2E513E] text-[#2E513E]"
+                    : "border-transparent text-[#5F665D] hover:text-[#20251F]"
                 }`}
               >
                 Create Account
@@ -247,15 +247,15 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
 
             {/* Error & Success Feedback Alerts */}
             {errorMessage && (
-              <div className="mb-4 p-3 rounded-xl bg-red-950/60 border border-red-500/40 text-red-300 text-xs flex items-start gap-2 animate-shake">
-                <AlertTriangle size={16} className="shrink-0 mt-0.5 text-red-400" />
+              <div className="mb-4 p-3 rounded-xl bg-[#FAF2EE] border border-[#E6C0B1] text-[#914B38] text-xs flex items-start gap-2 animate-shake">
+                <AlertTriangle size={16} className="shrink-0 mt-0.5 text-[#914B38]" />
                 <div>{errorMessage}</div>
               </div>
             )}
 
             {successMessage && (
-              <div className="mb-4 p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs flex items-start gap-2">
-                <CheckCircle2 size={16} className="shrink-0 mt-0.5 text-emerald-400" />
+              <div className="mb-4 p-3 rounded-xl bg-[#E6EFE8] border border-[#BBD4C1] text-[#2E6645] text-xs flex items-start gap-2">
+                <CheckCircle2 size={16} className="shrink-0 mt-0.5 text-[#2E6645]" />
                 <div>{successMessage}</div>
               </div>
             )}
@@ -263,11 +263,11 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
             {activeTab === "login" ? (
               <form onSubmit={handleManualLogin} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-[#20251F] mb-1.5">
                     Username or Email Address
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#5F665D]">
                       <Mail size={16} />
                     </div>
                     <input
@@ -276,20 +276,20 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                       onChange={(e) => setEmailOrUser(e.target.value)}
                       placeholder="admin@bhoomisync.demo"
                       required
-                      className="w-full pl-10 pr-3 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
+                      className="w-full pl-10 pr-3 py-2.5 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] placeholder-[#92978F] focus:outline-none focus:border-[#4F7D60] focus:ring-1 focus:ring-[#4F7D60] transition"
                     />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-medium text-slate-300">
+                    <label className="block text-xs font-semibold text-[#20251F]">
                       Password
                     </label>
-                    <span className="text-[11px] text-slate-500">Max 5 attempts before lockout</span>
+                    <span className="text-[11px] text-[#737A70]">Max 5 attempts before lockout</span>
                   </div>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#5F665D]">
                       <Lock size={16} />
                     </div>
                     <input
@@ -298,12 +298,12 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
                       required
-                      className="w-full pl-10 pr-10 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
+                      className="w-full pl-10 pr-10 py-2.5 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] placeholder-[#92978F] focus:outline-none focus:border-[#4F7D60] focus:ring-1 focus:ring-[#4F7D60] transition"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#5F665D] hover:text-[#20251F] cursor-pointer"
                     >
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
@@ -313,7 +313,7 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full mt-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-sm font-semibold shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                  className="w-full mt-2 py-2.5 px-4 rounded-xl btn-forest text-sm font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <span>Authenticating...</span>
@@ -327,7 +327,7 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
             ) : (
               <form onSubmit={handleRegister} className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-[#20251F] mb-1">
                     Full Name
                   </label>
                   <input
@@ -336,13 +336,13 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                     onChange={(e) => setRegFullName(e.target.value)}
                     placeholder="e.g. Ramesh Chandra"
                     required
-                    className="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                    className="w-full px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] focus:outline-none focus:border-[#4F7D60] transition"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-[#20251F] mb-1">
                       Username
                     </label>
                     <input
@@ -351,17 +351,17 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                       onChange={(e) => setRegUsername(e.target.value)}
                       placeholder="rpatel"
                       required
-                      className="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                      className="w-full px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] focus:outline-none focus:border-[#4F7D60] transition"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-[#20251F] mb-1">
                       Role
                     </label>
                     <select
                       value={regRole}
                       onChange={(e) => setRegRole(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                      className="w-full px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] focus:outline-none focus:border-[#4F7D60] transition"
                     >
                       <option value="PUBLIC">PUBLIC / Citizen</option>
                       <option value="SURVEYOR">SURVEYOR</option>
@@ -372,7 +372,7 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-[#20251F] mb-1">
                     Email Address
                   </label>
                   <input
@@ -381,12 +381,12 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                     onChange={(e) => setRegEmail(e.target.value)}
                     placeholder="ramesh@example.com"
                     required
-                    className="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                    className="w-full px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] focus:outline-none focus:border-[#4F7D60] transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-[#20251F] mb-1">
                     Phone / Reference Number (Optional)
                   </label>
                   <input
@@ -394,12 +394,12 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                     value={regPhone}
                     onChange={(e) => setRegPhone(e.target.value)}
                     placeholder="+91 98765 43210"
-                    className="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                    className="w-full px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] focus:outline-none focus:border-[#4F7D60] transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-[#20251F] mb-1">
                     Password (Min 8 chars, Upper, Lower, Digit, Special)
                   </label>
                   <input
@@ -408,15 +408,14 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
                     onChange={(e) => setRegPassword(e.target.value)}
                     placeholder="SecurePassword@2026"
                     required
-                    className="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                    className="w-full px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] focus:outline-none focus:border-[#4F7D60] transition"
                   />
                 </div>
-
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full mt-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white text-sm font-semibold shadow-lg shadow-teal-500/20 transition flex items-center justify-center gap-2"
+                  className="w-full mt-2 py-2.5 px-4 rounded-xl btn-forest text-sm font-semibold shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <User size={16} /> Register Account
                 </button>

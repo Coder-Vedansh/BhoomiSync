@@ -7,6 +7,9 @@ import {
   CoordinatePattern,
   SignalWave,
   TopographicPattern,
+  CadastralPattern,
+  FlightPathPattern,
+  RasterGrid,
 } from '../visual';
 
 export interface CardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
@@ -15,7 +18,17 @@ export interface CardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 't
   actions?: React.ReactNode;
   footer?: React.ReactNode;
   noPadding?: boolean;
-  pattern?: 'grid' | 'contour' | 'radar' | 'pulse' | 'coordinates' | 'signal' | 'topographic';
+  pattern?:
+    | 'grid'
+    | 'contour'
+    | 'radar'
+    | 'pulse'
+    | 'coordinates'
+    | 'signal'
+    | 'topographic'
+    | 'cadastral'
+    | 'flight-path'
+    | 'raster';
   patternOpacity?: number;
   showReticles?: boolean;
   elevated?: boolean;
@@ -51,6 +64,12 @@ export const Card: React.FC<CardProps> = ({
         return <SignalWave opacity={patternOpacity} />;
       case 'topographic':
         return <TopographicPattern opacity={patternOpacity} />;
+      case 'cadastral':
+        return <CadastralPattern opacity={patternOpacity} />;
+      case 'flight-path':
+        return <FlightPathPattern opacity={patternOpacity} />;
+      case 'raster':
+        return <RasterGrid opacity={patternOpacity} />;
       default:
         return null;
     }
@@ -58,8 +77,8 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <div
-      className={`card relative overflow-hidden bg-[var(--surface-elevated)] border border-[var(--border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-level-1)] transition-all duration-200 ${
-        elevated ? 'shadow-[var(--shadow-level-2)] border-[var(--border-highlight)]' : ''
+      className={`card relative overflow-hidden bg-white border border-[#D8D5CC] rounded-[var(--radius-lg)] shadow-[0_4px_18px_rgba(44,52,43,0.07)] hover:border-[#BFCDBF] hover:bg-[#FCFCF8] hover:shadow-[0_8px_26px_rgba(44,52,43,0.10)] transition-all duration-200 ${
+        elevated ? 'shadow-[0_8px_26px_rgba(44,52,43,0.10)] border-[#C4C0B5]' : ''
       } ${className}`}
       {...props}
     >
@@ -79,17 +98,17 @@ export const Card: React.FC<CardProps> = ({
       {/* Card Content with Relative Positioning */}
       <div className="relative z-10">
         {(title || actions) && (
-          <div className="card-header flex items-center justify-between pb-3 mb-3 border-b border-[var(--border)]">
+          <div className="card-header flex items-center justify-between pb-3 mb-3 border-b border-[#D8D5CC]">
             <div>
-              {title && <h3 className="card-title text-sm font-semibold text-slate-100">{title}</h3>}
-              {subtitle && <p className="card-subtitle text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+              {title && <h3 className="card-title text-sm font-semibold text-[#20251F]">{title}</h3>}
+              {subtitle && <p className="card-subtitle text-xs text-[#5F665D] mt-0.5">{subtitle}</p>}
             </div>
             {actions && <div className="flex items-center gap-2">{actions}</div>}
           </div>
         )}
         <div className={noPadding ? '' : 'p-0'}>{children}</div>
         {footer && (
-          <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs text-slate-400">
+          <div className="mt-4 pt-3 border-t border-[#D8D5CC] flex items-center justify-between text-xs text-[#5F665D]">
             {footer}
           </div>
         )}

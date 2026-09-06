@@ -21,12 +21,12 @@ export const DroneAnimation: React.FC<DroneAnimationProps> = ({
 }) => {
   const ledColor =
     statusLed === 'live'
-      ? '#10b981' // Emerald
+      ? '#4F7D60' // Survey Forest
       : statusLed === 'sim'
-      ? '#ea580c' // Terracotta / Amber
+      ? '#AD6048' // Earth Terracotta
       : statusLed === 'alert'
-      ? '#f43f5e' // Rose
-      : '#38bdf8'; // Sky Standby
+      ? '#914B38' // Terracotta Error
+      : '#568693'; // Muted Cartographic Blue
 
   return (
     <div

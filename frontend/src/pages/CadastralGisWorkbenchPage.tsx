@@ -426,33 +426,33 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
   };
 
   return (
-    <div className="flex-1 w-full h-full relative overflow-hidden bg-slate-950 flex flex-col min-h-0">
-      {/* Floating Top-Left Cockpit Pill (Sleek Mapbox/Linear style) */}
+    <div className="flex-1 w-full h-full relative overflow-hidden bg-[#F3F1EB] flex flex-col min-h-0">
+      {/* Floating Top-Left Cockpit Pill (Designated Technical Avionics Strip) */}
       <div
         className="absolute top-3 left-3 hidden sm:flex items-center gap-2 pointer-events-auto"
         style={{ zIndex: 1100 }}
       >
-        <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-slate-800 text-xs shadow-lg">
+        <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-[#223C30]/95 backdrop-blur-md border border-[#2E513E] text-xs shadow-lg text-[#F4F5EF]">
           <div className="flex items-center gap-1.5 font-mono text-[11px]">
-            <span className="text-slate-400">ALT:</span>
-            <span className="font-semibold text-slate-100">{currentAlt.toFixed(1)}m</span>
-            <span className="text-[9px] text-slate-400 font-medium">[SIM]</span>
+            <span className="text-[#A4A89F]">ALT:</span>
+            <span className="font-semibold text-[#FAF9F5]">{currentAlt.toFixed(1)}m</span>
+            <span className="text-[9px] text-[#DFC56D] font-medium">[SIM]</span>
           </div>
-          <div className="h-3 w-px bg-slate-800" />
+          <div className="h-3 w-px bg-[#2E513E]" />
           <div className="flex items-center gap-1.5 font-mono text-[11px]">
-            <span className="text-slate-400">TOF:</span>
-            <span className="font-semibold text-emerald-400">2.0cm</span>
-            <span className="text-[9px] text-emerald-400 font-medium">[LIVE]</span>
+            <span className="text-[#A4A89F]">TOF:</span>
+            <span className="font-semibold text-[#6F9B7B]">2.0cm</span>
+            <span className="text-[9px] text-[#6F9B7B] font-medium">[LIVE]</span>
           </div>
-          <div className="h-3 w-px bg-slate-800" />
+          <div className="h-3 w-px bg-[#2E513E]" />
           <div className="flex items-center gap-1.5 font-mono text-[11px]">
-            <span className="text-slate-400">SPD:</span>
-            <span className="font-semibold text-slate-200">{currentSpeed.toFixed(1)}m/s</span>
+            <span className="text-[#A4A89F]">SPD:</span>
+            <span className="font-semibold text-[#FAF9F5]">{currentSpeed.toFixed(1)}m/s</span>
           </div>
-          <div className="h-3 w-px bg-slate-800" />
+          <div className="h-3 w-px bg-[#2E513E]" />
           <div className="flex items-center gap-1.5 font-mono text-[11px]">
-            <span className="text-slate-400">BAT:</span>
-            <span className="font-semibold text-emerald-400">{currentBattery.toFixed(0)}%</span>
+            <span className="text-[#A4A89F]">BAT:</span>
+            <span className="font-semibold text-[#6F9B7B]">{currentBattery.toFixed(0)}%</span>
           </div>
         </div>
       </div>
@@ -463,7 +463,7 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
         style={{ zIndex: 1100 }}
       >
         {alertMessage && (
-          <div className="px-3 py-1.5 rounded-full bg-slate-900/90 backdrop-blur-md border border-sky-500/30 text-sky-300 text-xs font-medium shadow-lg animate-fade-in truncate max-w-xs">
+          <div className="px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#BBD4C1] text-[#2E513E] text-xs font-medium shadow-md animate-fade-in truncate max-w-xs">
             {alertMessage}
           </div>
         )}
@@ -471,10 +471,10 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
         {/* Edit Boundary Mode Toggle */}
         <button
           onClick={() => setIsEditingMode(!isEditingMode)}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-md backdrop-blur-md transition-all cursor-pointer ${
+          className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-sm backdrop-blur-md transition-all cursor-pointer ${
             isEditingMode
-              ? 'bg-rose-500 text-white shadow-rose-500/20'
-              : 'bg-slate-900/85 border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
+              ? 'bg-[#AD6048] text-white shadow-[#AD6048]/20'
+              : 'bg-white/95 border border-[#D8D5CC] text-[#20251F] hover:bg-[#EEF2EC]'
           }`}
           title="Toggle surveyor vertex editing mode"
         >
@@ -486,10 +486,10 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
         <button
           onClick={handleTriggerAiPipeline}
           disabled={isProcessing}
-          className="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-sky-500/15 border border-sky-500/30 text-sky-300 hover:bg-sky-500/25 shadow-md backdrop-blur-md transition-all cursor-pointer"
+          className="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-white/95 border border-[#BDD7DE] text-[#385963] hover:bg-[#E8F1F3] shadow-sm backdrop-blur-md transition-all cursor-pointer"
           title="Run 11-stage AI bund boundary detection"
         >
-          <Zap size={13} className={isProcessing ? 'animate-spin' : ''} />
+          <Zap size={13} className={isProcessing ? 'animate-spin text-[#B18F2E]' : 'text-[#385963]'} />
           <span className="hidden sm:inline">{isProcessing ? 'AI Processing...' : 'Run AI & Fusion'}</span>
         </button>
 
@@ -510,20 +510,20 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                 : '1.47 ha',
             })
           }
-          className="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-[#0e1626]/90 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/15 shadow-md backdrop-blur-md transition-all cursor-pointer"
+          className="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-white/95 border border-[#BBD4C1] text-[#2E513E] hover:bg-[#E6EFE8] shadow-sm backdrop-blur-md transition-all cursor-pointer"
           title="Visualize statutory data story: Drone → Image Capture → ToF → Processing → 2D Map → Cadastral Parcel"
         >
-          <Radio size={13} className="text-emerald-400" />
+          <Radio size={13} className="text-[#2E513E]" />
           <span className="hidden sm:inline">Pipeline Story</span>
         </button>
 
         {/* Drawer Panels Toggle Button */}
         <button
           onClick={() => setDrawerOpen(!drawerOpen)}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-md backdrop-blur-md transition-all cursor-pointer ${
+          className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-sm backdrop-blur-md transition-all cursor-pointer ${
             drawerOpen
-              ? 'bg-sky-500 text-white'
-              : 'bg-slate-900/85 border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
+              ? 'bg-[#2E513E] text-white'
+              : 'bg-white/95 border border-[#D8D5CC] text-[#20251F] hover:bg-[#EEF2EC]'
           }`}
           title="Toggle Layers, AI Engine, and Inspector dock"
         >
@@ -565,36 +565,36 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
         />
       </div>
 
-      {/* Floating Bottom-Center Consolidated Status Bar (Linear / Mapbox Studio Style) */}
+      {/* Floating Bottom-Center Consolidated Status Bar (Designated Technical Avionics Strip) */}
       <div
-        className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex items-center gap-2.5 sm:gap-3.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-slate-900/90 backdrop-blur-md border border-slate-800 text-xs shadow-xl text-slate-300 max-w-[95vw] pointer-events-auto"
+        className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex items-center gap-2.5 sm:gap-3.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#223C30]/95 backdrop-blur-md border border-[#2E513E] text-xs shadow-xl text-[#F4F5EF] max-w-[95vw] pointer-events-auto"
         style={{ zIndex: 1100 }}
       >
         {/* Real-time Coordinates */}
         <div className="flex items-center gap-2 font-mono text-[11px] whitespace-nowrap">
           <span>{liveCoords.lat.toFixed(6)}° N,</span>
           <span>{liveCoords.lng.toFixed(6)}° E</span>
-          <span className="text-slate-500 hidden md:inline">EPSG:4326</span>
+          <span className="text-[#94B99D] hidden md:inline">EPSG:4326</span>
         </div>
 
-        <div className="h-3 w-px bg-slate-800" />
+        <div className="h-3 w-px bg-[#2E513E]" />
 
         {/* Live Hardware Provenance Tag */}
         <div className="flex items-center gap-1.5 text-[11px] font-mono whitespace-nowrap">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-slate-300 hidden sm:inline">ESP32 Cam</span>
-          <span className="text-emerald-400 font-semibold">[LIVE]</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#6F9B7B] animate-pulse" />
+          <span className="text-[#F4F5EF] hidden sm:inline">ESP32 Cam</span>
+          <span className="text-[#6F9B7B] font-semibold">[LIVE]</span>
         </div>
 
-        <div className="h-3 w-px bg-slate-800 hidden sm:block" />
+        <div className="h-3 w-px bg-[#2E513E] hidden sm:block" />
 
         {/* Simulator Control Pill Button */}
         <button
           onClick={handleToggleSimulator}
           className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium transition-all cursor-pointer whitespace-nowrap ${
             isSimRunning
-              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-              : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              ? 'bg-[#914B38]/40 text-[#FAEAE5] border border-[#914B38]'
+              : 'bg-[#2E513E] hover:bg-[#3C664D] text-[#F4F5EF] border border-[#4F7D60]'
           }`}
           title="Toggle synthetic flight telemetry streaming"
         >
@@ -603,7 +603,7 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
         </button>
       </div>
 
-      {/* Floating Workstation Drawer (Right Dock, Figma/Mapbox Style) */}
+      {/* Floating Workstation Drawer (Right Dock, Professional Light Cartographic Workstation) */}
       <AnimatePresence>
         {drawerOpen && (
           <motion.aside
@@ -611,11 +611,11 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute right-3 top-14 bottom-14 w-84 sm:w-96 rounded-xl bg-slate-900/95 backdrop-blur-md border border-slate-800/90 shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
+            className="absolute right-3 top-14 bottom-14 w-84 sm:w-96 rounded-xl bg-[#FAF9F5]/98 backdrop-blur-md border border-[#D8D5CC] shadow-2xl flex flex-col overflow-hidden pointer-events-auto text-[#20251F]"
             style={{ zIndex: 1200 }}
           >
           {/* Drawer Header with Tabs */}
-          <div className="p-2.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/40">
+          <div className="p-2.5 border-b border-[#D8D5CC] flex items-center justify-between bg-[#ECEAE2]">
             <Tabs
               tabs={[
                 { id: 'layers', label: 'Layers', icon: <Layers size={13} /> },
@@ -628,7 +628,7 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
             />
             <button
               onClick={() => setDrawerOpen(false)}
-              className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              className="p-1 rounded-md text-[#5F665D] hover:text-[#20251F] hover:bg-[#D8D5CC]/50 cursor-pointer"
               title="Close panel"
             >
               <X size={15} />
@@ -641,44 +641,44 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
             {drawerTab === 'layers' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
+                  <span className="font-semibold text-[#5F665D] text-[11px] uppercase tracking-wider">
                     24-Layer Geospatial Stack
                   </span>
-                  <span className="text-[10px] font-mono text-sky-400 font-medium px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">
+                  <span className="text-[10px] font-mono text-[#2E513E] font-medium px-2 py-0.5 rounded-full bg-[#E6EFE8] border border-[#BBD4C1]">
                     {totalActiveLayers} of 17 Active
                   </span>
                 </div>
 
                 <div className="space-y-2">
                   {/* Category 1: Base Maps */}
-                  <div className="rounded-lg bg-slate-950/60 border border-slate-800 overflow-hidden">
+                  <div className="rounded-lg bg-white border border-[#D8D5CC] overflow-hidden shadow-sm">
                     <button
                       onClick={() => toggleGroup('base')}
-                      className="w-full px-3 py-2 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/60 text-left transition-colors cursor-pointer"
+                      className="w-full px-3 py-2 flex items-center justify-between bg-[#FAF9F5] hover:bg-[#EEF2EC] text-left transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
-                        {collapsedGroups.base ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
-                        <span className="font-medium text-slate-200 text-xs">Base Maps</span>
+                        {collapsedGroups.base ? <ChevronRight size={13} className="text-[#5F665D]" /> : <ChevronDown size={13} className="text-[#5F665D]" />}
+                        <span className="font-medium text-[#20251F] text-xs">Base Maps</span>
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">1 layer</span>
+                      <span className="text-[10px] font-mono text-[#5F665D] bg-[#EFEEE8] px-1.5 py-0.5 rounded border border-[#D8D5CC]">1 layer</span>
                     </button>
                     {!collapsedGroups.base && (
-                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-[#D8D5CC]">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={activeBaseLayer === 'satellite'}
                             onChange={() => toggleLayer('base-satellite')}
-                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Satellite Imagery (Esri / Maxar)</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={activeBaseLayer === 'osm'}
                             onChange={() => toggleLayer('base-osm')}
-                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Street Basemap (OSM Vector)</span>
                         </label>
@@ -687,63 +687,63 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                   </div>
 
                   {/* Category 2: Survey Data */}
-                  <div className="rounded-lg bg-slate-950/60 border border-slate-800 overflow-hidden">
+                  <div className="rounded-lg bg-white border border-[#D8D5CC] overflow-hidden shadow-sm">
                     <button
                       onClick={() => toggleGroup('survey')}
-                      className="w-full px-3 py-2 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/60 text-left transition-colors cursor-pointer"
+                      className="w-full px-3 py-2 flex items-center justify-between bg-[#FAF9F5] hover:bg-[#EEF2EC] text-left transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
-                        {collapsedGroups.survey ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
-                        <span className="font-medium text-slate-200 text-xs">Survey Data</span>
+                        {collapsedGroups.survey ? <ChevronRight size={13} className="text-[#5F665D]" /> : <ChevronDown size={13} className="text-[#5F665D]" />}
+                        <span className="font-medium text-[#20251F] text-xs">Survey Data</span>
                       </div>
-                      <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
+                      <span className="text-[10px] font-mono text-[#385963] bg-[#E8F1F3] px-1.5 py-0.5 rounded border border-[#BDD7DE]">
                         {surveyActiveCount}/5 active
                       </span>
                     </button>
                     {!collapsedGroups.survey && (
-                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-[#D8D5CC]">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['orthomosaic-raster']}
                             onChange={() => toggleLayer('orthomosaic-raster')}
-                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>2D Orthomosaic (2.5cm GSD)</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['dem-elevation']}
                             onChange={() => toggleLayer('dem-elevation')}
-                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Bare-Earth DEM (50cm)</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['lidar-point-cloud']}
                             onChange={() => toggleLayer('lidar-point-cloud')}
-                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>3D LiDAR Footprint</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['flight-trajectory']}
                             onChange={() => toggleLayer('flight-trajectory')}
-                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Flight Trajectory</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['raw-camera-shots']}
                             onChange={() => toggleLayer('raw-camera-shots')}
-                            className="rounded accent-sky-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Raw Camera Positions (EXIF)</span>
                         </label>
@@ -752,45 +752,45 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                   </div>
 
                   {/* Category 3: Cadastral */}
-                  <div className="rounded-lg bg-slate-950/60 border border-slate-800 overflow-hidden">
+                  <div className="rounded-lg bg-white border border-[#D8D5CC] overflow-hidden shadow-sm">
                     <button
                       onClick={() => toggleGroup('cadastral')}
-                      className="w-full px-3 py-2 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/60 text-left transition-colors cursor-pointer"
+                      className="w-full px-3 py-2 flex items-center justify-between bg-[#FAF9F5] hover:bg-[#EEF2EC] text-left transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
-                        {collapsedGroups.cadastral ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
-                        <span className="font-medium text-slate-200 text-xs">Cadastral</span>
+                        {collapsedGroups.cadastral ? <ChevronRight size={13} className="text-[#5F665D]" /> : <ChevronDown size={13} className="text-[#5F665D]" />}
+                        <span className="font-medium text-[#20251F] text-xs">Cadastral</span>
                       </div>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                      <span className="text-[10px] font-mono text-[#2E6645] bg-[#E6EFE8] px-1.5 py-0.5 rounded border border-[#BBD4C1]">
                         {cadastralActiveCount}/3 active
                       </span>
                     </button>
                     {!collapsedGroups.cadastral && (
-                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-[#D8D5CC]">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['official-cadastral-parcels']}
                             onChange={() => toggleLayer('official-cadastral-parcels')}
-                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Authoritative Khasra Boundaries</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['detected-parcels']}
                             onChange={() => toggleLayer('detected-parcels')}
-                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Registered Field Parcels</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['historical-cadastral-1998']}
                             onChange={() => toggleLayer('historical-cadastral-1998')}
-                            className="rounded accent-amber-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#B18F2E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Historical 1975 Baseline</span>
                         </label>
@@ -799,54 +799,54 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                   </div>
 
                   {/* Category 4: AI & Analysis */}
-                  <div className="rounded-lg bg-slate-950/60 border border-slate-800 overflow-hidden">
+                  <div className="rounded-lg bg-white border border-[#D8D5CC] overflow-hidden shadow-sm">
                     <button
                       onClick={() => toggleGroup('ai')}
-                      className="w-full px-3 py-2 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/60 text-left transition-colors cursor-pointer"
+                      className="w-full px-3 py-2 flex items-center justify-between bg-[#FAF9F5] hover:bg-[#EEF2EC] text-left transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
-                        {collapsedGroups.ai ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
-                        <span className="font-medium text-slate-200 text-xs">AI &amp; Analysis</span>
+                        {collapsedGroups.ai ? <ChevronRight size={13} className="text-[#5F665D]" /> : <ChevronDown size={13} className="text-[#5F665D]" />}
+                        <span className="font-medium text-[#20251F] text-xs">AI &amp; Analysis</span>
                       </div>
-                      <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">
+                      <span className="text-[10px] font-mono text-[#385963] bg-[#E8F1F3] px-1.5 py-0.5 rounded border border-[#BDD7DE]">
                         {aiActiveCount}/4 active
                       </span>
                     </button>
                     {!collapsedGroups.ai && (
-                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-[#D8D5CC]">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['ai-land-classification']}
                             onChange={() => toggleLayer('ai-land-classification')}
-                            className="rounded accent-purple-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>LULC Land-Use (8-Class)</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['ai-candidate-boundaries']}
                             onChange={() => toggleLayer('ai-candidate-boundaries')}
-                            className="rounded accent-purple-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>AI Candidate Bund Boundaries</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['historical-change-layer']}
                             onChange={() => toggleLayer('historical-change-layer')}
-                            className="rounded accent-purple-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Historical Change Shifts</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['potential-encroachments']}
                             onChange={() => toggleLayer('potential-encroachments')}
-                            className="rounded accent-rose-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#914B38] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Encroachment Risk Alerts</span>
                         </label>
@@ -855,45 +855,45 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                   </div>
 
                   {/* Category 5: Live Operations */}
-                  <div className="rounded-lg bg-slate-950/60 border border-slate-800 overflow-hidden">
+                  <div className="rounded-lg bg-white border border-[#D8D5CC] overflow-hidden shadow-sm">
                     <button
                       onClick={() => toggleGroup('live')}
-                      className="w-full px-3 py-2 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/60 text-left transition-colors cursor-pointer"
+                      className="w-full px-3 py-2 flex items-center justify-between bg-[#FAF9F5] hover:bg-[#EEF2EC] text-left transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
-                        {collapsedGroups.live ? <ChevronRight size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
-                        <span className="font-medium text-slate-200 text-xs">Live Operations</span>
+                        {collapsedGroups.live ? <ChevronRight size={13} className="text-[#5F665D]" /> : <ChevronDown size={13} className="text-[#5F665D]" />}
+                        <span className="font-medium text-[#20251F] text-xs">Live Operations</span>
                       </div>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                      <span className="text-[10px] font-mono text-[#2E6645] bg-[#E6EFE8] px-1.5 py-0.5 rounded border border-[#BBD4C1]">
                         {liveActiveCount}/3 active
                       </span>
                     </button>
                     {!collapsedGroups.live && (
-                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-slate-800/60">
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                      <div className="p-2.5 pt-2 space-y-1.5 border-t border-[#D8D5CC]">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['live-drone-vector']}
                             onChange={() => toggleLayer('live-drone-vector')}
-                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Live Drone Vector ({currentHeading.toFixed(0)}°)</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['realtime-trajectory']}
                             onChange={() => toggleLayer('realtime-trajectory')}
-                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>Real-time Trajectory Track</span>
                         </label>
-                        <label className="flex items-center gap-2.5 cursor-pointer text-slate-300 hover:text-white transition-colors select-none py-0.5">
+                        <label className="flex items-center gap-2.5 cursor-pointer text-[#4F574D] hover:text-[#20251F] transition-colors select-none py-0.5">
                           <input
                             type="checkbox"
                             checked={!!layerVisibility['esp32-telemetry-stream']}
                             onChange={() => toggleLayer('esp32-telemetry-stream')}
-                            className="rounded accent-emerald-500 cursor-pointer w-3.5 h-3.5"
+                            className="rounded accent-[#2E513E] cursor-pointer w-3.5 h-3.5"
                           />
                           <span>ESP32-S3 Telemetry Sensor Stream</span>
                         </label>
@@ -908,7 +908,7 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
             {drawerTab === 'mission' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
+                  <span className="font-semibold text-[#5F665D] text-[11px] uppercase tracking-wider">
                     Flight Operations
                   </span>
                   <Badge variant={missionDetail?.status === 'ACTIVE' ? 'emerald' : 'cyan'} size="sm">
@@ -917,28 +917,28 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                 </div>
 
                 {/* Mission Summary Card */}
-                <div className="p-3 bg-slate-950/60 rounded-lg border border-slate-800 space-y-2 text-xs">
+                <div className="p-3 bg-white rounded-lg border border-[#D8D5CC] space-y-2 text-xs shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Mission ID:</span>
-                    <span className="font-mono text-sky-400 font-semibold">{selectedMissionId}</span>
+                    <span className="text-[#5F665D]">Mission ID:</span>
+                    <span className="font-mono text-[#2E513E] font-semibold">{selectedMissionId}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Payload:</span>
-                    <span className="text-slate-200 font-medium">BhoomiSync-ESP32S3-Drone</span>
+                    <span className="text-[#5F665D]">Payload:</span>
+                    <span className="text-[#20251F] font-medium">BhoomiSync-ESP32S3-Drone</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Sensors:</span>
-                    <span className="text-emerald-400 font-mono font-medium">Camera (128) + ToF (2.0 cm)</span>
+                    <span className="text-[#5F665D]">Sensors:</span>
+                    <span className="text-[#2E6645] font-mono font-medium">Camera (128) + ToF (2.0 cm)</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Flight Altitude:</span>
-                    <span className="font-mono text-slate-300">
-                      10.0 m <span className="text-[10px] text-slate-500 font-sans">[ESTIMATED]</span>
+                    <span className="text-[#5F665D]">Flight Altitude:</span>
+                    <span className="font-mono text-[#20251F]">
+                      10.0 m <span className="text-[10px] text-[#858B82] font-sans">[ESTIMATED]</span>
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">GNSS Hardware:</span>
-                    <span className="font-mono text-[10px] text-slate-400 font-medium">Not Installed (Phase 2)</span>
+                    <span className="text-[#5F665D]">GNSS Hardware:</span>
+                    <span className="font-mono text-[10px] text-[#858B82] font-medium">Not Installed (Phase 2)</span>
                   </div>
                 </div>
 
@@ -983,54 +983,54 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
             {/* TAB 3: AI Intelligence Modules */}
             {drawerTab === 'ai' && (
               <div className="space-y-3">
-                <div className="font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
+                <div className="font-semibold text-[#5F665D] text-[11px] uppercase tracking-wider">
                   AI Computer Vision Models
                 </div>
 
                 <div className="space-y-2">
-                  <div className="p-3 bg-slate-950/60 rounded-lg border border-slate-800 space-y-1.5">
+                  <div className="p-3 bg-white rounded-lg border border-[#D8D5CC] space-y-1.5 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-200">LULC Land Classification</span>
-                      <span className="font-mono text-[10px] text-sky-400">DEEPLABV3+</span>
+                      <span className="font-medium text-[#20251F]">LULC Land Classification</span>
+                      <span className="font-mono text-[10px] text-[#385963] bg-[#E8F1F3] px-1.5 py-0.5 rounded border border-[#BDD7DE]">DEEPLABV3+</span>
                     </div>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-[#5F665D]">
                       8-class segmentation across crops, fallow land, water bodies, and settlements.
                     </p>
                     <button
                       onClick={handleTriggerAiPipeline}
-                      className="w-full py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium cursor-pointer mt-1"
+                      className="w-full py-1 rounded bg-[#EFEEE8] hover:bg-[#EEF2EC] text-[#20251F] text-xs font-medium cursor-pointer mt-1 border border-[#D8D5CC]"
                     >
                       Run Classification
                     </button>
                   </div>
 
-                  <div className="p-3 bg-slate-950/60 rounded-lg border border-slate-800 space-y-1.5">
+                  <div className="p-3 bg-white rounded-lg border border-[#D8D5CC] space-y-1.5 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-200">Bund Boundary Extraction</span>
-                      <span className="font-mono text-[10px] text-emerald-400">SAM + RESNET</span>
+                      <span className="font-medium text-[#20251F]">Bund Boundary Extraction</span>
+                      <span className="font-mono text-[10px] text-[#2E6645] bg-[#E6EFE8] px-1.5 py-0.5 rounded border border-[#BBD4C1]">SAM + RESNET</span>
                     </div>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-[#5F665D]">
                       Sub-centimeter field boundary vectorization from combined RGB imagery and ToF elevation.
                     </p>
                     <button
                       onClick={handleTriggerAiPipeline}
-                      className="w-full py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium cursor-pointer mt-1"
+                      className="w-full py-1 rounded bg-[#EFEEE8] hover:bg-[#EEF2EC] text-[#20251F] text-xs font-medium cursor-pointer mt-1 border border-[#D8D5CC]"
                     >
                       Detect Bund Boundaries
                     </button>
                   </div>
 
-                  <div className="p-3 bg-slate-950/60 rounded-lg border border-slate-800 space-y-1.5">
+                  <div className="p-3 bg-white rounded-lg border border-[#D8D5CC] space-y-1.5 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-200">Historical Change Detection</span>
-                      <span className="font-mono text-[10px] text-amber-400">SIAMESE-CNN</span>
+                      <span className="font-medium text-[#20251F]">Historical Change Detection</span>
+                      <span className="font-mono text-[10px] text-[#74591D] bg-[#FBF4DC] px-1.5 py-0.5 rounded border border-[#EBD99A]">SIAMESE-CNN</span>
                     </div>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-[#5F665D]">
                       Automated IoU comparison against historical revenue baseline maps (1975).
                     </p>
                     <button
                       onClick={handleTriggerAiPipeline}
-                      className="w-full py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium cursor-pointer mt-1"
+                      className="w-full py-1 rounded bg-[#EFEEE8] hover:bg-[#EEF2EC] text-[#20251F] text-xs font-medium cursor-pointer mt-1 border border-[#D8D5CC]"
                     >
                       Run Change Detection
                     </button>
@@ -1056,66 +1056,66 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
               return (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
+                    <span className="font-semibold text-[#5F665D] text-[11px] uppercase tracking-wider">
                       Khasra Parcel Inspector
                     </span>
-                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    <span className="text-[10px] font-mono text-[#2E6645] bg-[#E6EFE8] px-2 py-0.5 rounded-full border border-[#BBD4C1]">
                       Authoritative
                     </span>
                   </div>
 
                   {selectedParcel || selectedLandParcel ? (
-                    <div className="p-3 bg-slate-950/60 rounded-lg border border-slate-800 space-y-3">
+                    <div className="p-3 bg-white rounded-lg border border-[#D8D5CC] space-y-3 shadow-sm">
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="font-mono font-bold text-sky-400 text-sm">
+                          <span className="font-mono font-bold text-[#20251F] text-sm">
                             Khasra #{activeParcelId}
                           </span>
-                          <div className="text-[10px] text-slate-400">Village: <span className="text-slate-200 font-medium">{village}</span></div>
+                          <div className="text-[10px] text-[#5F665D]">Village: <span className="text-[#20251F] font-medium">{village}</span></div>
                         </div>
                         <Badge variant="emerald" size="sm">
                           {rawStatus.replace(/_/g, ' ')}
                         </Badge>
                       </div>
 
-                      <div className="space-y-2 text-[11px] border-t border-slate-800/80 pt-2.5">
+                      <div className="space-y-2 text-[11px] border-t border-[#D8D5CC] pt-2.5">
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Primary Khatedar:</span>
-                          <span className="font-medium text-slate-200 text-right truncate max-w-[140px]">
+                          <span className="text-[#5F665D]">Primary Khatedar:</span>
+                          <span className="font-medium text-[#20251F] text-right truncate max-w-[140px]">
                             {ownerName}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Land Use:</span>
-                          <span className="font-medium text-slate-200">
+                          <span className="text-[#5F665D]">Land Use:</span>
+                          <span className="font-medium text-[#20251F]">
                             {landUse}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Official Area:</span>
-                          <span className="font-mono text-slate-200 font-medium">
+                          <span className="text-[#5F665D]">Official Area:</span>
+                          <span className="font-mono text-[#20251F] font-medium">
                             {officialArea.toFixed(2)} ha
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Drone Area:</span>
-                          <span className="font-mono text-emerald-400 font-bold">
+                          <span className="text-[#5F665D]">Drone Area:</span>
+                          <span className="font-mono text-[#2E513E] font-bold">
                             {droneArea.toFixed(2)} ha
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Difference:</span>
-                          <span className={`font-mono font-semibold ${Math.abs(diffHa) <= 0.05 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                          <span className="text-[#5F665D]">Difference:</span>
+                          <span className={`font-mono font-semibold ${Math.abs(diffHa) <= 0.05 ? 'text-[#2E6645]' : 'text-[#914B38]'}`}>
                             {diffHa > 0 ? `+${diffHa.toFixed(2)}` : diffHa.toFixed(2)} ha ({diffPct > 0 ? `+${diffPct}` : diffPct}%)
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Boundary IoU Match:</span>
-                          <span className="font-mono text-emerald-400 font-semibold">{iouMatch}%</span>
+                          <span className="text-[#5F665D]">Boundary IoU Match:</span>
+                          <span className="font-mono text-[#2E6645] font-semibold">{iouMatch}%</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Centroid Drift:</span>
-                          <span className="font-mono text-slate-300 font-medium">{centroidDrift} m</span>
+                          <span className="text-[#5F665D]">Centroid Drift:</span>
+                          <span className="font-mono text-[#20251F] font-medium">{centroidDrift} m</span>
                         </div>
                       </div>
 
@@ -1147,7 +1147,7 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
                       </div>
                     </div>
                   ) : (
-                    <div className="p-6 text-center text-slate-500 bg-slate-950/40 rounded-lg border border-dashed border-slate-800">
+                    <div className="p-6 text-center text-[#5F665D] bg-white rounded-lg border border-dashed border-[#D8D5CC]">
                       Click any Khasra parcel polygon on the map to inspect its ownership, area comparison, and legal boundary stats.
                     </div>
                   )}

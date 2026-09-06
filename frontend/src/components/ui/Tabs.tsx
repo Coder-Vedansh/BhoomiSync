@@ -34,7 +34,7 @@ export const Tabs: React.FC<TabsProps> = ({
             {tab.icon && <span>{tab.icon}</span>}
             <span>{tab.label}</span>
             {tab.count !== undefined && (
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${isActive ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-400'}`}>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${isActive ? 'bg-[#E6EFE8] text-[#2E6645]' : 'bg-[#EFEEE8] text-[#5F665D]'}`}>
                 {tab.count}
               </span>
             )}
@@ -45,3 +45,5 @@ export const Tabs: React.FC<TabsProps> = ({
     </div>
   );
 };
+
+export default Tabs;

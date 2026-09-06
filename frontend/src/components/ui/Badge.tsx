@@ -2,7 +2,21 @@ import React from 'react';
 
 export interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'emerald' | 'cyan' | 'amber' | 'rose' | 'purple' | 'slate';
+  variant?:
+    | 'emerald'
+    | 'cyan'
+    | 'amber'
+    | 'rose'
+    | 'purple'
+    | 'slate'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'info'
+    | 'neutral'
+    | 'forest'
+    | 'brass'
+    | 'terracotta';
   dot?: boolean;
   size?: 'sm' | 'md';
   className?: string;
@@ -15,27 +29,41 @@ export const Badge: React.FC<BadgeProps> = ({
   size = 'md',
   className = '',
 }) => {
+  // Normalize semantic variants
+  const normalizedVariant =
+    variant === 'success' || variant === 'forest'
+      ? 'emerald'
+      : variant === 'warning' || variant === 'brass'
+      ? 'amber'
+      : variant === 'error' || variant === 'terracotta'
+      ? 'rose'
+      : variant === 'info' || variant === 'purple'
+      ? 'cyan'
+      : variant === 'neutral'
+      ? 'slate'
+      : variant;
+
   const variantClass = {
     emerald: 'badge-emerald',
     cyan: 'badge-cyan',
     amber: 'badge-amber',
     rose: 'badge-rose',
-    purple: 'badge-purple',
+    purple: 'badge-cyan', // Remapped from purple to cartographic blue
     slate: 'badge-slate',
-  }[variant];
+  }[normalizedVariant] || 'badge-slate';
 
   const dotColor = {
-    emerald: 'bg-emerald-400',
-    cyan: 'bg-cyan-400',
-    amber: 'bg-amber-400',
-    rose: 'bg-rose-400',
-    purple: 'bg-purple-400',
-    slate: 'bg-slate-400',
-  }[variant];
+    emerald: 'bg-[#2E6645]',
+    cyan: 'bg-[#385963]',
+    amber: 'bg-[#74591D]',
+    rose: 'bg-[#914B38]',
+    purple: 'bg-[#385963]',
+    slate: 'bg-[#5F665D]',
+  }[normalizedVariant] || 'bg-[#5F665D]';
 
   return (
     <span className={`badge ${variantClass} ${size === 'sm' ? 'text-[10px] px-1.5 py-0.5' : ''} ${className}`}>
-      {dot && <span className={`w-1.5 h-1.5 rounded-full ${dotColor} animate-pulse mr-1`} />}
+      {dot && <span className={`w-1.5 h-1.5 rounded-full ${dotColor} mr-1`} />}
       {children}
     </span>
   );
@@ -57,7 +85,7 @@ export const StatusBadge: React.FC<{
   } else if (norm.includes('FAIL') || norm.includes('ERR') || norm.includes('REJECT') || norm.includes('DISPUT') || norm.includes('STOP') || norm.includes('OFF')) {
     variant = 'rose';
   } else if (norm.includes('DRAFT') || norm.includes('DEMO')) {
-    variant = 'purple';
+    variant = 'cyan'; // Remapped from purple to cartographic blue
   }
 
   // Format label: remove underscores and title-case
@@ -122,4 +150,4 @@ export const DataProvenanceBadge: React.FC<{
   );
 };
 
-
+export default Badge;

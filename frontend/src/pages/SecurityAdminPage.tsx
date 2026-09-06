@@ -22,8 +22,6 @@ import {
 } from "lucide-react";
 
 export const SecurityAdminPage: React.FC = () => {
-
-
   const [activeTab, setActiveTab] = useState<"users" | "sessions" | "audit" | "matrix">("users");
   const [stats, setStats] = useState<SecurityStats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -171,14 +169,14 @@ export const SecurityAdminPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6 animate-fadeIn">
+    <div className="p-6 max-w-7xl mx-auto space-y-6 animate-fadeIn text-[#20251F]">
       {/* Toast Notification */}
       {notification && (
         <div
-          className={`fixed bottom-6 right-6 px-4 py-3 rounded-xl border shadow-2xl z-50 text-sm font-medium flex items-center gap-2 backdrop-blur-lg ${
+          className={`fixed bottom-6 right-6 px-4 py-3 rounded-xl border shadow-xl z-50 text-sm font-medium flex items-center gap-2 backdrop-blur-md ${
             notification.type === "success"
-              ? "bg-emerald-950/90 border-emerald-500 text-emerald-200"
-              : "bg-red-950/90 border-red-500 text-red-200"
+              ? "bg-[#E8F0EA] border-[#BFCDBF] text-[#2E513E]"
+              : "bg-[#F7ECE8] border-[#E4BFB4] text-[#914B38]"
           }`}
         >
           {notification.type === "success" ? <CheckCircle size={18} /> : <AlertOctagon size={18} />}
@@ -187,15 +185,15 @@ export const SecurityAdminPage: React.FC = () => {
       )}
 
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 border border-slate-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white border border-[#D8D5CC] shadow-sm">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E8F0EA] border border-[#BFCDBF] text-[#2E513E] text-xs font-semibold uppercase tracking-wider">
             <Shield size={14} /> Security & Identity Administration
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
+          <h1 className="text-2xl font-bold text-[#20251F] tracking-tight">
             Role-Based Access Control & Security Auditing
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-[#5F665D]">
             Manage system identities, monitor active token sessions, review cryptographic audit trails, and enforce least-privilege policies.
           </p>
         </div>
@@ -203,9 +201,9 @@ export const SecurityAdminPage: React.FC = () => {
         <button
           onClick={loadData}
           disabled={loading}
-          className="self-start sm:self-center px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sm font-medium text-slate-200 flex items-center gap-2 transition"
+          className="self-start sm:self-center px-4 py-2 rounded-xl bg-[#FAF9F5] hover:bg-[#EFEEE8] border border-[#D8D5CC] text-sm font-semibold text-[#30372F] flex items-center gap-2 transition"
         >
-          <RefreshCw size={16} className={loading ? "animate-spin text-purple-400" : ""} />
+          <RefreshCw size={16} className={loading ? "animate-spin text-[#2E513E]" : "text-[#4F7D60]"} />
           Refresh Stats
         </button>
       </div>
@@ -213,58 +211,58 @@ export const SecurityAdminPage: React.FC = () => {
       {/* Top KPI Metrics Row */}
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 shadow-md">
-            <div className="text-xs text-slate-400 flex items-center justify-between mb-1">
+          <div className="p-4 rounded-xl bg-white border border-[#D8D5CC] shadow-sm">
+            <div className="text-xs text-[#5F665D] font-medium flex items-center justify-between mb-1">
               <span>Total Users</span>
-              <Users size={14} className="text-blue-400" />
+              <Users size={14} className="text-[#385963]" />
             </div>
-            <div className="text-2xl font-bold text-white">{stats.total_users}</div>
-            <div className="text-[11px] text-emerald-400 mt-1">{stats.active_users} active</div>
+            <div className="text-2xl font-bold text-[#20251F]">{stats.total_users}</div>
+            <div className="text-[11px] text-[#2E513E] font-medium mt-1">{stats.active_users} active</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 shadow-md">
-            <div className="text-xs text-slate-400 flex items-center justify-between mb-1">
+          <div className="p-4 rounded-xl bg-white border border-[#D8D5CC] shadow-sm">
+            <div className="text-xs text-[#5F665D] font-medium flex items-center justify-between mb-1">
               <span>Active Sessions</span>
-              <Activity size={14} className="text-emerald-400" />
+              <Activity size={14} className="text-[#2E513E]" />
             </div>
-            <div className="text-2xl font-bold text-white">{stats.active_sessions_count}</div>
-            <div className="text-[11px] text-slate-400 mt-1">Live JWT sessions</div>
+            <div className="text-2xl font-bold text-[#20251F]">{stats.active_sessions_count}</div>
+            <div className="text-[11px] text-[#5F665D] mt-1">Live JWT sessions</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 shadow-md">
-            <div className="text-xs text-slate-400 flex items-center justify-between mb-1">
+          <div className="p-4 rounded-xl bg-white border border-[#D8D5CC] shadow-sm">
+            <div className="text-xs text-[#5F665D] font-medium flex items-center justify-between mb-1">
               <span>Locked Accounts</span>
-              <Lock size={14} className="text-amber-400" />
+              <Lock size={14} className="text-[#927323]" />
             </div>
-            <div className="text-2xl font-bold text-white">{stats.locked_accounts}</div>
-            <div className="text-[11px] text-amber-400 mt-1">Failed attempts &gt; 5</div>
+            <div className="text-2xl font-bold text-[#20251F]">{stats.locked_accounts}</div>
+            <div className="text-[11px] text-[#927323] font-medium mt-1">Failed attempts &gt; 5</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 shadow-md">
-            <div className="text-xs text-slate-400 flex items-center justify-between mb-1">
+          <div className="p-4 rounded-xl bg-white border border-[#D8D5CC] shadow-sm">
+            <div className="text-xs text-[#5F665D] font-medium flex items-center justify-between mb-1">
               <span>24h Audit Logs</span>
-              <Shield size={14} className="text-purple-400" />
+              <Shield size={14} className="text-[#385963]" />
             </div>
-            <div className="text-2xl font-bold text-white">{stats.audit_log_count}</div>
-            <div className="text-[11px] text-purple-400 mt-1">Immutable events</div>
+            <div className="text-2xl font-bold text-[#20251F]">{stats.audit_log_count}</div>
+            <div className="text-[11px] text-[#385963] font-medium mt-1">Immutable events</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 shadow-md">
-            <div className="text-xs text-slate-400 flex items-center justify-between mb-1">
+          <div className="p-4 rounded-xl bg-white border border-[#D8D5CC] shadow-sm">
+            <div className="text-xs text-[#5F665D] font-medium flex items-center justify-between mb-1">
               <span>Failed Logins</span>
-              <AlertOctagon size={14} className="text-rose-400" />
+              <AlertOctagon size={14} className="text-[#AD6048]" />
             </div>
-            <div className="text-2xl font-bold text-white">{stats.failed_logins_last_24h}</div>
-            <div className="text-[11px] text-rose-400 mt-1">Last 24 hours</div>
+            <div className="text-2xl font-bold text-[#20251F]">{stats.failed_logins_last_24h}</div>
+            <div className="text-[11px] text-[#AD6048] font-medium mt-1">Last 24 hours</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 shadow-md">
-            <div className="text-xs text-slate-400 flex items-center justify-between mb-1">
+          <div className="p-4 rounded-xl bg-white border border-[#D8D5CC] shadow-sm">
+            <div className="text-xs text-[#5F665D] font-medium flex items-center justify-between mb-1">
               <span>Surveyors</span>
-              <Key size={14} className="text-teal-400" />
+              <Key size={14} className="text-[#2E513E]" />
             </div>
-            <div className="text-2xl font-bold text-white">{stats.users_by_role["SURVEYOR"] || 0}</div>
-            <div className="text-[11px] text-teal-400 mt-1">
+            <div className="text-2xl font-bold text-[#20251F]">{stats.users_by_role["SURVEYOR"] || 0}</div>
+            <div className="text-[11px] text-[#2E513E] font-medium mt-1">
               {stats.users_by_role["ADMIN"] || 0} Admins
             </div>
           </div>
@@ -272,13 +270,13 @@ export const SecurityAdminPage: React.FC = () => {
       )}
 
       {/* Tabs Navigation */}
-      <div className="flex border-b border-slate-800 space-x-2">
+      <div className="flex border-b border-[#D8D5CC] space-x-2">
         <button
           onClick={() => setActiveTab("users")}
           className={`pb-3 px-4 text-sm font-semibold flex items-center gap-2 border-b-2 transition ${
             activeTab === "users"
-              ? "border-purple-500 text-purple-400"
-              : "border-transparent text-slate-400 hover:text-slate-200"
+              ? "border-[#2E513E] text-[#2E513E]"
+              : "border-transparent text-[#5F665D] hover:text-[#20251F]"
           }`}
         >
           <Users size={16} /> User Directory & Roles
@@ -287,8 +285,8 @@ export const SecurityAdminPage: React.FC = () => {
           onClick={() => setActiveTab("sessions")}
           className={`pb-3 px-4 text-sm font-semibold flex items-center gap-2 border-b-2 transition ${
             activeTab === "sessions"
-              ? "border-purple-500 text-purple-400"
-              : "border-transparent text-slate-400 hover:text-slate-200"
+              ? "border-[#2E513E] text-[#2E513E]"
+              : "border-transparent text-[#5F665D] hover:text-[#20251F]"
           }`}
         >
           <Activity size={16} /> Active Token Sessions ({sessions.length})
@@ -297,8 +295,8 @@ export const SecurityAdminPage: React.FC = () => {
           onClick={() => setActiveTab("audit")}
           className={`pb-3 px-4 text-sm font-semibold flex items-center gap-2 border-b-2 transition ${
             activeTab === "audit"
-              ? "border-purple-500 text-purple-400"
-              : "border-transparent text-slate-400 hover:text-slate-200"
+              ? "border-[#2E513E] text-[#2E513E]"
+              : "border-transparent text-[#5F665D] hover:text-[#20251F]"
           }`}
         >
           <Shield size={16} /> Security Audit Trail ({auditLogs.length})
@@ -307,8 +305,8 @@ export const SecurityAdminPage: React.FC = () => {
           onClick={() => setActiveTab("matrix")}
           className={`pb-3 px-4 text-sm font-semibold flex items-center gap-2 border-b-2 transition ${
             activeTab === "matrix"
-              ? "border-purple-500 text-purple-400"
-              : "border-transparent text-slate-400 hover:text-slate-200"
+              ? "border-[#2E513E] text-[#2E513E]"
+              : "border-transparent text-[#5F665D] hover:text-[#20251F]"
           }`}
         >
           <SlidersHorizontal size={16} /> RBAC Permission Matrix
@@ -321,19 +319,19 @@ export const SecurityAdminPage: React.FC = () => {
           {/* Filters Row */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-3 text-slate-500" />
+              <Search size={16} className="absolute left-3 top-3 text-[#858B82]" />
               <input
                 type="text"
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
                 placeholder="Search by username, email, full name..."
-                className="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition"
+                className="w-full pl-9 pr-4 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] placeholder-[#858B82] focus:outline-none focus:border-[#2E513E] transition"
               />
             </div>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-purple-500"
+              className="px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#30372F] focus:outline-none focus:border-[#2E513E]"
             >
               <option value="">All Roles</option>
               <option value="ADMIN">ADMIN</option>
@@ -344,7 +342,7 @@ export const SecurityAdminPage: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-purple-500"
+              className="px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#30372F] focus:outline-none focus:border-[#2E513E]"
             >
               <option value="">All Statuses</option>
               <option value="active">Active Only</option>
@@ -353,10 +351,10 @@ export const SecurityAdminPage: React.FC = () => {
           </div>
 
           {/* Users Table */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div className="bg-white border border-[#D8D5CC] rounded-2xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-300">
-                <thead className="bg-slate-950/80 text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+              <table className="w-full text-left text-sm text-[#30372F]">
+                <thead className="bg-[#FAF9F5] text-xs font-semibold text-[#5F665D] uppercase tracking-wider border-b border-[#D8D5CC]">
                   <tr>
                     <th className="py-3 px-4">User</th>
                     <th className="py-3 px-4">Roles</th>
@@ -366,17 +364,17 @@ export const SecurityAdminPage: React.FC = () => {
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-[#D8D5CC]/60">
                   {users.map((u) => (
-                    <tr key={u.user_id} className="hover:bg-slate-800/40 transition">
+                    <tr key={u.user_id} className="hover:bg-[#FAF9F5] transition">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-white text-xs">
+                          <div className="w-8 h-8 rounded-full bg-[#2E513E] flex items-center justify-center font-bold text-[#FAF9F5] text-xs">
                             {u.username.slice(0, 2).toUpperCase()}
                           </div>
                           <div>
-                            <div className="font-semibold text-white">{u.full_name || u.username}</div>
-                            <div className="text-xs text-slate-400 font-mono">{u.email}</div>
+                            <div className="font-semibold text-[#20251F]">{u.full_name || u.username}</div>
+                            <div className="text-xs text-[#5F665D] font-mono">{u.email}</div>
                           </div>
                         </div>
                       </td>
@@ -388,12 +386,12 @@ export const SecurityAdminPage: React.FC = () => {
                               key={r}
                               className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
                                 r === "ADMIN"
-                                  ? "bg-purple-950 text-purple-300 border border-purple-800/50"
+                                  ? "bg-[#F8F3E6] text-[#927323] border border-[#E5D5A8]"
                                   : r === "SURVEYOR"
-                                  ? "bg-blue-950 text-blue-300 border border-blue-800/50"
+                                  ? "bg-[#E8F0EA] text-[#2E513E] border border-[#BFCDBF]"
                                   : r === "GOVERNMENT_OFFICIAL"
-                                  ? "bg-amber-950 text-amber-300 border border-amber-800/50"
-                                  : "bg-emerald-950 text-emerald-300 border border-emerald-800/50"
+                                  ? "bg-[#EBF2F4] text-[#385963] border border-[#C6D8DC]"
+                                  : "bg-[#EFEEE8] text-[#5F665D] border border-[#D8D5CC]"
                               }`}
                             >
                               {r}
@@ -404,27 +402,27 @@ export const SecurityAdminPage: React.FC = () => {
 
                       <td className="py-3 px-4">
                         {u.locked_until && new Date(u.locked_until) > new Date() ? (
-                          <span className="inline-flex items-center gap-1 text-xs text-amber-400 bg-amber-950/60 border border-amber-800 px-2 py-0.5 rounded-full">
+                          <span className="inline-flex items-center gap-1 text-xs text-[#927323] bg-[#F8F3E6] border border-[#E5D5A8] px-2 py-0.5 rounded-full font-semibold">
                             <Lock size={12} /> Locked
                           </span>
                         ) : u.is_active ? (
-                          <span className="inline-flex items-center gap-1 text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded-full">
+                          <span className="inline-flex items-center gap-1 text-xs text-[#2E513E] bg-[#E8F0EA] border border-[#BFCDBF] px-2 py-0.5 rounded-full font-semibold">
                             <UserCheck size={12} /> Active
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
+                          <span className="inline-flex items-center gap-1 text-xs text-[#5F665D] bg-[#EFEEE8] border border-[#D8D5CC] px-2 py-0.5 rounded-full">
                             <UserX size={12} /> Deactivated
                           </span>
                         )}
                       </td>
 
                       <td className="py-3 px-4 font-mono text-xs">
-                        <span className={u.failed_login_attempts > 0 ? "text-amber-400 font-bold" : "text-slate-400"}>
+                        <span className={u.failed_login_attempts > 0 ? "text-[#AD6048] font-bold" : "text-[#5F665D]"}>
                           {u.failed_login_attempts} / 5
                         </span>
                       </td>
 
-                      <td className="py-3 px-4 text-xs text-slate-400">
+                      <td className="py-3 px-4 text-xs text-[#5F665D]">
                         {u.last_login ? new Date(u.last_login).toLocaleString() : "Never"}
                       </td>
 
@@ -434,7 +432,7 @@ export const SecurityAdminPage: React.FC = () => {
                             <button
                               onClick={() => handleUnlockUser(u)}
                               title="Unlock account"
-                              className="p-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition text-xs flex items-center gap-1"
+                              className="p-1.5 rounded-lg bg-[#F8F3E6] hover:bg-[#F2E8CB] text-[#927323] border border-[#E5D5A8] transition text-xs flex items-center gap-1 font-medium"
                             >
                               <Unlock size={14} /> Unlock
                             </button>
@@ -442,17 +440,17 @@ export const SecurityAdminPage: React.FC = () => {
 
                           <button
                             onClick={() => setSelectedUser(u)}
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition flex items-center gap-1"
+                            className="p-1.5 rounded-lg bg-[#FAF9F5] hover:bg-[#EFEEE8] border border-[#D8D5CC] text-[#30372F] text-xs transition flex items-center gap-1 font-medium"
                           >
                             <Key size={14} /> Manage Roles
                           </button>
 
                           <button
                             onClick={() => handleToggleUserStatus(u)}
-                            className={`p-1.5 rounded-lg text-xs transition ${
+                            className={`p-1.5 rounded-lg text-xs transition font-medium ${
                               u.is_active
-                                ? "bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30"
-                                : "bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30"
+                                ? "bg-[#F7ECE8] hover:bg-[#F2DDD7] text-[#914B38] border border-[#E4BFB4]"
+                                : "bg-[#E8F0EA] hover:bg-[#DDE9E0] text-[#2E513E] border border-[#BFCDBF]"
                             }`}
                           >
                             {u.is_active ? "Deactivate" : "Activate"}
@@ -468,33 +466,33 @@ export const SecurityAdminPage: React.FC = () => {
 
           {/* Role Assignment Modal */}
           {selectedUser && (
-            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-              <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Key size={18} className="text-purple-400" />
+            <div className="fixed inset-0 bg-[#20251F]/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+              <div className="bg-white border border-[#D8D5CC] rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl">
+                <div className="flex items-center justify-between border-b border-[#D8D5CC] pb-3">
+                  <h3 className="text-base font-bold text-[#20251F] flex items-center gap-2">
+                    <Key size={18} className="text-[#2E513E]" />
                     Manage Roles: {selectedUser.username}
                   </h3>
                   <button
                     onClick={() => setSelectedUser(null)}
-                    className="text-slate-400 hover:text-white text-lg font-bold"
+                    className="text-[#5F665D] hover:text-[#20251F] text-lg font-bold"
                   >
                     ×
                   </button>
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-400 font-medium block mb-2">Current Assigned Roles:</label>
+                  <label className="text-xs text-[#5F665D] font-medium block mb-2">Current Assigned Roles:</label>
                   <div className="flex flex-wrap gap-2">
                     {selectedUser.roles?.map((r) => (
                       <span
                         key={r}
-                        className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200"
+                        className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-[#FAF9F5] border border-[#D8D5CC] text-[#30372F]"
                       >
                         {r}
                         <button
                           onClick={() => handleRemoveRole(r)}
-                          className="text-red-400 hover:text-red-300 ml-1"
+                          className="text-[#AD6048] hover:text-[#914B38] ml-1 font-bold"
                           title="Remove role"
                         >
                           ×
@@ -504,13 +502,13 @@ export const SecurityAdminPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-800">
-                  <label className="text-xs text-slate-400 font-medium block mb-1.5">Add Role:</label>
+                <div className="pt-2 border-t border-[#D8D5CC]">
+                  <label className="text-xs text-[#5F665D] font-medium block mb-1.5">Add Role:</label>
                   <div className="flex gap-2">
                     <select
                       value={roleToAssign}
                       onChange={(e) => setRoleToAssign(e.target.value)}
-                      className="flex-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500"
+                      className="flex-1 px-3 py-2 bg-[#FAF9F5] border border-[#D8D5CC] rounded-xl text-sm text-[#20251F] focus:outline-none focus:border-[#2E513E]"
                     >
                       <option value="PUBLIC">PUBLIC</option>
                       <option value="SURVEYOR">SURVEYOR</option>
@@ -519,17 +517,17 @@ export const SecurityAdminPage: React.FC = () => {
                     </select>
                     <button
                       onClick={handleAssignRole}
-                      className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition shadow-lg shadow-purple-600/20"
+                      className="px-4 py-2 rounded-xl bg-[#2E513E] hover:bg-[#233F30] text-[#FAF9F5] text-sm font-semibold transition shadow-sm"
                     >
                       Add Role
                     </button>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-800 flex justify-end">
+                <div className="pt-3 border-t border-[#D8D5CC] flex justify-end">
                   <button
                     onClick={() => setSelectedUser(null)}
-                    className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
+                    className="px-4 py-1.5 rounded-xl bg-[#FAF9F5] hover:bg-[#EFEEE8] border border-[#D8D5CC] text-[#30372F] text-xs font-semibold"
                   >
                     Done
                   </button>
@@ -542,22 +540,22 @@ export const SecurityAdminPage: React.FC = () => {
 
       {/* TAB 2: Active Token Sessions */}
       {activeTab === "sessions" && (
-        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="p-4 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between">
+        <div className="bg-white border border-[#D8D5CC] rounded-2xl overflow-hidden shadow-sm">
+          <div className="p-4 bg-[#FAF9F5] border-b border-[#D8D5CC] flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-white">Live Cryptographic JWT Sessions</h3>
-              <p className="text-xs text-slate-400">
+              <h3 className="text-sm font-bold text-[#20251F]">Live Cryptographic JWT Sessions</h3>
+              <p className="text-xs text-[#5F665D]">
                 Track and revoke active user sessions in real time.
               </p>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
-              Total Active: <strong className="text-emerald-400">{sessions.length}</strong>
+            <span className="text-xs text-[#5F665D] font-mono">
+              Total Active: <strong className="text-[#2E513E] font-bold">{sessions.length}</strong>
             </span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-slate-950/80 text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+            <table className="w-full text-left text-sm text-[#30372F]">
+              <thead className="bg-[#FAF9F5] text-xs font-semibold text-[#5F665D] uppercase tracking-wider border-b border-[#D8D5CC]">
                 <tr>
                   <th className="py-3 px-4">Session ID</th>
                   <th className="py-3 px-4">User</th>
@@ -567,24 +565,24 @@ export const SecurityAdminPage: React.FC = () => {
                   <th className="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-[#D8D5CC]/60">
                 {sessions.map((s) => (
-                  <tr key={s.session_id} className="hover:bg-slate-800/40 transition">
-                    <td className="py-3 px-4 font-mono text-xs text-purple-300">
+                  <tr key={s.session_id} className="hover:bg-[#FAF9F5] transition">
+                    <td className="py-3 px-4 font-mono text-xs text-[#385963] font-semibold">
                       {s.session_id.slice(0, 16)}...
                     </td>
-                    <td className="py-3 px-4 font-medium text-white">{s.username}</td>
-                    <td className="py-3 px-4 font-mono text-xs text-slate-400">{s.ip_address || "127.0.0.1"}</td>
-                    <td className="py-3 px-4 text-xs text-slate-400 max-w-xs truncate" title={s.user_agent}>
+                    <td className="py-3 px-4 font-semibold text-[#20251F]">{s.username}</td>
+                    <td className="py-3 px-4 font-mono text-xs text-[#5F665D]">{s.ip_address || "127.0.0.1"}</td>
+                    <td className="py-3 px-4 text-xs text-[#5F665D] max-w-xs truncate" title={s.user_agent}>
                       {s.user_agent || "Standard Browser"}
                     </td>
-                    <td className="py-3 px-4 text-xs text-slate-400">
+                    <td className="py-3 px-4 text-xs text-[#5F665D]">
                       {new Date(s.expires_at).toLocaleString()}
                     </td>
                     <td className="py-3 px-4 text-right">
                       <button
                         onClick={() => handleRevokeSession(s.session_id)}
-                        className="px-2.5 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 text-xs font-semibold transition"
+                        className="px-2.5 py-1 rounded-lg bg-[#F7ECE8] hover:bg-[#F2DDD7] text-[#914B38] border border-[#E4BFB4] text-xs font-semibold transition"
                       >
                         Terminate
                       </button>
@@ -604,7 +602,7 @@ export const SecurityAdminPage: React.FC = () => {
             <select
               value={auditActionFilter}
               onChange={(e) => setAuditActionFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-purple-500"
+              className="px-3 py-2 bg-white border border-[#D8D5CC] rounded-xl text-sm text-[#30372F] focus:outline-none focus:border-[#2E513E]"
             >
               <option value="">All Security Events</option>
               <option value="LOGIN_SUCCESS">LOGIN_SUCCESS</option>
@@ -616,10 +614,10 @@ export const SecurityAdminPage: React.FC = () => {
             </select>
           </div>
 
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div className="bg-white border border-[#D8D5CC] rounded-2xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-300">
-                <thead className="bg-slate-950/80 text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+              <table className="w-full text-left text-sm text-[#30372F]">
+                <thead className="bg-[#FAF9F5] text-xs font-semibold text-[#5F665D] uppercase tracking-wider border-b border-[#D8D5CC]">
                   <tr>
                     <th className="py-3 px-4">Audit ID</th>
                     <th className="py-3 px-4">Action</th>
@@ -630,34 +628,34 @@ export const SecurityAdminPage: React.FC = () => {
                     <th className="py-3 px-4 text-right">Details</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 font-mono text-xs">
+                <tbody className="divide-y divide-[#D8D5CC]/60 font-mono text-xs">
                   {auditLogs.map((log) => (
                     <React.Fragment key={log.audit_id}>
-                      <tr className="hover:bg-slate-800/40 transition">
-                        <td className="py-3 px-4 text-purple-300">{log.audit_id}</td>
-                        <td className="py-3 px-4 font-semibold text-slate-200">{log.action}</td>
+                      <tr className="hover:bg-[#FAF9F5] transition">
+                        <td className="py-3 px-4 text-[#385963] font-semibold">{log.audit_id}</td>
+                        <td className="py-3 px-4 font-semibold text-[#20251F]">{log.action}</td>
                         <td className="py-3 px-4">
                           <span
                             className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
                               log.result === "SUCCESS"
-                                ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
+                                ? "bg-[#E8F0EA] text-[#2E513E] border border-[#BFCDBF]"
                                 : log.result === "DENIED"
-                                ? "bg-amber-950 text-amber-300 border border-amber-800"
-                                : "bg-red-950 text-red-300 border border-red-800"
+                                ? "bg-[#F8F3E6] text-[#927323] border border-[#E5D5A8]"
+                                : "bg-[#F7ECE8] text-[#914B38] border border-[#E4BFB4]"
                             }`}
                           >
                             {log.result}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-slate-300">{log.username_snapshot || "Anonymous"}</td>
-                        <td className="py-3 px-4 text-slate-400">{log.ip_address || "127.0.0.1"}</td>
-                        <td className="py-3 px-4 text-slate-400 font-sans">{new Date(log.timestamp).toLocaleString()}</td>
+                        <td className="py-3 px-4 text-[#30372F]">{log.username_snapshot || "Anonymous"}</td>
+                        <td className="py-3 px-4 text-[#5F665D]">{log.ip_address || "127.0.0.1"}</td>
+                        <td className="py-3 px-4 text-[#5F665D] font-sans">{new Date(log.timestamp).toLocaleString()}</td>
                         <td className="py-3 px-4 text-right">
                           <button
                             onClick={() =>
                               setExpandedLogId(expandedLogId === log.audit_id ? null : log.audit_id)
                             }
-                            className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"
+                            className="p-1 rounded bg-[#FAF9F5] hover:bg-[#EFEEE8] border border-[#D8D5CC] text-[#30372F] text-xs"
                           >
                             {expandedLogId === log.audit_id ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                           </button>
@@ -665,10 +663,10 @@ export const SecurityAdminPage: React.FC = () => {
                       </tr>
                       {expandedLogId === log.audit_id && (
                         <tr>
-                          <td colSpan={7} className="bg-slate-950/80 p-4 border-b border-slate-800">
-                            <div className="text-[11px] text-slate-400 font-mono">
-                              <div className="mb-1 font-bold text-slate-300">Sanitized Audit Metadata:</div>
-                              <pre className="p-3 rounded-lg bg-slate-900 border border-slate-800 overflow-x-auto text-emerald-400">
+                          <td colSpan={7} className="bg-[#FAF9F5] p-4 border-b border-[#D8D5CC]">
+                            <div className="text-[11px] text-[#5F665D] font-mono">
+                              <div className="mb-1 font-bold text-[#20251F]">Sanitized Audit Metadata:</div>
+                              <pre className="p-3 rounded-lg bg-white border border-[#D8D5CC] overflow-x-auto text-[#2E513E]">
                                 {JSON.stringify(log.metadata, null, 2)}
                               </pre>
                             </div>
@@ -686,20 +684,20 @@ export const SecurityAdminPage: React.FC = () => {
 
       {/* TAB 4: RBAC Permission Matrix */}
       {activeTab === "matrix" && (
-        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl p-6 space-y-4">
+        <div className="bg-white border border-[#D8D5CC] rounded-2xl overflow-hidden shadow-sm p-6 space-y-4">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <SlidersHorizontal size={18} className="text-purple-400" />
+            <h3 className="text-base font-bold text-[#20251F] flex items-center gap-2">
+              <SlidersHorizontal size={18} className="text-[#2E513E]" />
               Role-Based Access Control (RBAC) Permission Matrix
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-[#5F665D] mt-1">
               Hierarchical mapping of granular permissions across BhoomiSync canonical system roles.
             </p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-slate-950/80 text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+            <table className="w-full text-left text-sm text-[#30372F]">
+              <thead className="bg-[#FAF9F5] text-xs font-semibold text-[#5F665D] uppercase tracking-wider border-b border-[#D8D5CC]">
                 <tr>
                   <th className="py-3 px-4">Granular Permission</th>
                   <th className="py-3 px-4 text-center">PUBLIC / Citizen</th>
@@ -708,36 +706,36 @@ export const SecurityAdminPage: React.FC = () => {
                   <th className="py-3 px-4 text-center">ADMIN</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-[#D8D5CC]/60">
                 {Object.entries(permissionMatrix).map(([perm, roles]) => (
-                  <tr key={perm} className="hover:bg-slate-800/40 transition">
-                    <td className="py-2.5 px-4 font-mono text-xs text-slate-200">{perm}</td>
+                  <tr key={perm} className="hover:bg-[#FAF9F5] transition">
+                    <td className="py-2.5 px-4 font-mono text-xs text-[#20251F] font-medium">{perm}</td>
                     <td className="py-2.5 px-4 text-center">
                       {roles.PUBLIC ? (
-                        <CheckCircle size={16} className="text-emerald-400 mx-auto" />
+                        <CheckCircle size={16} className="text-[#2E513E] mx-auto" />
                       ) : (
-                        <XCircle size={16} className="text-slate-600 mx-auto" />
+                        <XCircle size={16} className="text-[#C4C0B5] mx-auto" />
                       )}
                     </td>
                     <td className="py-2.5 px-4 text-center">
                       {roles.SURVEYOR ? (
-                        <CheckCircle size={16} className="text-emerald-400 mx-auto" />
+                        <CheckCircle size={16} className="text-[#2E513E] mx-auto" />
                       ) : (
-                        <XCircle size={16} className="text-slate-600 mx-auto" />
+                        <XCircle size={16} className="text-[#C4C0B5] mx-auto" />
                       )}
                     </td>
                     <td className="py-2.5 px-4 text-center">
                       {roles.GOVERNMENT_OFFICIAL ? (
-                        <CheckCircle size={16} className="text-emerald-400 mx-auto" />
+                        <CheckCircle size={16} className="text-[#2E513E] mx-auto" />
                       ) : (
-                        <XCircle size={16} className="text-slate-600 mx-auto" />
+                        <XCircle size={16} className="text-[#C4C0B5] mx-auto" />
                       )}
                     </td>
                     <td className="py-2.5 px-4 text-center">
                       {roles.ADMIN ? (
-                        <CheckCircle size={16} className="text-purple-400 mx-auto" />
+                        <CheckCircle size={16} className="text-[#927323] mx-auto" />
                       ) : (
-                        <XCircle size={16} className="text-slate-600 mx-auto" />
+                        <XCircle size={16} className="text-[#C4C0B5] mx-auto" />
                       )}
                     </td>
                   </tr>

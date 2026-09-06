@@ -47,7 +47,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
       case 'ORCHARD_PLANTATION':
         return <span className="badge badge-cyan">Orchard</span>;
       case 'WATER_BODY':
-        return <span className="badge badge-purple">Water Body</span>;
+        return <span className="badge badge-cyan">Water Body</span>;
       default:
         return <span className="badge badge-slate">{parcel.land_use}</span>;
     }

@@ -100,20 +100,20 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 4 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="modal-card relative z-10 w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] text-slate-100 p-6 pointer-events-auto"
+            className="modal-card relative z-10 w-full max-w-2xl bg-white border border-[#D8D5CC] rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] text-[#20251F] p-6 pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
           >
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '14px', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #D8D5CC', paddingBottom: '14px', marginBottom: '18px' }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: '#10b981', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: '#2E513E', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span>📄</span> Generate Digital Survey Report
             </h3>
-            <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: '#94a3b8' }}>
+            <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: '#5F665D' }}>
               Produce immutable multi-format dossier (PDF, GeoJSON, KML, CSV, JSON)
             </p>
           </div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '1.5rem', cursor: 'pointer' }}>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#5F665D', fontSize: '1.5rem', cursor: 'pointer' }}>
             &times;
           </button>
         </div>
@@ -126,10 +126,10 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
               onClick={() => !isSubmitting && setStep(s)}
               style={{
                 flex: 1, padding: '8px', textAlign: 'center', borderRadius: '6px', cursor: 'pointer',
-                background: step === s ? '#065f46' : (step > s ? '#1e3a8a' : '#0f172a'),
-                color: step === s ? '#34d399' : '#94a3b8',
-                border: step === s ? '1px solid #10b981' : '1px solid #334155',
-                fontSize: '0.85rem', fontWeight: 500,
+                background: step === s ? '#E6EFE8' : (step > s ? '#FAF8F3' : '#FAF9F5'),
+                color: step === s ? '#2E6645' : (step > s ? '#20251F' : '#5F665D'),
+                border: step === s ? '1px solid #BBD4C1' : '1px solid #D8D5CC',
+                fontSize: '0.85rem', fontWeight: step === s ? 600 : 500,
               }}
             >
               Step {s}: {s === 1 ? 'Target Parcel' : (s === 2 ? 'Report Config' : 'Sections & Review')}
@@ -138,7 +138,7 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
         </div>
 
         {error && (
-          <div style={{ background: '#7f1d1d', border: '1px solid #f87171', color: '#fecaca', padding: '10px 14px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem' }}>
+          <div style={{ background: '#FAF2EE', border: '1px solid #E6C0B1', color: '#914B38', padding: '10px 14px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem' }}>
             ⚠️ {error}
           </div>
         )}
@@ -147,20 +147,20 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
         {step === 1 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', color: '#20251F', fontWeight: 600, marginBottom: '6px' }}>
                 Survey Campaign
               </label>
               <select
                 value={surveyId}
                 onChange={(e) => setSurveyId(Number(e.target.value))}
-                style={{ width: '100%', padding: '10px', background: '#0f172a', border: '1px solid #334155', borderRadius: '6px', color: '#fff' }}
+                style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #D8D5CC', borderRadius: '6px', color: '#20251F' }}
               >
                 <option value={1}>SUR-2026-001: Haripura Village Resurvey Campaign (Udaipur, Rajasthan)</option>
               </select>
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', color: '#20251F', fontWeight: 600, marginBottom: '6px' }}>
                 Select Cadastral Parcel / Khasra
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
@@ -176,18 +176,18 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
                     onClick={() => setParcelId(p.id)}
                     style={{
                       padding: '12px', borderRadius: '8px', cursor: 'pointer',
-                      background: parcelId === p.id ? 'rgba(16, 185, 129, 0.15)' : '#0f172a',
-                      border: parcelId === p.id ? '2px solid #10b981' : '1px solid #334155',
+                      background: parcelId === p.id ? '#E6EFE8' : '#FAF9F5',
+                      border: parcelId === p.id ? '2px solid #2E513E' : '1px solid #D8D5CC',
                       transition: 'all 0.2s',
                     }}
                   >
-                    <div style={{ fontWeight: 600, color: parcelId === p.id ? '#34d399' : '#fff' }}>
+                    <div style={{ fontWeight: 600, color: parcelId === p.id ? '#2E513E' : '#20251F' }}>
                       Khasra #{p.khasra}
                     </div>
-                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', margin: '3px 0' }}>{p.name}</div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#64748b' }}>
+                    <div style={{ fontSize: '0.78rem', color: '#5F665D', margin: '3px 0' }}>{p.name}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#737A70' }}>
                       <span>{p.area}</span>
-                      <span style={{ color: p.status === 'Verified' ? '#10b981' : '#f59e0b' }}>{p.status}</span>
+                      <span style={{ color: p.status === 'Verified' ? '#2E6645' : '#914B38', fontWeight: 600 }}>{p.status}</span>
                     </div>
                   </div>
                 ))}
@@ -198,7 +198,8 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                style={{ padding: '8px 20px', background: '#10b981', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
+                className="btn-forest"
+                style={{ padding: '8px 20px', borderRadius: '6px', fontWeight: 600, cursor: 'pointer' }}
               >
                 Next: Report Config →
               </button>
@@ -210,26 +211,26 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
         {step === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', color: '#20251F', fontWeight: 600, marginBottom: '6px' }}>
                 Report Title
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                style={{ width: '100%', padding: '10px', background: '#0f172a', border: '1px solid #334155', borderRadius: '6px', color: '#fff' }}
+                style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #D8D5CC', borderRadius: '6px', color: '#20251F' }}
               />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#20251F', fontWeight: 600, marginBottom: '6px' }}>
                   Report Classification Type
                 </label>
                 <select
                   value={reportType}
                   onChange={(e) => setReportType(e.target.value as ReportType)}
-                  style={{ width: '100%', padding: '10px', background: '#0f172a', border: '1px solid #334155', borderRadius: '6px', color: '#fff' }}
+                  style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #D8D5CC', borderRadius: '6px', color: '#20251F' }}
                 >
                   <option value="CADASTRAL_SURVEY">Cadastral Survey Dossier</option>
                   <option value="BOUNDARY_VERIFICATION">Boundary Verification Report</option>
@@ -240,13 +241,13 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#20251F', fontWeight: 600, marginBottom: '6px' }}>
                   Preferred Measurement Display Unit
                 </label>
                 <select
                   value={preferredUnit}
                   onChange={(e) => setPreferredUnit(e.target.value)}
-                  style={{ width: '100%', padding: '10px', background: '#0f172a', border: '1px solid #334155', borderRadius: '6px', color: '#fff' }}
+                  style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #D8D5CC', borderRadius: '6px', color: '#20251F' }}
                 >
                   <option value="m2">Square Metres (m²)</option>
                   <option value="hectares">Hectares (ha)</option>
@@ -255,11 +256,11 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
               </div>
             </div>
 
-            <div style={{ background: '#0f172a', padding: '14px', borderRadius: '8px', border: '1px solid #334155' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#38bdf8', marginBottom: '4px' }}>
+            <div style={{ background: '#E8F1F3', padding: '14px', borderRadius: '8px', border: '1px solid #BDD7DE' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#385963', marginBottom: '4px' }}>
                 ℹ️ Immutability & Cryptographic Guarantee
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '0.8rem', color: '#4F6870', lineHeight: 1.5 }}>
                 Generating this report creates a deterministic snapshot of all sensor geometries, flight logs, and AI inferences.
                 A SHA-256 hash anchor will be stamped across all generated formats (PDF, GeoJSON, KML, CSV, JSON).
               </div>
@@ -269,14 +270,16 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                style={{ padding: '8px 16px', background: '#334155', border: 'none', borderRadius: '6px', color: '#cbd5e1', cursor: 'pointer' }}
+                className="btn-stone"
+                style={{ padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
               >
                 ← Back
               </button>
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                style={{ padding: '8px 20px', background: '#10b981', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
+                className="btn-forest"
+                style={{ padding: '8px 20px', borderRadius: '6px', fontWeight: 600, cursor: 'pointer' }}
               >
                 Next: Select Sections →
               </button>
@@ -289,11 +292,11 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <label style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>Included Report Sections</label>
+                <label style={{ fontSize: '0.85rem', color: '#20251F', fontWeight: 600 }}>Included Report Sections</label>
                 <button
                   type="button"
                   onClick={() => setSelectedSections(sectionsList.map((s) => s.key))}
-                  style={{ background: 'transparent', border: 'none', color: '#38bdf8', fontSize: '0.78rem', cursor: 'pointer' }}
+                  style={{ background: 'transparent', border: 'none', color: '#2E6645', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}
                 >
                   Select All
                 </button>
@@ -305,15 +308,17 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
                     key={s.key}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px',
-                      background: selectedSections.includes(s.key) ? '#0f172a' : '#1e293b',
-                      border: '1px solid #334155', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem',
+                      background: selectedSections.includes(s.key) ? '#E6EFE8' : '#FAF9F5',
+                      border: selectedSections.includes(s.key) ? '1px solid #BBD4C1' : '1px solid #D8D5CC',
+                      borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem',
+                      color: '#20251F',
                     }}
                   >
                     <input
                       type="checkbox"
                       checked={selectedSections.includes(s.key)}
                       onChange={() => handleToggleSection(s.key)}
-                      style={{ accentColor: '#10b981' }}
+                      style={{ accentColor: '#2E513E' }}
                     />
                     <span>{s.label}</span>
                   </label>
@@ -322,13 +327,13 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
             </div>
 
             {/* Formats notice */}
-            <div style={{ background: '#064e3b', border: '1px solid #059669', padding: '12px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ background: '#E6EFE8', border: '1px solid #BBD4C1', padding: '12px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <span style={{ fontSize: '1.4rem' }}>📦</span>
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#34d399' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#2E6645' }}>
                   Auto-Generation of 5 Production Export Formats
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#a7f3d0' }}>
+                <div style={{ fontSize: '0.78rem', color: '#4F7D60' }}>
                   Includes 11-page ReportLab PDF, Multi-layer GeoJSON, OpenGIS KML, Tabular CSV, and Machine JSON.
                 </div>
               </div>
@@ -339,7 +344,8 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={isSubmitting}
-                style={{ padding: '8px 16px', background: '#334155', border: 'none', borderRadius: '6px', color: '#cbd5e1', cursor: 'pointer' }}
+                className="btn-stone"
+                style={{ padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
               >
                 ← Back
               </button>
@@ -347,7 +353,7 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({
                 type="button"
                 onClick={handleGenerate}
                 disabled={isSubmitting}
-                className="btn btn-primary"
+                className="btn-forest"
                 style={{
                   padding: '10px 24px',
                   borderRadius: '8px',

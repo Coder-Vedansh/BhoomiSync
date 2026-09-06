@@ -4,6 +4,7 @@ import {
   TelemetryRecord,
   MissionHealth,
   SimulatorStatus,
+  R2StorageStats,
 } from "../types/droneMission";
 
 const API_BASE = "/api/v1/drone";
@@ -136,6 +137,12 @@ export const droneMissionApi = {
   async getSimulatorStatus(): Promise<SimulatorStatus> {
     const res = await fetch(`${API_BASE}/simulator/status`);
     if (!res.ok) throw new Error("Failed to fetch simulator status");
+    return res.json();
+  },
+
+  async getR2StorageStats(refresh = false): Promise<R2StorageStats> {
+    const res = await fetch(`${API_BASE}/storage/stats?refresh=${refresh}`);
+    if (!res.ok) throw new Error("Failed to fetch R2 storage stats");
     return res.json();
   },
 

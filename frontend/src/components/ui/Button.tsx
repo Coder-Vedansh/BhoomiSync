@@ -2,7 +2,7 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'cyan' | 'danger' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'accent' | 'cyan' | 'danger' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
@@ -25,10 +25,11 @@ export const Button: React.FC<ButtonProps> = ({
   const variantClass = {
     primary: 'btn-primary',
     secondary: 'btn-secondary',
+    accent: 'btn-accent',
     cyan: 'btn-cyan',
     danger: 'btn-danger',
     outline: 'btn-outline',
-    ghost: 'bg-transparent text-slate-300 hover:bg-slate-800/60 hover:text-white',
+    ghost: 'bg-transparent text-[#5F665D] hover:bg-[#EEF2EC] hover:text-[#20251F]',
   }[variant];
 
   const sizeClass = {
@@ -53,7 +54,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 export const IconButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: React.ReactNode;
-  variant?: 'secondary' | 'ghost' | 'outline' | 'primary';
+  variant?: 'secondary' | 'ghost' | 'outline' | 'primary' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   tooltip?: string;
 }> = ({ icon, variant = 'secondary', size = 'md', tooltip, className = '', ...props }) => {
@@ -63,13 +64,26 @@ export const IconButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> 
     lg: 'p-2.5 text-base',
   }[size];
 
+  const variantClass =
+    variant === 'primary'
+      ? 'btn-primary'
+      : variant === 'accent'
+      ? 'btn-accent'
+      : variant === 'outline'
+      ? 'btn-outline'
+      : variant === 'ghost'
+      ? 'bg-transparent hover:bg-[#EEF2EC] text-[#5F665D] hover:text-[#20251F]'
+      : 'btn-secondary';
+
   return (
     <button
       title={tooltip}
-      className={`btn ${variant === 'primary' ? 'btn-primary' : variant === 'outline' ? 'btn-outline' : variant === 'ghost' ? 'bg-transparent hover:bg-slate-800/60 text-slate-300 hover:text-white' : 'btn-secondary'} ${padClass} rounded-lg ${className}`}
+      className={`btn ${variantClass} ${padClass} rounded-lg ${className}`}
       {...props}
     >
       {icon}
     </button>
   );
 };
+
+export default Button;

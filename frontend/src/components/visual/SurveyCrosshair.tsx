@@ -9,7 +9,7 @@ interface SurveyCrosshairProps {
 export const SurveyCrosshair: React.FC<SurveyCrosshairProps> = ({
   className = '',
   size = 28,
-  color = '#10b981',
+  color = '#2E513E',
 }) => {
   return (
     <svg

@@ -48,34 +48,34 @@ export const Modal: React.FC<ModalProps> = ({
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-          {/* Backdrop (opacity: 0 -> 1, 180ms) */}
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="fixed inset-0 bg-black/75 backdrop-blur-sm pointer-events-auto"
+            className="fixed inset-0 bg-[#24201B]/40 backdrop-blur-xs pointer-events-auto"
             onClick={onClose}
           />
 
-          {/* Modal Dialog (opacity: 0 -> 1, scale: 0.98 -> 1, y: 4px -> 0, 200ms) */}
+          {/* Modal Dialog */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98, y: 4 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 4 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className={`relative z-10 w-full ${maxWidthClass} bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] pointer-events-auto`}
+            className={`relative z-10 w-full ${maxWidthClass} bg-white border border-[#D8D5CC] rounded-2xl shadow-[0_16px_36px_rgba(44,52,43,0.14)] overflow-hidden flex flex-col max-h-[90vh] pointer-events-auto`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-slate-800">
+            <div className="flex items-center justify-between p-5 border-b border-[#D8D5CC] bg-[#FAF9F5]">
               <div>
-                <h3 className="text-lg font-bold text-white">{title}</h3>
-                {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+                <h3 className="text-lg font-bold text-[#20251F]">{title}</h3>
+                {subtitle && <p className="text-xs text-[#5F665D] mt-0.5">{subtitle}</p>}
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-[#5F665D] hover:text-[#20251F] hover:bg-[#EEF2EC] transition-colors cursor-pointer"
                 title="Close (Esc)"
               >
                 <X size={18} />
@@ -83,11 +83,11 @@ export const Modal: React.FC<ModalProps> = ({
             </div>
 
             {/* Content */}
-            <div className="p-5 overflow-y-auto flex-1 text-slate-200">{children}</div>
+            <div className="p-5 overflow-y-auto flex-1 text-[#4F574D]">{children}</div>
 
             {/* Footer */}
             {footer && (
-              <div className="flex items-center justify-end gap-3 p-4 bg-slate-950/60 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 p-4 bg-[#FAF9F5] border-t border-[#D8D5CC]">
                 {footer}
               </div>
             )}
@@ -97,3 +97,5 @@ export const Modal: React.FC<ModalProps> = ({
     </AnimatePresence>
   );
 };
+
+export default Modal;

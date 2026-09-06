@@ -20,6 +20,9 @@ class R2StorageService:
     _s3_client = None
     _is_mock = False
     _mock_storage: Dict[str, Dict[str, Any]] = {}
+    _cached_stats: Optional[Dict[str, Any]] = None
+    _last_stats_time: Optional[datetime] = None
+    _stats_cache_ttl_seconds: int = 15
 
     @classmethod
     def get_client(cls):
@@ -209,3 +212,104 @@ class R2StorageService:
             return True, 1024 * 1024  # Simulated 1MB
 
         return False, 0
+
+    @classmethod
+    def get_bucket_stats(cls, force_refresh: bool = False) -> Dict[str, Any]:
+        """
+        Retrieves live real-time storage statistics directly from the Cloudflare R2 bucket.
+        Caches for 15 seconds to prevent rate limiting, with force_refresh support.
+        """
+        now = datetime.utcnow()
+        if (
+            not force_refresh
+            and cls._cached_stats is not None
+            and cls._last_stats_time is not None
+            and (now - cls._last_stats_time).total_seconds() < cls._stats_cache_ttl_seconds
+        ):
+            return cls._cached_stats
+
+        client = cls.get_client()
+        bucket = settings.R2_BUCKET_NAME
+
+        if not cls._is_mock and client:
+            try:
+                paginator = client.get_paginator("list_objects_v2")
+                total_objects = 0
+                total_bytes = 0
+                raw_rgb_count = 0
+                raw_tof_count = 0
+                raw_lidar_count = 0
+                manifest_count = 0
+                other_count = 0
+
+                for page in paginator.paginate(Bucket=bucket):
+                    contents = page.get("Contents", [])
+                    for obj in contents:
+                        total_objects += 1
+                        size = obj.get("Size", 0)
+                        total_bytes += size
+                        key = obj.get("Key", "")
+
+                        if "/raw/rgb/" in key:
+                            raw_rgb_count += 1
+                        elif "/raw/tof/" in key:
+                            raw_tof_count += 1
+                        elif "/raw/lidar/" in key:
+                            raw_lidar_count += 1
+                        elif "manifest" in key:
+                            manifest_count += 1
+                        else:
+                            other_count += 1
+
+                total_mb = round(total_bytes / (1024 * 1024), 2)
+                total_kb = round(total_bytes / 1024, 1)
+                formatted_size = f"{total_mb} MB" if total_bytes >= 1024 * 1024 else f"{total_kb} KB"
+
+                stats = {
+                    "is_live": True,
+                    "provider": "Cloudflare R2",
+                    "bucket_name": bucket,
+                    "account_id": settings.R2_ACCOUNT_ID,
+                    "total_objects": total_objects,
+                    "total_bytes": total_bytes,
+                    "total_size_mb": total_mb,
+                    "total_size_kb": total_kb,
+                    "total_size_formatted": formatted_size,
+                    "raw_rgb_count": raw_rgb_count,
+                    "raw_tof_count": raw_tof_count,
+                    "raw_lidar_count": raw_lidar_count,
+                    "manifest_count": manifest_count,
+                    "other_count": other_count,
+                    "last_synced_at": now.isoformat() + "Z",
+                    "status": "ONLINE",
+                }
+
+                cls._cached_stats = stats
+                cls._last_stats_time = now
+                return stats
+            except Exception as e:
+                pass
+
+        # Fallback to local index or simulated fallback
+        total_mock_bytes = sum(item.get("size", 0) for item in cls._mock_storage.values())
+        total_mock_mb = round(total_mock_bytes / (1024 * 1024), 2)
+        total_mock_kb = round(total_mock_bytes / 1024, 1)
+        formatted_size = f"{total_mock_mb} MB" if total_mock_bytes >= 1024 * 1024 else f"{total_mock_kb} KB"
+        return {
+            "is_live": False,
+            "provider": "Cloudflare R2 (Simulated/Fallback)",
+            "bucket_name": bucket,
+            "account_id": settings.R2_ACCOUNT_ID,
+            "total_objects": len(cls._mock_storage),
+            "total_bytes": total_mock_bytes,
+            "total_size_mb": total_mock_mb,
+            "total_size_kb": total_mock_kb,
+            "total_size_formatted": formatted_size,
+            "raw_rgb_count": 0,
+            "raw_tof_count": 0,
+            "raw_lidar_count": 0,
+            "manifest_count": 0,
+            "other_count": len(cls._mock_storage),
+            "last_synced_at": now.isoformat() + "Z",
+            "status": "FALLBACK",
+        }

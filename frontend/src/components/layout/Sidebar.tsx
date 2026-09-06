@@ -157,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/75 backdrop-blur-xs z-40 lg:hidden animate-fade-in"
+          className="fixed inset-0 bg-[#24201B]/40 backdrop-blur-xs z-40 lg:hidden animate-fade-in"
           onClick={onCloseMobile}
         />
       )}
@@ -165,22 +165,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={`sidebar ${mobileOpen ? 'mobile-open' : ''} ${
           isCollapsed ? 'collapsed' : ''
-        } fixed top-0 bottom-0 left-0 h-screen h-[100dvh] flex flex-col justify-between z-40 bg-[var(--surface)] border-r border-[var(--border-subtle)] transition-all duration-200`}
+        } fixed top-0 bottom-0 left-0 h-screen h-[100dvh] flex flex-col justify-between z-40 bg-[#ECEAE2] border-r border-[#D8D5CC] transition-all duration-200`}
       >
         <div className="flex-1 min-h-0 overflow-y-auto px-3 py-3.5 space-y-4">
-          {/* Brand Logo Header */}
-          <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          {/* Brand Logo Header: Forest + Brass */}
+          <div className="flex items-center justify-between border-b border-[#D8D5CC] pb-3">
             <div
               className="flex items-center gap-2.5 cursor-pointer group"
               onClick={() => handleNavClick('dashboard')}
             >
-              <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[#13261e] border border-[#1b382b] flex items-center justify-center text-emerald-400 shadow-xs flex-shrink-0 group-hover:border-emerald-500/50 transition-colors">
+              <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[#2E513E] border border-[#3C664D] flex items-center justify-center text-[#F5EBC5] shadow-xs flex-shrink-0 group-hover:bg-[#3C664D] transition-colors">
                 <Trees size={16} />
               </div>
               {!isCollapsed && (
                 <div className="truncate">
-                  <h2 className="text-xs font-bold text-slate-100 leading-none tracking-tight">BhoomiSync</h2>
-                  <span className="text-[9px] font-semibold text-emerald-400 uppercase tracking-wider block mt-0.5">
+                  <h2 className="text-xs font-bold text-[#20251F] leading-none tracking-tight">BhoomiSync</h2>
+                  <span className="text-[9px] font-semibold text-[#2E513E] uppercase tracking-wider block mt-0.5">
                     Cadastral Station
                   </span>
                 </div>
@@ -190,7 +190,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Close Button */}
             <button
               onClick={onCloseMobile}
-              className="p-1 rounded-md text-slate-400 hover:text-white lg:hidden cursor-pointer"
+              className="p-1 rounded-md text-[#5F665D] hover:text-[#20251F] lg:hidden cursor-pointer"
               title="Close menu"
             >
               <X size={16} />
@@ -202,7 +202,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {navigationSections.map((sec) => (
               <div key={sec.section}>
                 {!isCollapsed && (
-                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400 px-2 mb-1.5">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-[#737A70] px-2 mb-1.5">
                     {sec.section}
                   </div>
                 )}
@@ -217,23 +217,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         onClick={() => handleNavClick(item.id)}
                         className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-[var(--radius-sm)] text-xs font-medium transition-all text-left cursor-pointer relative ${
                           isActive
-                            ? 'bg-emerald-500/10 text-emerald-300 font-semibold border border-emerald-500/25 before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:bg-emerald-400 before:rounded-r'
-                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
+                            ? 'bg-[#DDE9E0] text-[#2E513E] font-semibold border border-[#BBD4C1] before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:bg-[#4F7D60] before:rounded-r'
+                            : 'text-[#30372F] hover:text-[#20251F] hover:bg-[#EEF2EC] border border-transparent'
                         }`}
                         title={isCollapsed ? item.label : undefined}
                       >
                         <Icon
                           size={15}
-                          className={isActive ? 'text-emerald-400 flex-shrink-0' : 'text-slate-400 flex-shrink-0'}
+                          className={isActive ? 'text-[#3C664D] flex-shrink-0' : 'text-[#657064] flex-shrink-0'}
                         />
                         {!isCollapsed && (
                           <div className="flex-1 truncate">
-                            <div className="leading-tight text-slate-200">{item.label}</div>
-                            <div className="text-[10px] text-slate-400 truncate mt-0.5">{item.subtitle}</div>
+                            <div className="leading-tight text-[#30372F]">{item.label}</div>
+                            <div className="text-[10px] text-[#737A70] truncate mt-0.5">{item.subtitle}</div>
                           </div>
                         )}
                         {!isCollapsed && item.badge && (
-                          <span className="text-[8px] font-mono font-semibold px-1 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700/60">
+                          <span className="text-[8px] font-mono font-semibold px-1 py-0.2 rounded bg-[#FAF9F5] text-[#5F665D] border border-[#D8D5CC]">
                             {item.badge}
                           </span>
                         )}
@@ -247,48 +247,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Honest Hardware Provenance Status Box */}
           {!isCollapsed && (
-            <div className="p-3 bg-[var(--surface-elevated)] rounded-[var(--radius-md)] border border-[var(--border)] text-xs text-slate-400 space-y-2">
-              <div className="font-semibold uppercase tracking-wider text-slate-300 text-[10px] border-b border-[var(--border)] pb-1.5 flex items-center justify-between">
+            <div className="p-3 bg-[#FAF9F5] rounded-[var(--radius-md)] border border-[#D8D5CC] text-xs text-[#5F665D] space-y-2 shadow-xs">
+              <div className="font-semibold uppercase tracking-wider text-[#30372F] text-[10px] border-b border-[#D8D5CC] pb-1.5 flex items-center justify-between">
                 <span>Hardware Sensors</span>
-                <span className="inline-flex items-center gap-1 text-[9px] font-mono text-emerald-400 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="inline-flex items-center gap-1 text-[9px] font-mono text-[#2E6645] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4F7D60]" />
                   ACTIVE
                 </span>
               </div>
 
               <div className="flex items-center justify-between pt-0.5">
-                <span className="flex items-center gap-1.5 text-slate-300">
-                  <Radio size={12} className="text-cyan-400" />
+                <span className="flex items-center gap-1.5 text-[#4F574D]">
+                  <Radio size={12} className="text-[#568693]" />
                   <span>Camera:</span>
                 </span>
-                <span className="font-mono text-emerald-400 font-semibold text-[11px]">
+                <span className="font-mono text-[#2E6645] font-semibold text-[11px]">
                   ESP32 [LIVE]
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-slate-300">
-                  <Activity size={12} className="text-cyan-400" />
+                <span className="flex items-center gap-1.5 text-[#4F574D]">
+                  <Activity size={12} className="text-[#568693]" />
                   <span>ToF Distance:</span>
                 </span>
-                <span className="font-mono text-emerald-400 font-semibold text-[11px]">
+                <span className="font-mono text-[#2E6645] font-semibold text-[11px]">
                   2.0 cm [VALID]
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">GNSS / RTK:</span>
-                <span className="font-mono text-[9px] text-slate-400 bg-slate-900 px-1.5 py-0.5 rounded border border-[var(--border)]">
+                <span className="text-[#737A70]">GNSS / RTK:</span>
+                <span className="font-mono text-[9px] text-[#5F665D] bg-[#EFEEE8] px-1.5 py-0.5 rounded border border-[#D8D5CC]">
                   NOT AVAILABLE
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-slate-300">
-                  <Cloud size={12} className="text-purple-400" />
+                <span className="flex items-center gap-1.5 text-[#4F574D]">
+                  <Cloud size={12} className="text-[#4F7D60]" />
                   <span>R2 Cloud:</span>
                 </span>
-                <span className="font-mono text-purple-300 font-medium text-[11px]">
+                <span className="font-mono text-[#2E513E] font-medium text-[11px]">
                   CONNECTED
                 </span>
               </div>
@@ -297,22 +297,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Footer: User Account & Collapse Toggle */}
-        <div className="p-2.5 border-t border-[var(--border)] space-y-1.5 bg-[var(--surface)]">
+        <div className="p-2.5 border-t border-[#D8D5CC] space-y-1.5 bg-[#ECEAE2]">
           {/* User Account Tile */}
           {!isCollapsed ? (
-            <div className="flex items-center justify-between p-1.5 bg-[var(--surface-elevated)] rounded-[var(--radius-sm)] border border-[var(--border)]">
+            <div className="flex items-center justify-between p-1.5 bg-[#FAF9F5] rounded-[var(--radius-sm)] border border-[#D8D5CC]">
               <div
                 className="flex items-center gap-2 cursor-pointer truncate"
                 onClick={() => handleNavClick('security-admin')}
               >
-                <div className="w-6 h-6 rounded-md bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                <div className="w-6 h-6 rounded-md bg-[#E6EFE8] text-[#2E513E] flex items-center justify-center font-bold text-xs flex-shrink-0">
                   <User size={12} />
                 </div>
                 <div className="truncate text-left">
-                  <div className="text-[11px] font-medium text-slate-200 truncate leading-tight">
+                  <div className="text-[11px] font-medium text-[#20251F] truncate leading-tight">
                     {isAuthenticated ? (user?.full_name || user?.username) : 'Chief Surveyor'}
                   </div>
-                  <div className="text-[9px] font-mono text-emerald-400 leading-tight">
+                  <div className="text-[9px] font-mono text-[#2E513E] leading-tight">
                     {activeRole}
                   </div>
                 </div>
@@ -320,7 +320,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <button
                 onClick={() => handleNavClick('security-admin')}
-                className="p-1 text-slate-400 hover:text-slate-200 rounded hover:bg-slate-800 cursor-pointer"
+                className="p-1 text-[#5F665D] hover:text-[#20251F] rounded hover:bg-[#EEF2EC] cursor-pointer"
                 title="Security & System Settings"
               >
                 <KeyRound size={13} />
@@ -329,7 +329,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ) : (
             <button
               onClick={() => handleNavClick('security-admin')}
-              className="w-full flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              className="w-full flex items-center justify-center p-1.5 rounded-lg text-[#5F665D] hover:text-[#20251F] hover:bg-[#EEF2EC] cursor-pointer"
               title="Security & System Settings"
             >
               <KeyRound size={15} />
@@ -340,7 +340,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {onToggleCollapse && (
             <button
               onClick={onToggleCollapse}
-              className="w-full flex items-center justify-center gap-1.5 p-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 text-[11px] font-medium transition-colors hidden lg:flex cursor-pointer"
+              className="w-full flex items-center justify-center gap-1.5 p-1 rounded-md text-[#5F665D] hover:text-[#20251F] hover:bg-[#DDE9E0] text-[11px] font-medium transition-colors hidden lg:flex cursor-pointer"
             >
               {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
               {!isCollapsed && <span>Collapse</span>}

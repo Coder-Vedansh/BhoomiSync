@@ -143,28 +143,28 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
       <StatGrid columns={4}>
         <MetricCard
           label="Total Reports"
-          value={<span className="font-mono text-2xl font-extrabold">{totalReports}</span>}
+          value={<span className="font-mono text-2xl font-extrabold text-[#20251F]">{totalReports}</span>}
           subtitle="Cadastral dossiers created"
           icon={<FileText size={16} />}
           variant="emerald"
         />
         <MetricCard
           label="Surveyor Approved"
-          value={<span className="font-mono text-2xl font-extrabold text-emerald-400">{approvedReports}</span>}
+          value={<span className="font-mono text-2xl font-extrabold text-[#2E6645]">{approvedReports}</span>}
           subtitle="Legally signed &amp; anchored"
           icon={<ShieldCheck size={16} />}
           variant="emerald"
         />
         <MetricCard
           label="Under Review"
-          value={<span className="font-mono text-2xl font-extrabold text-amber-400">{underReviewReports}</span>}
+          value={<span className="font-mono text-2xl font-extrabold text-[#927323]">{underReviewReports}</span>}
           subtitle="Awaiting official sign-off"
           icon={<Clock size={16} />}
           variant="amber"
         />
         <MetricCard
           label="Export Artifacts"
-          value={<span className="font-mono text-2xl font-extrabold text-cyan-400">{totalExports}</span>}
+          value={<span className="font-mono text-2xl font-extrabold text-[#385963]">{totalExports}</span>}
           subtitle="PDF, GeoJSON, KML, CSV, JSON"
           icon={<Layers size={16} />}
           variant="cyan"
@@ -183,7 +183,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 flex-shrink-0">
+            <div className="flex items-center gap-1.5 text-xs text-[#5F665D] flex-shrink-0">
               <Filter size={13} />
               <span>Filters:</span>
             </div>
@@ -229,8 +229,8 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
               header: 'Report Number',
               accessor: (r) => (
                 <div>
-                  <div className="font-mono font-bold text-white text-xs">{r.report_number}</div>
-                  <div className="text-[11px] text-slate-400 truncate max-w-xs">{r.title}</div>
+                  <div className="font-mono font-bold text-[#20251F] text-xs">{r.report_number}</div>
+                  <div className="text-[11px] text-[#5F665D] truncate max-w-xs">{r.title}</div>
                 </div>
               ),
               width: '200px',
@@ -239,8 +239,8 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
               header: 'Target Parcel',
               accessor: (r) => (
                 <div>
-                  <span className="font-mono font-bold text-emerald-400">{r.parcel_id}</span>
-                  <div className="text-[11px] text-slate-400 font-mono">v{r.version}</div>
+                  <span className="font-mono font-bold text-[#2E513E]">{r.parcel_id}</span>
+                  <div className="text-[11px] text-[#5F665D] font-mono">v{r.version}</div>
                 </div>
               ),
               width: '120px',
@@ -248,7 +248,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
             {
               header: 'Report Type',
               accessor: (r) => (
-                <span className="text-xs text-slate-300">
+                <span className="text-xs text-[#20251F]">
                   {r.report_type.replace(/_/g, ' ')}
                 </span>
               ),
@@ -256,7 +256,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
             {
               header: 'Created Date',
               accessor: (r) => (
-                <span className="font-mono text-xs text-slate-400">
+                <span className="font-mono text-xs text-[#5F665D]">
                   {new Date(r.created_at).toLocaleDateString()}
                 </span>
               ),
@@ -273,17 +273,17 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ onNavigate }) => {
                 const getFormatStyle = (fmt: string) => {
                   switch (fmt) {
                     case 'pdf':
-                      return 'bg-rose-500/15 text-rose-300 border-rose-500/30 hover:bg-rose-600 hover:text-white';
+                      return 'bg-[#FAEAE5] text-[#914B38] border-[#E6C0B1] hover:bg-[#AD6048] hover:text-white';
                     case 'geojson':
-                      return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-600 hover:text-white';
+                      return 'bg-[#E6EFE8] text-[#2E6645] border-[#BBD4C1] hover:bg-[#2E513E] hover:text-white';
                     case 'kml':
-                      return 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30 hover:bg-cyan-600 hover:text-white';
+                      return 'bg-[#E8F1F3] text-[#385963] border-[#BDD7DE] hover:bg-[#568693] hover:text-white';
                     case 'csv':
-                      return 'bg-amber-500/15 text-amber-300 border-amber-500/30 hover:bg-amber-600 hover:text-white';
+                      return 'bg-[#FBF4DC] text-[#74591D] border-[#EBD99A] hover:bg-[#B18F2E] hover:text-white';
                     case 'json':
-                      return 'bg-purple-500/15 text-purple-300 border-purple-500/30 hover:bg-purple-600 hover:text-white';
+                      return 'bg-[#FAF8F3] text-[#4F574D] border-[#D8D5CC] hover:bg-[#2E513E] hover:text-white';
                     default:
-                      return 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-emerald-600 hover:text-white';
+                      return 'bg-[#EFEEE8] text-[#5F665D] border-[#D8D5CC] hover:bg-[#2E513E] hover:text-white';
                   }
                 };
                 return (

@@ -98,3 +98,22 @@ export interface SimulatorStatus {
   battery: number;
   status: string;
 }
+
+export interface R2StorageStats {
+  is_live: boolean;
+  provider: string;
+  bucket_name: string;
+  account_id?: string;
+  total_objects: number;
+  total_bytes: number;
+  total_size_mb: number;
+  total_size_kb: number;
+  total_size_formatted: string;
+  raw_rgb_count: number;
+  raw_tof_count: number;
+  raw_lidar_count: number;
+  manifest_count: number;
+  other_count: number;
+  last_synced_at: string;
+  status: string;
+}

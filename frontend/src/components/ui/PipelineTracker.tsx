@@ -27,16 +27,16 @@ export const PipelineTracker: React.FC<PipelineTrackerProps> = ({
   const computedProgress = overallProgress ?? (stages.length > 0 ? (completedCount / stages.length) * 100 : 0);
 
   return (
-    <div className={`bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-md ${className}`}>
+    <div className={`bg-white border border-[#D8D5CC] rounded-[var(--radius-lg)] p-4 shadow-sm ${className}`}>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h4 className="text-sm font-bold text-white flex items-center gap-2">
+          <h4 className="text-sm font-bold text-[#20251F] flex items-center gap-2">
             <span>11-Stage Cloud Processing Pipeline</span>
-            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+            <span className="text-[11px] font-mono text-[#2E6645] bg-[#E6EFE8] px-2 py-0.5 rounded border border-[#BBD4C1]">
               {completedCount} / {stages.length} Completed
             </span>
           </h4>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-[#5F665D] mt-0.5">
             Photogrammetry, LiDAR, AI classification, boundary extraction, and cadastral report generation.
           </p>
         </div>
@@ -56,38 +56,38 @@ export const PipelineTracker: React.FC<PipelineTrackerProps> = ({
               key={stage.stage_number}
               className={`p-2.5 rounded-lg border transition-all ${
                 isRunning
-                  ? 'bg-cyan-500/10 border-cyan-500/40 shadow-sm'
+                  ? 'bg-[#E8F1F3] border-[#BDD7DE] shadow-xs'
                   : isCompleted
-                  ? 'bg-emerald-500/5 border-emerald-500/20'
+                  ? 'bg-[#F1F6F2] border-[#BBD4C1]'
                   : isFailed
-                  ? 'bg-rose-500/10 border-rose-500/30'
-                  : 'bg-slate-950/40 border-slate-800/80 opacity-70'
+                  ? 'bg-[#FAF2EE] border-[#E6C0B1]'
+                  : 'bg-[#FAF9F5] border-[#D8D5CC]'
               }`}
             >
               <div className="flex items-center justify-between text-xs mb-1.5">
                 <div className="flex items-center gap-1.5 font-semibold">
                   {isCompleted ? (
-                    <CheckCircle2 size={13} className="text-emerald-400 flex-shrink-0" />
+                    <CheckCircle2 size={13} className="text-[#2E6645] flex-shrink-0" />
                   ) : isRunning ? (
-                    <Loader2 size={13} className="text-cyan-400 animate-spin flex-shrink-0" />
+                    <Loader2 size={13} className="text-[#385963] animate-spin flex-shrink-0" />
                   ) : isFailed ? (
-                    <AlertCircle size={13} className="text-rose-400 flex-shrink-0" />
+                    <AlertCircle size={13} className="text-[#914B38] flex-shrink-0" />
                   ) : (
-                    <Clock size={13} className="text-slate-500 flex-shrink-0" />
+                    <Clock size={13} className="text-[#5F665D] flex-shrink-0" />
                   )}
-                  <span className="text-slate-200 truncate">
+                  <span className="text-[#20251F] truncate">
                     {stage.stage_number}. {stage.stage_name}
                   </span>
                 </div>
                 <span
                   className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-bold ${
                     isCompleted
-                      ? 'bg-emerald-500/20 text-emerald-300'
+                      ? 'bg-[#DCEADF] text-[#2E513E]'
                       : isRunning
-                      ? 'bg-cyan-500/20 text-cyan-300 animate-pulse'
+                      ? 'bg-[#DCEAED] text-[#385963] animate-pulse'
                       : isFailed
-                      ? 'bg-rose-500/20 text-rose-300'
-                      : 'bg-slate-800 text-slate-400'
+                      ? 'bg-[#F2DDD3] text-[#914B38]'
+                      : 'bg-[#EFEEE8] text-[#5F665D]'
                   }`}
                 >
                   {stage.status}

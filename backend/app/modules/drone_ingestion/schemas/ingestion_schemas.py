@@ -181,3 +181,22 @@ class SimulatorStatusResponse(BaseModel):
     current_alt: float = 120.0
     battery: float = 100.0
     status: str = "IDLE"
+
+
+class R2StorageStatsResponse(BaseModel):
+    is_live: bool = True
+    provider: str = "Cloudflare R2"
+    bucket_name: str = "bhoomisync-drone-data"
+    account_id: Optional[str] = None
+    total_objects: int = 0
+    total_bytes: int = 0
+    total_size_mb: float = 0.0
+    total_size_kb: float = 0.0
+    total_size_formatted: str = "0.0 MB"
+    raw_rgb_count: int = 0
+    raw_tof_count: int = 0
+    raw_lidar_count: int = 0
+    manifest_count: int = 0
+    other_count: int = 0
+    last_synced_at: str
+    status: str = "ONLINE"

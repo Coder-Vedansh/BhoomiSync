@@ -24,7 +24,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 
   return (
     <div
-      className={`skeleton-shimmer bg-slate-800/60 ${roundedClass} ${className}`}
+      className={`skeleton-shimmer bg-[#E5DED0] ${roundedClass} ${className}`}
       style={{
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
@@ -50,7 +50,7 @@ export const TableSkeleton: React.FC<TableSkeletonProps> = ({
   return (
     <>
       {Array.from({ length: rows }).map((_, rIdx) => (
-        <tr key={rIdx} className="border-b border-slate-800/60">
+        <tr key={rIdx} className="border-b border-[#E1DED5]">
           {Array.from({ length: columns }).map((_, cIdx) => (
             <td key={cIdx} className="py-3 px-4">
               <Skeleton
@@ -107,26 +107,26 @@ export const ProgressOperationBanner: React.FC<ProgressOperationBannerProps> = (
   className = '',
 }) => {
   return (
-    <div className={`p-4 rounded-xl bg-slate-900/90 border border-sky-500/30 backdrop-blur-md shadow-lg space-y-2.5 ${className}`}>
+    <div className={`p-4 rounded-xl bg-white border border-[#D8D5CC] shadow-md space-y-2.5 ${className}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-          <span className="text-xs font-semibold text-white">{title}</span>
+          <div className="w-2 h-2 rounded-full bg-[#385963] animate-pulse" />
+          <span className="text-xs font-semibold text-[#20251F]">{title}</span>
         </div>
-        <span className="text-[11px] font-mono text-sky-400 font-bold">{progressPercent}%</span>
+        <span className="text-[11px] font-mono text-[#385963] font-bold">{progressPercent}%</span>
       </div>
 
       {/* Engineered Progress Track */}
-      <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-[#E5DED0] rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-sky-500 to-emerald-400 transition-all duration-300 ease-out"
+          className="h-full bg-gradient-to-r from-[#385963] to-[#2E6645] transition-all duration-300 ease-out"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
 
-      <div className="flex items-center justify-between text-[11px] text-slate-400">
-        <span>Current stage: <strong className="text-slate-200">{stageName}</strong></span>
-        <span className="font-mono text-[10px] text-slate-500">Stage {stageIndex} of {totalStages}</span>
+      <div className="flex items-center justify-between text-[11px] text-[#5F665D]">
+        <span>Current stage: <strong className="text-[#20251F]">{stageName}</strong></span>
+        <span className="font-mono text-[10px] text-[#737A70]">Stage {stageIndex} of {totalStages}</span>
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ import {
 
 const vertexIcon = new L.DivIcon({
   className: 'custom-vertex-handle',
-  html: '<div style="background-color: #f59e0b; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.6); cursor: crosshair;"></div>',
+  html: '<div style="background-color: #B18F2E; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #FFFFFF; box-shadow: 0 0 4px rgba(44,52,43,0.6); cursor: crosshair;"></div>',
   iconSize: [12, 12],
   iconAnchor: [6, 6],
 });
@@ -235,43 +235,43 @@ export const GisMap: React.FC<GisMapProps> = ({
     const isSelected = parcel.parcel_id === selectedParcelId;
     if (isSelected) {
       return {
-        color: '#f59e0b',
-        weight: 3.5,
-        dashArray: '2, 4',
-        fillOpacity: 0.45,
-        fillColor: '#fbbf24',
+        color: '#AD6048',
+        weight: 3,
+        dashArray: '3, 4',
+        fillOpacity: 0.35,
+        fillColor: '#D69D88',
       };
     }
     switch (parcel.verification_status as any) {
       case 'VERIFIED':
-        return { color: '#10b981', weight: 2, fillOpacity: 0.22, fillColor: '#059669' };
+        return { color: '#2E513E', weight: 2.5, fillOpacity: 0.22, fillColor: '#6F9B7B' };
       case 'MANUALLY_EDITED':
-        return { color: '#38bdf8', weight: 2, fillOpacity: 0.25, fillColor: '#0284c7' };
+        return { color: '#568693', weight: 2, fillOpacity: 0.22, fillColor: '#96BBC5' };
       case 'FLAGGED_DISPUTE':
-        return { color: '#ef4444', weight: 2, fillOpacity: 0.35, fillColor: '#dc2626' };
+        return { color: '#914B38', weight: 2.5, fillOpacity: 0.32, fillColor: '#C47B62' };
       default:
-        return { color: '#6366f1', weight: 1.8, fillOpacity: 0.2, fillColor: '#4f46e5' };
+        return { color: '#B18F2E', weight: 1.8, fillOpacity: 0.18, fillColor: '#DFC56D' };
     }
   };
 
   const getClassColor = (className: string) => {
     switch (className.toUpperCase()) {
       case 'AGRICULTURAL':
-        return { color: '#10b981', fill: '#059669' };
+        return { color: '#4F7D60', fill: '#6F9B7B' };
       case 'FALLOW':
-        return { color: '#d97706', fill: '#f59e0b' };
+        return { color: '#927323', fill: '#B18F2E' };
       case 'VEGETATION':
-        return { color: '#22c55e', fill: '#16a34a' };
+        return { color: '#2E513E', fill: '#4F7D60' };
       case 'WATER':
-        return { color: '#0ea5e9', fill: '#0284c7' };
+        return { color: '#456F7A', fill: '#568693' };
       case 'BUILDING':
-        return { color: '#ef4444', fill: '#dc2626' };
+        return { color: '#914B38', fill: '#AD6048' };
       case 'ROAD':
-        return { color: '#94a3b8', fill: '#64748b' };
+        return { color: '#665B4B', fill: '#827561' };
       case 'BARREN':
-        return { color: '#a8a29e', fill: '#78716c' };
+        return { color: '#9F927D', fill: '#BBAE99' };
       default:
-        return { color: '#a855f7', fill: '#9333ea' };
+        return { color: '#568693', fill: '#6F9FAA' };
     }
   };
 
@@ -341,10 +341,10 @@ export const GisMap: React.FC<GisMapProps> = ({
               [orthoManifest.spatial_bounds.min_lat, orthoManifest.spatial_bounds.max_lon],
             ]}
             pathOptions={{
-              color: '#10b981',
+              color: '#2E513E',
               weight: 2,
               fillOpacity: 0.08,
-              fillColor: '#059669',
+              fillColor: '#4F7D60',
             }}
           >
             <Popup>
@@ -374,11 +374,11 @@ export const GisMap: React.FC<GisMapProps> = ({
               [demManifest.spatial_bounds.min_lat, demManifest.spatial_bounds.max_lon],
             ]}
             pathOptions={{
-              color: '#d97706',
+              color: '#927323',
               weight: 2,
               dashArray: '4, 4',
-              fillOpacity: 0.28,
-              fillColor: '#f59e0b',
+              fillOpacity: 0.22,
+              fillColor: '#B18F2E',
             }}
           >
             <Popup>
@@ -404,16 +404,16 @@ export const GisMap: React.FC<GisMapProps> = ({
                 key={`lidar-layer-${idx}`}
                 positions={positions}
                 pathOptions={{
-                  color: '#c084fc',
+                  color: '#568693',
                   weight: 2,
                   dashArray: '3, 6',
                   fillOpacity: 0.12,
-                  fillColor: '#a855f7',
+                  fillColor: '#6F9FAA',
                 }}
               >
                 <Popup>
                   <div style={{ padding: '0.3rem' }}>
-                    <span className="badge badge-purple">3D LiDAR Point Cloud</span>
+                    <span className="badge badge-cyan">3D LiDAR Point Cloud</span>
                     <div style={{ fontWeight: 700, fontSize: '0.85rem', marginTop: '0.2rem' }}>
                       {feat.properties.filename}
                     </div>
@@ -434,7 +434,7 @@ export const GisMap: React.FC<GisMapProps> = ({
                 key={`rtk-layer-${idx}`}
                 positions={linePositions}
                 pathOptions={{
-                  color: '#06b6d4',
+                  color: '#568693',
                   weight: 2.5,
                   opacity: 0.85,
                   dashArray: '2, 4',
@@ -453,8 +453,8 @@ export const GisMap: React.FC<GisMapProps> = ({
                 center={[lat, lon]}
                 radius={4}
                 pathOptions={{
-                  color: '#ffffff',
-                  fillColor: '#10b981',
+                  color: '#FAF9F5',
+                  fillColor: '#2E513E',
                   fillOpacity: 0.9,
                   weight: 1.5,
                 }}
@@ -472,11 +472,11 @@ export const GisMap: React.FC<GisMapProps> = ({
                 key={`raw-bnd-${bnd.boundary_id}`}
                 positions={positions}
                 pathOptions={{
-                  color: '#f97316',
+                  color: '#AD6048',
                   weight: 1.8,
                   dashArray: '4, 4',
-                  fillOpacity: 0.05,
-                  fillColor: '#f97316',
+                  fillOpacity: 0.08,
+                  fillColor: '#D69D88',
                 }}
               />
             );
@@ -535,11 +535,11 @@ export const GisMap: React.FC<GisMapProps> = ({
                 key={`ai-bnd-${bnd.boundary_id}`}
                 positions={positions}
                 pathOptions={{
-                  color: isVerified ? '#10b981' : '#f59e0b',
+                  color: isVerified ? '#2E513E' : '#B18F2E',
                   weight: isVerified ? 2.5 : 2,
-                  dashArray: isVerified ? undefined : '5, 5',
-                  fillOpacity: 0.08,
-                  fillColor: isVerified ? '#10b981' : '#f59e0b',
+                  dashArray: isVerified ? undefined : '4, 4',
+                  fillOpacity: 0.1,
+                  fillColor: isVerified ? '#6F9B7B' : '#DFC56D',
                 }}
               >
                 <Popup>
@@ -580,11 +580,11 @@ export const GisMap: React.FC<GisMapProps> = ({
                 key={`ai-chg-${chg.change_id}`}
                 positions={positions}
                 pathOptions={{
-                  color: isEncroachment ? '#ef4444' : '#f97316',
-                  weight: isEncroachment ? 3 : 2,
+                  color: isEncroachment ? '#914B38' : '#AD6048',
+                  weight: isEncroachment ? 2.5 : 2,
                   dashArray: '3, 4',
-                  fillOpacity: isEncroachment ? 0.38 : 0.2,
-                  fillColor: isEncroachment ? '#dc2626' : '#ea580c',
+                  fillOpacity: isEncroachment ? 0.32 : 0.16,
+                  fillColor: isEncroachment ? '#C47B62' : '#D69D88',
                 }}
               >
                 <Popup>
@@ -674,20 +674,20 @@ export const GisMap: React.FC<GisMapProps> = ({
             const isSelected = lp.parcel_id === selectedParcelId;
 
             // Color coding for ownership status layer
-            let fillColor = '#eab308';
-            let strokeColor = isSelected ? '#38bdf8' : '#eab308';
-            let strokeWidth = isSelected ? 3.5 : 2;
+            let fillColor = '#B18F2E';
+            let strokeColor = isSelected ? '#AD6048' : '#B18F2E';
+            let strokeWidth = isSelected ? 3 : 2;
 
             if (layerVisibility['parcel-ownership-status']) {
               if (lp.ownership_status === 'DISPUTED') {
-                fillColor = '#ef4444';
-                strokeColor = '#dc2626';
+                fillColor = '#C47B62';
+                strokeColor = '#914B38';
               } else if (lp.ownership_status?.includes('JOINT')) {
-                fillColor = '#a855f7';
-                strokeColor = '#9333ea';
+                fillColor = '#96BBC5';
+                strokeColor = '#568693';
               } else {
-                fillColor = '#10b981';
-                strokeColor = isSelected ? '#38bdf8' : '#059669';
+                fillColor = '#6F9B7B';
+                strokeColor = isSelected ? '#AD6048' : '#2E513E';
               }
             }
 
@@ -699,7 +699,7 @@ export const GisMap: React.FC<GisMapProps> = ({
                   color: strokeColor,
                   weight: strokeWidth,
                   dashArray: isSelected ? '3, 4' : undefined,
-                  fillOpacity: isSelected ? 0.45 : 0.22,
+                  fillOpacity: isSelected ? 0.35 : 0.18,
                   fillColor: fillColor,
                 }}
                 eventHandlers={{
@@ -709,7 +709,7 @@ export const GisMap: React.FC<GisMapProps> = ({
                 <Popup>
                   <div style={{ padding: '0.4rem', minWidth: '240px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                      <span className="font-mono" style={{ fontWeight: 700, color: 'var(--text-emerald)', fontSize: '0.9rem' }}>
+                      <span className="font-mono" style={{ fontWeight: 700, color: 'var(--color-forest-700)', fontSize: '0.9rem' }}>
                         Khasra {lp.survey_number}
                       </span>
                       <span className={`badge ${lp.verification_status === 'SURVEYOR_VERIFIED' ? 'badge-emerald' : 'badge-amber'}`}>
@@ -728,10 +728,10 @@ export const GisMap: React.FC<GisMapProps> = ({
                       </div>
                       {lp.drone_measured_area_m2 && (
                         <div>
-                          <strong style={{ color: 'var(--text-emerald)' }}>Drone Area:</strong>{' '}
+                          <strong style={{ color: 'var(--color-forest-700)' }}>Drone Area:</strong>{' '}
                           {lp.drone_measured_area_m2.toLocaleString()} m²
                           {lp.area_difference_percentage !== undefined && (
-                            <span style={{ marginLeft: '0.3rem', color: Math.abs(lp.area_difference_percentage) > 2 ? '#ef4444' : '#10b981', fontWeight: 600 }}>
+                            <span style={{ marginLeft: '0.3rem', color: Math.abs(lp.area_difference_percentage) > 2 ? '#914B38' : '#2E6645', fontWeight: 600 }}>
                               ({lp.area_difference_percentage > 0 ? '+' : ''}{lp.area_difference_percentage}%)
                             </span>
                           )}
@@ -764,11 +764,11 @@ export const GisMap: React.FC<GisMapProps> = ({
                 key={`cad-hist-1998-${lp.parcel_id}`}
                 positions={positions}
                 pathOptions={{
-                  color: '#a855f7',
+                  color: '#827561',
                   weight: 2,
                   dashArray: '6, 6',
-                  fillOpacity: 0.05,
-                  fillColor: '#9333ea',
+                  fillOpacity: 0.08,
+                  fillColor: '#BBAE99',
                 }}
               />
             );
@@ -786,11 +786,11 @@ export const GisMap: React.FC<GisMapProps> = ({
                   key={`cad-drone-${lp.parcel_id}`}
                   positions={positions}
                   pathOptions={{
-                    color: '#06b6d4',
+                    color: '#568693',
                     weight: 2,
                     dashArray: '2, 4',
-                    fillOpacity: 0.1,
-                    fillColor: '#0891b2',
+                    fillOpacity: 0.12,
+                    fillColor: '#6F9FAA',
                   }}
                 />
               );
@@ -808,10 +808,10 @@ export const GisMap: React.FC<GisMapProps> = ({
                   key={`cad-ver-${lp.parcel_id}`}
                   positions={positions}
                   pathOptions={{
-                    color: '#059669',
-                    weight: 3,
-                    fillOpacity: 0.15,
-                    fillColor: '#10b981',
+                    color: '#2E513E',
+                    weight: 2.5,
+                    fillOpacity: 0.18,
+                    fillColor: '#6F9B7B',
                   }}
                 />
               );
@@ -829,11 +829,11 @@ export const GisMap: React.FC<GisMapProps> = ({
                   key={`cad-conflict-${lp.parcel_id}`}
                   positions={positions}
                   pathOptions={{
-                    color: '#dc2626',
-                    weight: 3,
+                    color: '#914B38',
+                    weight: 2.5,
                     dashArray: '3, 3',
-                    fillOpacity: 0.35,
-                    fillColor: '#ef4444',
+                    fillOpacity: 0.32,
+                    fillColor: '#C47B62',
                   }}
                 >
                   <Popup>
@@ -884,7 +884,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         {isMeasuring && measurePoints.length > 1 && (
           <Polyline
             positions={measurePoints}
-            pathOptions={{ color: '#ec4899', weight: 3, dashArray: '4, 4' }}
+            pathOptions={{ color: '#B18F2E', weight: 2.5, dashArray: '4, 4' }}
           />
         )}
 
@@ -895,11 +895,11 @@ export const GisMap: React.FC<GisMapProps> = ({
             icon={
               new L.DivIcon({
                 className: 'drone-map-marker',
-                html: `<div style="transform: rotate(${droneLocation?.heading || 0}deg); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));">
+                html: `<div style="transform: rotate(${droneLocation?.heading || 0}deg); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 2px 5px rgba(44,52,43,0.5));">
                   <svg viewBox="0 0 24 24" width="30" height="30" fill="none">
-                    <circle cx="12" cy="12" r="10" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                    <polygon points="12,4 17,17 12,14 7,17" fill="#38bdf8"/>
-                    <circle cx="12" cy="12" r="2" fill="#ea580c"/>
+                    <circle cx="12" cy="12" r="10" fill="#FAF9F5" stroke="#2E513E" stroke-width="2.5"/>
+                    <polygon points="12,4 17,17 12,14 7,17" fill="#2E513E"/>
+                    <circle cx="12" cy="12" r="2.5" fill="#B18F2E"/>
                   </svg>
                 </div>`,
                 iconSize: [32, 32],
@@ -910,16 +910,16 @@ export const GisMap: React.FC<GisMapProps> = ({
             <Popup>
               <div style={{ padding: '0.35rem', minWidth: '180px' }}>
                 <span className="badge badge-emerald">Live Drone Vector</span>
-                <div style={{ fontWeight: 700, fontSize: '0.85rem', marginTop: '0.2rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', marginTop: '0.2rem', color: '#20251F' }}>
                   DRONE-01 [ESP32-S3]
                 </div>
-                <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                <div style={{ fontSize: '0.75rem', marginTop: '0.25rem', color: '#4F574D' }}>
                   Altitude: <strong>10.0 m [ESTIMATED]</strong>
                 </div>
-                <div style={{ fontSize: '0.75rem' }}>
+                <div style={{ fontSize: '0.75rem', color: '#4F574D' }}>
                   Heading: <strong>{(droneLocation?.heading || 0).toFixed(0)}°</strong>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: '#10b981', marginTop: '0.2rem' }}>
+                <div style={{ fontSize: '0.72rem', color: '#2E6645', marginTop: '0.2rem', fontWeight: 600 }}>
                   ToF Distance: 2.0 cm [VALID]
                 </div>
               </div>
@@ -937,7 +937,7 @@ export const GisMap: React.FC<GisMapProps> = ({
               [droneLocation?.lat || 24.5854, droneLocation?.lng || 73.7125],
             ]}
             pathOptions={{
-              color: '#10b981',
+              color: '#4F7D60',
               weight: 2.5,
               dashArray: '4, 4',
               opacity: 0.85,
@@ -955,22 +955,22 @@ export const GisMap: React.FC<GisMapProps> = ({
             top: '0.75rem',
             right: '0.75rem',
             zIndex: 1000,
-            backgroundColor: 'rgba(15, 23, 42, 0.92)',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(51, 65, 85, 0.8)',
+            border: '1px solid #D8D5CC',
             borderRadius: '0.5rem',
             padding: '0.4rem 0.65rem',
             display: 'flex',
             alignItems: 'center',
             gap: '0.4rem',
-            color: '#e2e8f0',
+            color: '#20251F',
             fontSize: '0.75rem',
             fontWeight: 600,
             cursor: 'pointer',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 4px 12px rgba(44, 52, 43, 0.10)',
           }}
         >
-          <Layers size={13} className="text-emerald-400" />
+          <Layers size={13} style={{ color: '#2E513E' }} />
           <span>Map Layers (24)</span>
         </button>
       ) : (
@@ -980,31 +980,32 @@ export const GisMap: React.FC<GisMapProps> = ({
             top: '0.75rem',
             right: '0.75rem',
             zIndex: 1000,
-            backgroundColor: 'rgba(11, 17, 24, 0.96)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(51, 65, 85, 0.8)',
+            backgroundColor: '#FAF9F5',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid #D8D5CC',
             borderRadius: '0.75rem',
             padding: '0.75rem 1rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.35rem',
             fontSize: '0.75rem',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
+            boxShadow: '0 10px 25px rgba(44, 52, 43, 0.15)',
             maxWidth: '280px',
             maxHeight: '480px',
             overflowY: 'auto',
+            color: '#20251F',
           }}
         >
-          <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#f8fafc', borderBottom: '1px solid rgba(51, 65, 85, 0.8)', paddingBottom: '0.35rem' }}>
+          <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#20251F', borderBottom: '1px solid #D8D5CC', paddingBottom: '0.35rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Layers size={14} className="text-emerald-400" /> 24 GIS Map Layers
+              <Layers size={14} style={{ color: '#2E513E' }} /> 24 GIS Map Layers
             </div>
             <button
               onClick={() => setIsHudOpen(false)}
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#94a3b8',
+                color: '#5F665D',
                 cursor: 'pointer',
                 fontSize: '0.8rem',
                 padding: '0 0.2rem',
@@ -1033,61 +1034,61 @@ export const GisMap: React.FC<GisMapProps> = ({
           </button>
         </div>
 
-        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-amber)', marginTop: '0.2rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#927323', marginTop: '0.2rem' }}>
           CADASTRAL &amp; LAND RECORDS
         </div>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['official-cadastral-parcels']} onChange={() => toggleLayer('official-cadastral-parcels')} />
-          <span style={{ color: '#eab308', fontWeight: 600 }}>19. Official Cadastral Parcels</span>
+          <span style={{ color: '#927323', fontWeight: 600 }}>19. Official Cadastral Parcels</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['parcel-ownership-status']} onChange={() => toggleLayer('parcel-ownership-status')} />
-          <span style={{ color: '#10b981', fontWeight: 600 }}>20. Ownership Status (Clear/Joint)</span>
+          <span style={{ color: '#2E513E', fontWeight: 600 }}>20. Ownership Status (Clear/Joint)</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['drone-measured-parcels']} onChange={() => toggleLayer('drone-measured-parcels')} />
-          <span style={{ color: '#06b6d4', fontWeight: 600 }}>22. Drone-Measured Boundaries</span>
+          <span style={{ color: '#568693', fontWeight: 600 }}>22. Drone-Measured Boundaries</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['surveyor-verified-parcels']} onChange={() => toggleLayer('surveyor-verified-parcels')} />
-          <span style={{ color: '#059669', fontWeight: 600 }}>23. Surveyor-Verified Parcels</span>
+          <span style={{ color: '#2E6645', fontWeight: 600 }}>23. Surveyor-Verified Parcels</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['parcel-conflict-layer']} onChange={() => toggleLayer('parcel-conflict-layer')} />
-          <span style={{ color: '#ef4444', fontWeight: 600 }}>24. Encroachments & Conflicts</span>
+          <span style={{ color: '#914B38', fontWeight: 600 }}>24. Encroachments & Conflicts</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['historical-cadastral-1998']} onChange={() => toggleLayer('historical-cadastral-1998')} />
-          <span style={{ color: '#a855f7' }}>21. 1998 Historical Cadastre</span>
+          <span style={{ color: '#665B4B' }}>21. 1998 Historical Cadastre</span>
         </label>
 
-        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-emerald)', marginTop: '0.3rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#2E513E', marginTop: '0.3rem' }}>
           AI &amp; INTELLIGENCE
         </div>
 
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['ai-land-classification']} onChange={() => toggleLayer('ai-land-classification')} />
-          <span style={{ color: '#10b981', fontWeight: 600 }}>13. AI Land Classification</span>
+          <span style={{ color: '#2E513E', fontWeight: 600 }}>13. AI Land Classification</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['ai-candidate-boundaries']} onChange={() => toggleLayer('ai-candidate-boundaries')} />
-          <span style={{ color: '#f59e0b', fontWeight: 600 }}>14. AI Candidate Bunds</span> ({aiBoundaries.length})
+          <span style={{ color: '#B18F2E', fontWeight: 600 }}>14. AI Candidate Bunds</span> ({aiBoundaries.length})
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['historical-change-layer']} onChange={() => toggleLayer('historical-change-layer')} />
-          <span style={{ color: '#f97316', fontWeight: 600 }}>16. Historical Change Shifts</span>
+          <span style={{ color: '#AD6048', fontWeight: 600 }}>16. Historical Change Shifts</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['potential-encroachments']} onChange={() => toggleLayer('potential-encroachments')} />
-          <span style={{ color: '#ef4444', fontWeight: 600 }}>17. Potential Encroachments</span>
+          <span style={{ color: '#914B38', fontWeight: 600 }}>17. Potential Encroachments</span>
         </label>
 
-        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#5F665D', marginTop: '0.3rem' }}>
           GEOSPATIAL & SENSORS
         </div>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['orthomosaic-raster']} onChange={() => toggleLayer('orthomosaic-raster')} />
-          <span style={{ color: '#10b981' }}>4. 2D Orthomosaic</span> (2.5cm)
+          <span style={{ color: '#2E513E' }}>4. 2D Orthomosaic</span> (2.5cm)
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['detected-parcels']} onChange={() => toggleLayer('detected-parcels')} />
@@ -1095,19 +1096,19 @@ export const GisMap: React.FC<GisMapProps> = ({
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['dem-elevation']} onChange={() => toggleLayer('dem-elevation')} />
-          <span style={{ color: '#f59e0b' }}>6. Bare-Earth DEM</span> (50cm)
+          <span style={{ color: '#B18F2E' }}>6. Bare-Earth DEM</span> (50cm)
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['lidar-point-cloud']} onChange={() => toggleLayer('lidar-point-cloud')} />
-          <span style={{ color: '#c084fc' }}>5. LiDAR Cloud</span>
+          <span style={{ color: '#568693' }}>5. LiDAR Cloud</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['flight-trajectory']} onChange={() => toggleLayer('flight-trajectory')} />
-          <span style={{ color: '#06b6d4' }}>3. RTK Trajectory</span>
+          <span style={{ color: '#568693' }}>3. RTK Trajectory</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['raw-camera-shots']} onChange={() => toggleLayer('raw-camera-shots')} />
-          <span style={{ color: '#34d399' }}>2. Photo Shots</span>
+          <span style={{ color: '#2E513E' }}>2. Photo Shots</span>
         </label>
       </div>
       ))}
@@ -1120,15 +1121,15 @@ export const GisMap: React.FC<GisMapProps> = ({
           top: '3.25rem',
           left: '0.75rem',
           zIndex: 1000,
-          backgroundColor: 'rgba(15, 23, 42, 0.85)',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          border: '1px solid #D8D5CC',
           borderRadius: '9999px',
           padding: '0.25rem 0.6rem',
           display: 'flex',
           gap: '0.4rem',
           alignItems: 'center',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
+          boxShadow: '0 4px 14px rgba(44, 52, 43, 0.12)',
         }}
       >
         <button
@@ -1146,7 +1147,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           <button
             onClick={handleSaveEditedGeometry}
             className="btn btn-primary btn-sm"
-            style={{ fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.3rem', backgroundColor: '#f59e0b', borderColor: '#d97706' }}
+            style={{ fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.3rem', backgroundColor: '#B18F2E', borderColor: '#927323' }}
           >
             <CheckCircle2 size={13} /> Save Vertices
           </button>
@@ -1161,24 +1162,24 @@ export const GisMap: React.FC<GisMapProps> = ({
             bottom: '1rem',
             left: '1rem',
             zIndex: 1000,
-            backgroundColor: 'rgba(15, 23, 42, 0.88)',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(8px)',
-            border: '1px solid var(--border-subtle)',
+            border: '1px solid #D8D5CC',
             borderRadius: 'var(--radius-sm)',
             padding: '0.35rem 0.75rem',
             fontFamily: 'var(--font-mono)',
             fontSize: '0.74rem',
-            color: '#38bdf8',
+            color: '#20251F',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
-            boxShadow: 'var(--shadow-sm)',
+            boxShadow: '0 4px 12px rgba(44, 52, 43, 0.08)',
           }}
         >
           <span>LAT: <strong>{currentCoords.lat.toFixed(6)}° N</strong></span>
           <span>LON: <strong>{currentCoords.lng.toFixed(6)}° E</strong></span>
-          <span style={{ color: 'var(--text-muted)' }}>CRS: EPSG:4326 (WGS84)</span>
-          <span style={{ color: '#94a3b8' }}>Scale Invariance: 1m = 1.000m Ground Truth</span>
+          <span style={{ color: '#5F665D' }}>CRS: EPSG:4326 (WGS84)</span>
+          <span style={{ color: '#858B82' }}>Scale Invariance: 1m = 1.000m Ground Truth</span>
         </div>
       )}
     </div>

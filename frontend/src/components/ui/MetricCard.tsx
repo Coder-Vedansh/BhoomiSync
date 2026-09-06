@@ -7,6 +7,9 @@ import {
   CoordinatePattern,
   SignalWave,
   TopographicPattern,
+  CadastralPattern,
+  FlightPathPattern,
+  RasterGrid,
 } from '../visual';
 
 export interface MetricCardProps {
@@ -15,8 +18,18 @@ export interface MetricCardProps {
   icon?: React.ReactNode;
   badge?: React.ReactNode;
   subtitle?: React.ReactNode;
-  variant?: 'default' | 'emerald' | 'cyan' | 'amber' | 'rose' | 'purple';
-  pattern?: 'grid' | 'contour' | 'radar' | 'pulse' | 'coordinates' | 'signal' | 'topographic';
+  variant?: 'default' | 'forest' | 'brass' | 'map-blue' | 'terracotta' | 'emerald' | 'cyan' | 'amber' | 'rose' | 'purple';
+  pattern?:
+    | 'grid'
+    | 'contour'
+    | 'radar'
+    | 'pulse'
+    | 'coordinates'
+    | 'signal'
+    | 'topographic'
+    | 'cadastral'
+    | 'flight-path'
+    | 'raster';
   patternOpacity?: number;
   showReticles?: boolean;
   className?: string;
@@ -36,38 +49,43 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   className = '',
   onClick,
 }) => {
+  // Map legacy variants to cartographic semantic accents
+  const normalizedVariant =
+    variant === 'emerald'
+      ? 'forest'
+      : variant === 'amber'
+      ? 'brass'
+      : variant === 'cyan' || variant === 'purple'
+      ? 'map-blue'
+      : variant === 'rose'
+      ? 'terracotta'
+      : variant;
+
   const variantStyles = {
     default: {
-      border: 'border-[var(--border-subtle)] hover:border-slate-500/50',
-      iconBg: 'bg-slate-500/10 text-slate-300 border-slate-500/20',
-      accentGlow: 'hover:shadow-[0_0_15px_rgba(100,116,139,0.12)]',
+      border: 'border-[#D8D5CC] hover:border-[#BFCDBF]',
+      iconBg: 'bg-[#FAF9F5] text-[#2E513E] border-[#D8D5CC]',
     },
-    emerald: {
-      border: 'border-[var(--border-subtle)] hover:border-emerald-500/50',
-      iconBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-      accentGlow: 'hover:shadow-[0_0_15px_rgba(16,185,129,0.12)]',
+    forest: {
+      border: 'border-[#D8D5CC] hover:border-[#BBD4C1]',
+      iconBg: 'bg-[#E6EFE8] text-[#2E513E] border-[#BBD4C1]',
     },
-    cyan: {
-      border: 'border-[var(--border-subtle)] hover:border-sky-500/50',
-      iconBg: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
-      accentGlow: 'hover:shadow-[0_0_15px_rgba(6,182,212,0.12)]',
+    brass: {
+      border: 'border-[#D8D5CC] hover:border-[#EBD99A]',
+      iconBg: 'bg-[#FBF4DC] text-[#74591D] border-[#EBD99A]',
     },
-    amber: {
-      border: 'border-[var(--border-subtle)] hover:border-amber-500/50',
-      iconBg: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-      accentGlow: 'hover:shadow-[0_0_15px_rgba(245,158,11,0.12)]',
+    'map-blue': {
+      border: 'border-[#D8D5CC] hover:border-[#BDD7DE]',
+      iconBg: 'bg-[#E8F1F3] text-[#385963] border-[#BDD7DE]',
     },
-    rose: {
-      border: 'border-[var(--border-subtle)] hover:border-rose-500/50',
-      iconBg: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-      accentGlow: 'hover:shadow-[0_0_15px_rgba(244,63,94,0.12)]',
+    terracotta: {
+      border: 'border-[#D8D5CC] hover:border-[#E6C0B1]',
+      iconBg: 'bg-[#FAEAE5] text-[#914B38] border-[#E6C0B1]',
     },
-    purple: {
-      border: 'border-[var(--border-subtle)] hover:border-purple-500/50',
-      iconBg: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-      accentGlow: 'hover:shadow-[0_0_15px_rgba(139,92,246,0.12)]',
-    },
-  }[variant];
+  }[normalizedVariant as 'default' | 'forest' | 'brass' | 'map-blue' | 'terracotta'] || {
+    border: 'border-[#D8D5CC] hover:border-[#BFCDBF]',
+    iconBg: 'bg-[#FAF9F5] text-[#2E513E] border-[#D8D5CC]',
+  };
 
   const renderPattern = () => {
     switch (pattern) {
@@ -85,6 +103,12 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         return <SignalWave opacity={patternOpacity} />;
       case 'topographic':
         return <TopographicPattern opacity={patternOpacity} />;
+      case 'cadastral':
+        return <CadastralPattern opacity={patternOpacity} />;
+      case 'flight-path':
+        return <FlightPathPattern opacity={patternOpacity} />;
+      case 'raster':
+        return <RasterGrid opacity={patternOpacity} />;
       default:
         return null;
     }
@@ -93,14 +117,14 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`metric-card relative overflow-hidden bg-[var(--surface-elevated)] border ${variantStyles.border} rounded-[var(--radius-lg)] p-5 shadow-[var(--shadow-level-1)] transition-all duration-200 group flex flex-col justify-between ${variantStyles.accentGlow} ${
+      className={`metric-card relative overflow-hidden bg-white border ${variantStyles.border} rounded-[var(--radius-lg)] p-5 shadow-[0_4px_18px_rgba(44,52,43,0.07)] hover:shadow-[0_8px_26px_rgba(44,52,43,0.10)] hover:bg-[#FCFCF8] transition-all duration-200 group flex flex-col justify-between ${
         onClick ? 'cursor-pointer' : ''
       } ${className}`}
     >
       {/* Visual Pattern */}
       {renderPattern()}
 
-      {/* Optical Corner Reticles */}
+      {/* Optical Corner Reticles (Stone / subtle Forest tint) */}
       {showReticles && (
         <>
           <div className="corner-reticle reticle-tl" />
@@ -112,7 +136,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
 
       {/* Content */}
       <div className="relative z-10 flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{label}</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-[#5F665D]">{label}</span>
         <div className="flex items-center gap-2">
           {badge}
           {icon && (
@@ -126,11 +150,11 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       </div>
 
       <div className="relative z-10 mt-3">
-        <div className="text-2xl sm:text-3xl font-bold font-mono text-white tracking-tight">
+        <div className="text-2xl sm:text-3xl font-bold font-sans text-[#20251F] tracking-tight">
           {value}
         </div>
         {subtitle && (
-          <div className="mt-2 text-xs text-slate-400 flex items-center justify-between border-t border-[var(--border)] pt-2.5">
+          <div className="mt-2 text-xs text-[#5F665D] flex items-center justify-between border-t border-[#D8D5CC] pt-2.5">
             {subtitle}
           </div>
         )}

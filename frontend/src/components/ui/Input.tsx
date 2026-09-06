@@ -16,15 +16,15 @@ export const Input: React.FC<InputProps> = ({
 }) => {
   return (
     <div className="w-full">
-      {label && <label className="block text-xs font-semibold text-slate-300 mb-1.5">{label}</label>}
+      {label && <label className="block text-xs font-semibold text-[#4F574D] mb-1.5">{label}</label>}
       <div className="relative flex items-center">
-        {icon && <div className="absolute left-3 text-slate-400 pointer-events-none">{icon}</div>}
+        {icon && <div className="absolute left-3 text-[#858B82] pointer-events-none">{icon}</div>}
         <input
-          className={`input ${icon ? 'pl-10' : ''} ${error ? 'border-rose-500 focus:border-rose-500' : ''} ${className}`}
+          className={`input ${icon ? 'pl-10' : ''} ${error ? 'border-[#914B38] focus:border-[#914B38]' : ''} ${className}`}
           {...props}
         />
       </div>
-      {error && <span className="text-xs text-rose-400 mt-1 block">{error}</span>}
+      {error && <span className="text-xs text-[#914B38] mt-1 block">{error}</span>}
     </div>
   );
 };
@@ -65,7 +65,7 @@ export const Select: React.FC<SelectProps> = ({
   const isWidthConstrained = className.includes('w-');
   return (
     <div className={isWidthConstrained ? 'flex-shrink-0' : 'w-full'}>
-      {label && <label className="block text-xs font-semibold text-slate-300 mb-1.5">{label}</label>}
+      {label && <label className="block text-xs font-semibold text-[#4F574D] mb-1.5">{label}</label>}
       <select className={`select ${className}`} {...props}>
         {options
           ? options.map((opt) => (
@@ -75,7 +75,9 @@ export const Select: React.FC<SelectProps> = ({
             ))
           : children}
       </select>
-      {error && <span className="text-xs text-rose-400 mt-1 block">{error}</span>}
+      {error && <span className="text-xs text-[#914B38] mt-1 block">{error}</span>}
     </div>
   );
 };
+
+export default Input;

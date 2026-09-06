@@ -8,8 +8,8 @@ interface TelemetryPulseProps {
 
 export const TelemetryPulse: React.FC<TelemetryPulseProps> = ({
   className = '',
-  opacity = 0.09,
-  color = '#06b6d4',
+  opacity = 0.08,
+  color = '#4F7D60',
 }) => {
   return (
     <div
@@ -28,7 +28,7 @@ export const TelemetryPulse: React.FC<TelemetryPulseProps> = ({
           r="24"
           fill="none"
           stroke={color}
-          strokeWidth="1"
+          strokeWidth="0.8"
           strokeDasharray="2 3"
         />
         <circle
@@ -37,7 +37,7 @@ export const TelemetryPulse: React.FC<TelemetryPulseProps> = ({
           r="45"
           fill="none"
           stroke={color}
-          strokeWidth="1.2"
+          strokeWidth="1"
           className="telemetry-pulse-anim"
         />
         <circle
@@ -46,10 +46,10 @@ export const TelemetryPulse: React.FC<TelemetryPulseProps> = ({
           r="68"
           fill="none"
           stroke={color}
-          strokeWidth="0.8"
+          strokeWidth="0.7"
           strokeDasharray="4 4"
         />
-        <circle cx="80" cy="80" r="3" fill={color} />
+        <circle cx="80" cy="80" r="2.5" fill={color} />
       </svg>
     </div>
   );

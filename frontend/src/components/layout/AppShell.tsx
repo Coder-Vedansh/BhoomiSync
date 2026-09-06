@@ -31,7 +31,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   ].includes(currentTab);
 
   return (
-    <div className={`app-container bg-bg-primary text-slate-100 min-h-screen ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
+    <div className={`app-container bg-[#F3F1EB] text-[#20251F] min-h-screen ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Sidebar Navigation */}
       <Sidebar
         currentTab={currentTab}

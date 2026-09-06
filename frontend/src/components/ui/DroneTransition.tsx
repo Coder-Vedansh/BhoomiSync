@@ -150,10 +150,10 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
-        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#060a14]/85 backdrop-blur-xs select-none pointer-events-none p-4 overflow-hidden"
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#24201B]/40 backdrop-blur-xs select-none pointer-events-none p-4 overflow-hidden"
       >
         {/* Subtle Background Cadastral Grid Projection */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px]" />
+        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#4F7D60_1px,transparent_1px)] [background-size:24px_24px]" />
 
         {/* =========================================================================
             PRIMARY WORKFLOW: SIGNATURE DRONE-TO-CADASTRAL PIPELINE STORY
@@ -164,21 +164,21 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
             initial={{ scale: 0.96, opacity: 0, y: 8 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-xl rounded-2xl bg-[#0c1220]/95 border border-[#22334d] shadow-2xl p-6 flex flex-col gap-4 text-slate-200"
+            className="relative w-full max-w-xl rounded-2xl bg-white border border-[#D8D5CC] shadow-[0_16px_36px_rgba(44,52,43,0.14)] p-6 flex flex-col gap-4 text-[#20251F]"
           >
             {/* Top Pipeline Flow Badges */}
-            <div className="flex items-center justify-between border-b border-[#1b263b] pb-3 text-[11px] font-mono">
-              <span className="text-slate-400 font-semibold tracking-wider flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center justify-between border-b border-[#D8D5CC] pb-3 text-[11px] font-mono">
+              <span className="text-[#2E513E] font-semibold tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#4F7D60] animate-pulse" />
                 STATUTORY CADASTRAL PIPELINE
               </span>
-              <span className="text-slate-500">BhoomiSync Core v2.4</span>
+              <span className="text-[#858B82]">BhoomiSync Core v2.4</span>
             </div>
 
             {/* STAGE 1: SURVEY DRONE + IMAGE CAPTURE ACTIVE */}
-            <div className="flex items-center justify-between gap-4 bg-[#080d1a] border border-[#1b273d] rounded-xl p-3">
+            <div className="flex items-center justify-between gap-4 bg-[#FAF9F5] border border-[#D8D5CC] rounded-xl p-3">
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-lg bg-[#141d2f] border border-[#233550] flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-lg bg-[#EFEEE8] border border-[#D8D5CC] flex items-center justify-center flex-shrink-0">
                   <DroneAnimation
                     size={42}
                     heading={0}
@@ -187,11 +187,11 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
                   />
                 </div>
                 <div>
-                  <div className="text-xs font-mono font-bold text-white tracking-wider uppercase">
+                  <div className="text-xs font-mono font-bold text-[#20251F] tracking-wider uppercase">
                     SURVEY DRONE
                   </div>
-                  <div className="text-[11px] text-amber-400/90 flex items-center gap-1.5 mt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  <div className="text-[11px] text-[#B18F2E] flex items-center gap-1.5 mt-0.5 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#B18F2E] animate-ping" />
                     <span>Image capture active</span>
                   </div>
                 </div>
@@ -199,18 +199,18 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
 
               {/* STAGE 3: TOF MEASUREMENT & HARDWARE HONESTY READOUT */}
               <div className="flex items-center gap-2">
-                <div className="px-2.5 py-1.5 rounded-lg bg-[#0e172a] border border-[#233550] text-right">
-                  <div className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">ToF Sensor</div>
-                  <div className="flex items-center gap-1 text-xs font-mono font-bold text-emerald-400">
+                <div className="px-2.5 py-1.5 rounded-lg bg-white border border-[#D8D5CC] text-right shadow-xs">
+                  <div className="text-[9px] font-mono text-[#858B82] uppercase tracking-wider">ToF Sensor</div>
+                  <div className="flex items-center gap-1 text-xs font-mono font-bold text-[#2E6645]">
                     <span>{tofDistanceCm}</span>
-                    <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300">
+                    <span className="text-[10px] px-1 py-0.2 rounded bg-[#E6EFE8] border border-[#BBD4C1] text-[#2E6645]">
                       {tofStatus}
                     </span>
                   </div>
                 </div>
-                <div className="px-2.5 py-1.5 rounded-lg bg-[#0e172a] border border-[#233550] text-right">
-                  <div className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">GNSS / RTK</div>
-                  <div className="text-xs font-mono font-semibold text-slate-400">
+                <div className="px-2.5 py-1.5 rounded-lg bg-white border border-[#D8D5CC] text-right shadow-xs">
+                  <div className="text-[9px] font-mono text-[#858B82] uppercase tracking-wider">GNSS / RTK</div>
+                  <div className="text-xs font-mono font-semibold text-[#858B82]">
                     {hasGnss ? 'FIXED' : gnssStatus}
                   </div>
                 </div>
@@ -265,13 +265,13 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
             </div>
 
             {/* STAGE 4: DATA FLOW → PROCESSING SURVEY DATA (Restrained progress & real stages) */}
-            <div className="space-y-2 bg-[#080d1a] border border-[#1b273d] rounded-xl p-3">
+            <div className="space-y-2 bg-[#FAF9F5] border border-[#D8D5CC] rounded-xl p-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-white tracking-wider uppercase flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+                <span className="text-xs font-mono font-bold text-[#20251F] tracking-wider uppercase flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4F7D60] animate-pulse" />
                   PROCESSING SURVEY DATA
                 </span>
-                <span className="text-[11px] font-mono text-sky-400 font-semibold">
+                <span className="text-[11px] font-mono text-[#2E513E] font-semibold">
                   {pipelineStage >= 3
                     ? '100% COMPLETE'
                     : pipelineStage >= 2
@@ -281,9 +281,9 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
               </div>
 
               {/* Progress Line */}
-              <div className="w-full h-1.5 bg-[#141e30] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-[#EFEEE8] rounded-full overflow-hidden border border-[#D8D5CC]">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-500"
+                  className="h-full bg-gradient-to-r from-[#4F7D60] via-[#B18F2E] to-[#2E513E]"
                   initial={{ width: '10%' }}
                   animate={{
                     width:
@@ -313,14 +313,14 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
                       key={st.name}
                       className={`flex items-center gap-1 px-1.5 py-1 rounded transition-colors ${
                         isDone
-                          ? 'text-emerald-300 bg-emerald-500/10 border border-emerald-500/20'
-                          : 'text-slate-500 bg-[#0c1220] border border-transparent'
+                          ? 'text-[#2E6645] bg-[#E6EFE8] border border-[#BBD4C1]'
+                          : 'text-[#858B82] bg-white border border-[#D8D5CC]'
                       }`}
                     >
                       {isDone ? (
-                        <Check size={10} className="text-emerald-400 flex-shrink-0" />
+                        <Check size={10} className="text-[#2E6645] flex-shrink-0" />
                       ) : (
-                        <span className="w-2 h-2 rounded-full border border-slate-600 flex-shrink-0" />
+                        <span className="w-2 h-2 rounded-full border border-[#C4C0B5] flex-shrink-0" />
                       )}
                       <span className="truncate">{st.name}</span>
                     </div>
@@ -330,21 +330,21 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
             </div>
 
             {/* STAGE 5 & 6: 2D SURVEY MAP & CADASTRAL TRANSFORMATION */}
-            <div className="bg-[#080d1a] border border-[#1b273d] rounded-xl p-3.5 space-y-3">
+            <div className="bg-[#FAF9F5] border border-[#D8D5CC] rounded-xl p-3.5 space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-white tracking-wider">
-                  <Layers size={13} className="text-emerald-400" />
+                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#20251F] tracking-wider">
+                  <Layers size={13} className="text-[#2E513E]" />
                   <span>2D SURVEY MAP</span>
                 </div>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/25">
+                <span className="text-[10px] font-mono text-[#2E6645] bg-[#E6EFE8] px-2 py-0.5 rounded border border-[#BBD4C1]">
                   ORTHOMOSAIC RESOLVED
                 </span>
               </div>
 
               {/* Map Surface Graphic & Cadastral Boundary */}
-              <div className="relative h-20 w-full rounded-lg bg-[#0e172a] border border-[#233550] overflow-hidden flex items-center justify-center">
+              <div className="relative h-20 w-full rounded-lg bg-white border border-[#D8D5CC] overflow-hidden flex items-center justify-center">
                 {/* Geographic background grid */}
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]" />
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#4F7D60_1px,transparent_1px)] [background-size:16px_16px]" />
 
                 {/* Cadastral Parcel Polygon Overlay */}
                 <motion.div
@@ -354,21 +354,21 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
                     scale: pipelineStage >= 3 ? 1 : 0.95,
                   }}
                   transition={{ duration: 0.3 }}
-                  className="relative z-10 w-4/5 h-14 rounded-md border-2 border-emerald-400 bg-emerald-500/10 flex items-center justify-between px-3 shadow-sm"
+                  className="relative z-10 w-4/5 h-14 rounded-md border-2 border-[#2E513E] bg-[#E6EFE8] flex items-center justify-between px-3 shadow-xs"
                 >
                   <div className="flex items-center gap-2">
-                    <MapPin size={14} className="text-emerald-400 flex-shrink-0" />
+                    <MapPin size={14} className="text-[#2E513E] flex-shrink-0" />
                     <div>
-                      <div className="text-xs font-mono font-bold text-white tracking-wide">
+                      <div className="text-xs font-mono font-bold text-[#20251F] tracking-wide">
                         KHASRA {khasraNumber}
                       </div>
-                      <div className="text-[10px] font-mono text-slate-300">
-                        SURVEYED AREA: <span className="text-emerald-300 font-bold">{surveyedArea}</span>
+                      <div className="text-[10px] font-mono text-[#5F665D]">
+                        SURVEYED AREA: <span className="text-[#2E513E] font-bold">{surveyedArea}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-right font-mono text-[9px] text-slate-400 hidden sm:block">
+                  <div className="text-right font-mono text-[9px] text-[#5F665D] hidden sm:block">
                     <div>IoU Match: 96.4%</div>
                     <div>PostGIS Polygon Sealed</div>
                   </div>
@@ -412,7 +412,7 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
 
             {/* Step Lifecycle Display */}
             <div className="flex flex-col items-center gap-1.5 text-center">
-              <span className="font-mono text-xs text-sky-400 tracking-wider">
+              <span className="font-mono text-xs text-[#568693] tracking-wider font-semibold">
                 PAYLOAD PROTOCOL [ESP32-S3]
               </span>
               <motion.div
@@ -421,25 +421,25 @@ export const DroneTransition: React.FC<DroneTransitionProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -3 }}
                 transition={{ duration: 0.15 }}
-                className="text-lg font-bold text-white tracking-tight"
+                className="text-lg font-bold text-[#F4F5EF] tracking-tight"
               >
                 {currentMissionText}
               </motion.div>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-[#D4C8B6]">
                 {subtitle || 'Calibrating optical ground sampling & ToF elevation...'}
               </span>
             </div>
 
-            {/* Hardware Status Pill (Strict Hardware Data Honesty) */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#131b2e] border border-[#22334d] text-xs font-mono">
-              <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            {/* Hardware Status Pill (Strict Hardware Data Honesty - Technical Avionics Strip) */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#223C30] border border-[#2E513E] text-xs font-mono shadow-md">
+              <span className="flex items-center gap-1 text-[#6F9B7B] font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#6F9B7B] animate-pulse" />
                 {isSim ? 'SIMULATION' : isLive ? 'LIVE' : 'STANDBY'}
               </span>
-              <span className="text-slate-600">|</span>
-              <span className="text-slate-400">ToF {tofDistanceCm} [{tofStatus}]</span>
-              <span className="text-slate-600">|</span>
-              <span className="flex items-center gap-1 text-amber-400">
+              <span className="text-[#3C664D]">|</span>
+              <span className="text-[#F4F5EF]">ToF {tofDistanceCm} [{tofStatus}]</span>
+              <span className="text-[#3C664D]">|</span>
+              <span className="flex items-center gap-1 text-[#B18F2E]">
                 <ShieldAlert size={12} />
                 {hasGnss ? 'GNSS RTK' : 'GNSS UNAVAILABLE'}
               </span>
