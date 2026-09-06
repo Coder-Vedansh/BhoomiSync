@@ -24,6 +24,17 @@ import {
 } from '../../types';
 import { api } from '../../services/api';
 import {
+  DEFAULT_HARIPURA_PARCELS,
+  DEFAULT_HARIPURA_LAND_PARCELS,
+  DEFAULT_SPATIAL_FOOTPRINT,
+  DEFAULT_ORTHO_MANIFEST,
+  DEFAULT_DEM_MANIFEST,
+  DEFAULT_DETECTED_BOUNDARIES,
+  DEFAULT_AI_CLASSIFICATIONS,
+  DEFAULT_AI_BOUNDARIES,
+  DEFAULT_AI_CHANGES,
+} from '../../data/cadastralSpatialDefaults';
+import {
   Layers,
   Ruler,
   CheckCircle2,
@@ -175,6 +186,17 @@ export const GisMap: React.FC<GisMapProps> = ({
   const [aiBoundaries, setAiBoundaries] = useState<AIBoundaryCandidate[]>(initialAiBnd || []);
   const [aiChanges, setAiChanges] = useState<AIHistoricalChange[]>(initialAiChanges || []);
 
+  // Effective datasets with reliable fallback fixtures
+  const effectiveParcels = parcels && parcels.length > 0 ? parcels : DEFAULT_HARIPURA_PARCELS;
+  const effectiveLandParcels = landParcels && landParcels.length > 0 ? landParcels : DEFAULT_HARIPURA_LAND_PARCELS;
+  const effectiveFootprint = footprint || DEFAULT_SPATIAL_FOOTPRINT;
+  const effectiveOrthoManifest = orthoManifest || DEFAULT_ORTHO_MANIFEST;
+  const effectiveDemManifest = demManifest || DEFAULT_DEM_MANIFEST;
+  const effectiveDetectedBoundaries = detectedBoundaries && detectedBoundaries.length > 0 ? detectedBoundaries : DEFAULT_DETECTED_BOUNDARIES;
+  const effectiveAiClassifications = aiClassifications && aiClassifications.length > 0 ? aiClassifications : DEFAULT_AI_CLASSIFICATIONS;
+  const effectiveAiBoundaries = aiBoundaries && aiBoundaries.length > 0 ? aiBoundaries : DEFAULT_AI_BOUNDARIES;
+  const effectiveAiChanges = aiChanges && aiChanges.length > 0 ? aiChanges : DEFAULT_AI_CHANGES;
+
   // Measure Mode
   const [isMeasuring, setIsMeasuring] = useState(false);
   const [measurePoints, setMeasurePoints] = useState<[number, number][]>([]);
@@ -185,7 +207,7 @@ export const GisMap: React.FC<GisMapProps> = ({
   // Vertex Editing state
   const [editingVertices, setEditingVertices] = useState<[number, number][]>([]);
 
-  const selectedParcel = parcels.find((p) => p.parcel_id === selectedParcelId);
+  const selectedParcel = effectiveParcels.find((p) => p.parcel_id === selectedParcelId) || effectiveParcels[0];
 
   useEffect(() => {
     if (survey?.survey_id) {
@@ -201,7 +223,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         if (fp) setFootprint(fp);
         if (ortho) setOrthoManifest(ortho);
         if (dem) setDemManifest(dem);
-        if (bnds) setDetectedBoundaries(bnds);
+        if (bnds && bnds.length > 0) setDetectedBoundaries(bnds);
         if (aiclass && aiclass.length > 0) setAiClassifications(aiclass);
         if (aibnd && aibnd.length > 0) setAiBoundaries(aibnd);
         if (aichg && aichg.length > 0) setAiChanges(aichg);
@@ -210,9 +232,9 @@ export const GisMap: React.FC<GisMapProps> = ({
   }, [survey?.survey_id]);
 
   useEffect(() => {
-    if (initialAiClass) setAiClassifications(initialAiClass);
-    if (initialAiBnd) setAiBoundaries(initialAiBnd);
-    if (initialAiChanges) setAiChanges(initialAiChanges);
+    if (initialAiClass && initialAiClass.length > 0) setAiClassifications(initialAiClass);
+    if (initialAiBnd && initialAiBnd.length > 0) setAiBoundaries(initialAiBnd);
+    if (initialAiChanges && initialAiChanges.length > 0) setAiChanges(initialAiChanges);
   }, [initialAiClass, initialAiBnd, initialAiChanges]);
 
   useEffect(() => {
@@ -224,11 +246,66 @@ export const GisMap: React.FC<GisMapProps> = ({
     }
   }, [selectedParcelId, isEditingMode, selectedParcel]);
 
-  const extractLeafletCoords = (geojsonGeom: any): [number, number][] => {
-    if (!geojsonGeom || !geojsonGeom.coordinates) return [];
-    const coords = geojsonGeom.coordinates[0];
-    if (!Array.isArray(coords)) return [];
-    return coords.map((pt: [number, number]) => [pt[1], pt[0]] as [number, number]);
+  const extractLeafletCoords = (geomInput: any): [number, number][] => {
+    if (!geomInput) return [];
+
+    let geom = geomInput;
+    if (typeof geom === 'string') {
+      try {
+        geom = JSON.parse(geom);
+      } catch {
+        return [];
+      }
+    }
+
+    if (geom.type === 'FeatureCollection' && Array.isArray(geom.features) && geom.features.length > 0) {
+      geom = geom.features[0].geometry;
+    } else if (geom.type === 'Feature' && geom.geometry) {
+      geom = geom.geometry;
+    }
+
+    let rawCoords: any = null;
+
+    if (Array.isArray(geom)) {
+      rawCoords = geom;
+    } else if (geom && Array.isArray(geom.coordinates)) {
+      if (geom.type === 'MultiPolygon') {
+        rawCoords = geom.coordinates[0]?.[0] || geom.coordinates[0];
+      } else if (geom.type === 'Polygon') {
+        rawCoords = geom.coordinates[0];
+      } else if (geom.type === 'LineString') {
+        rawCoords = geom.coordinates;
+      } else {
+        rawCoords = geom.coordinates[0] || geom.coordinates;
+      }
+    }
+
+    if (!Array.isArray(rawCoords) || rawCoords.length === 0) return [];
+
+    if (Array.isArray(rawCoords[0]) && Array.isArray(rawCoords[0][0]) && typeof rawCoords[0][0][0] === 'number') {
+      rawCoords = rawCoords[0];
+    }
+
+    const result: [number, number][] = [];
+
+    for (const pt of rawCoords) {
+      if (!Array.isArray(pt) || pt.length < 2) continue;
+      const a = Number(pt[0]);
+      const b = Number(pt[1]);
+      if (isNaN(a) || isNaN(b)) continue;
+
+      // Coordinate normalization to ensure Leaflet receives [lat, lon]:
+      // In India: Longitude ~70-80°E, Latitude ~20-30°N
+      if (Math.abs(a) > Math.abs(b) && Math.abs(a) > 40 && Math.abs(b) <= 40) {
+        result.push([b, a]);
+      } else if (Math.abs(b) > Math.abs(a) && Math.abs(b) > 40 && Math.abs(a) <= 40) {
+        result.push([a, b]);
+      } else {
+        result.push([b, a]);
+      }
+    }
+
+    return result;
   };
 
   const getParcelStyle = (parcel: Parcel) => {
@@ -332,13 +409,13 @@ export const GisMap: React.FC<GisMapProps> = ({
           />
         )}
 
-        {layerVisibility['orthomosaic-raster'] && orthoManifest && (
+        {layerVisibility['orthomosaic-raster'] && effectiveOrthoManifest && (
           <Polygon
             positions={[
-              [orthoManifest.spatial_bounds.min_lat, orthoManifest.spatial_bounds.min_lon],
-              [orthoManifest.spatial_bounds.max_lat, orthoManifest.spatial_bounds.min_lon],
-              [orthoManifest.spatial_bounds.max_lat, orthoManifest.spatial_bounds.max_lon],
-              [orthoManifest.spatial_bounds.min_lat, orthoManifest.spatial_bounds.max_lon],
+              [effectiveOrthoManifest.spatial_bounds.min_lat, effectiveOrthoManifest.spatial_bounds.min_lon],
+              [effectiveOrthoManifest.spatial_bounds.max_lat, effectiveOrthoManifest.spatial_bounds.min_lon],
+              [effectiveOrthoManifest.spatial_bounds.max_lat, effectiveOrthoManifest.spatial_bounds.max_lon],
+              [effectiveOrthoManifest.spatial_bounds.min_lat, effectiveOrthoManifest.spatial_bounds.max_lon],
             ]}
             pathOptions={{
               color: '#2E513E',
@@ -351,13 +428,13 @@ export const GisMap: React.FC<GisMapProps> = ({
               <div style={{ padding: '0.3rem' }}>
                 <span className="badge badge-emerald">2D True-Scale Orthomosaic</span>
                 <div style={{ fontWeight: 700, fontSize: '0.85rem', marginTop: '0.2rem' }}>
-                  {orthoManifest.orthomosaic_id}
+                  {effectiveOrthoManifest.orthomosaic_id}
                 </div>
                 <div style={{ fontSize: '0.75rem', marginTop: '0.3rem' }}>
-                  GSD: <strong>{orthoManifest.ground_sampling_distance_cm} cm/pixel</strong>
+                  GSD: <strong>{effectiveOrthoManifest.ground_sampling_distance_cm} cm/pixel</strong>
                 </div>
                 <div style={{ fontSize: '0.75rem' }}>
-                  Area: <strong>{orthoManifest.dimensions_m.total_area_ha} ha ({orthoManifest.dimensions_m.total_area_m2.toLocaleString()} m²)</strong>
+                  Area: <strong>{effectiveOrthoManifest.dimensions_m.total_area_ha} ha ({effectiveOrthoManifest.dimensions_m.total_area_m2.toLocaleString()} m²)</strong>
                 </div>
               </div>
             </Popup>
@@ -365,13 +442,13 @@ export const GisMap: React.FC<GisMapProps> = ({
         )}
 
         {/* 6. Bare-Earth DEM Elevation */}
-        {layerVisibility['dem-elevation'] && demManifest && (
+        {layerVisibility['dem-elevation'] && effectiveDemManifest && (
           <Polygon
             positions={[
-              [demManifest.spatial_bounds.min_lat, demManifest.spatial_bounds.min_lon],
-              [demManifest.spatial_bounds.max_lat, demManifest.spatial_bounds.min_lon],
-              [demManifest.spatial_bounds.max_lat, demManifest.spatial_bounds.max_lon],
-              [demManifest.spatial_bounds.min_lat, demManifest.spatial_bounds.max_lon],
+              [effectiveDemManifest.spatial_bounds.min_lat, effectiveDemManifest.spatial_bounds.min_lon],
+              [effectiveDemManifest.spatial_bounds.max_lat, effectiveDemManifest.spatial_bounds.min_lon],
+              [effectiveDemManifest.spatial_bounds.max_lat, effectiveDemManifest.spatial_bounds.max_lon],
+              [effectiveDemManifest.spatial_bounds.min_lat, effectiveDemManifest.spatial_bounds.max_lon],
             ]}
             pathOptions={{
               color: '#927323',
@@ -385,10 +462,10 @@ export const GisMap: React.FC<GisMapProps> = ({
               <div style={{ padding: '0.3rem' }}>
                 <span className="badge badge-amber">Bare-Earth DEM Raster</span>
                 <div style={{ fontWeight: 700, fontSize: '0.85rem', marginTop: '0.2rem' }}>
-                  {demManifest.dem_id}
+                  {effectiveDemManifest.dem_id}
                 </div>
                 <div style={{ fontSize: '0.75rem', marginTop: '0.3rem' }}>
-                  Elevation: <strong>{demManifest.elevation_range.min_m}m - {demManifest.elevation_range.max_m}m</strong>
+                  Elevation: <strong>{effectiveDemManifest.elevation_range.min_m}m - {effectiveDemManifest.elevation_range.max_m}m</strong>
                 </div>
               </div>
             </Popup>
@@ -397,7 +474,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 5. 3D LiDAR Point Cloud Footprint Layer */}
         {layerVisibility['lidar-point-cloud'] &&
-          footprint?.lidar_footprint_geojson?.features?.map((feat: any, idx: number) => {
+          effectiveFootprint?.lidar_footprint_geojson?.features?.map((feat: any, idx: number) => {
             const positions = extractLeafletCoords(feat.geometry);
             return (
               <Polygon
@@ -425,7 +502,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 3. Drone Flight Track (RTK) */}
         {layerVisibility['flight-trajectory'] &&
-          footprint?.rtk_trajectory_geojson?.features?.map((feat: any, idx: number) => {
+          effectiveFootprint?.rtk_trajectory_geojson?.features?.map((feat: any, idx: number) => {
             const linePositions = feat.geometry.coordinates.map(
               (pt: [number, number]) => [pt[1], pt[0]] as [number, number]
             );
@@ -445,7 +522,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 2. Raw Camera Capture Points */}
         {layerVisibility['raw-camera-shots'] &&
-          footprint?.camera_points_geojson?.features?.map((feat: any, idx: number) => {
+          effectiveFootprint?.camera_points_geojson?.features?.map((feat: any, idx: number) => {
             const [lon, lat] = feat.geometry.coordinates;
             return (
               <CircleMarker
@@ -464,7 +541,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 9. Detected Bund Boundaries */}
         {layerVisibility['detected-boundaries'] &&
-          detectedBoundaries.map((bnd) => {
+          effectiveDetectedBoundaries.map((bnd) => {
             const positions = extractLeafletCoords(bnd.geometry_geojson);
             if (positions.length === 0) return null;
             return (
@@ -484,7 +561,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 13. AI Land Classification Segmentation Polygons */}
         {layerVisibility['ai-land-classification'] &&
-          aiClassifications.map((region, idx) => {
+          effectiveAiClassifications.map((region, idx) => {
             const positions = extractLeafletCoords(region.geometry);
             if (positions.length === 0) return null;
             const style = getClassColor(region.class);
@@ -525,7 +602,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 14. AI Candidate Boundaries */}
         {layerVisibility['ai-candidate-boundaries'] &&
-          aiBoundaries.map((bnd) => {
+          effectiveAiBoundaries.map((bnd) => {
             const positions = extractLeafletCoords(bnd.geometry);
             if (positions.length === 0) return null;
             const isVerified = bnd.verification_status === 'VERIFIED';
@@ -569,8 +646,8 @@ export const GisMap: React.FC<GisMapProps> = ({
           })}
 
         {/* 16 & 17. Historical Change & Potential Encroachment Layer */}
-        {layerVisibility['historical-change-layer'] &&
-          aiChanges.map((chg) => {
+        {(layerVisibility['historical-change-layer'] || layerVisibility['potential-encroachments']) &&
+          effectiveAiChanges.map((chg) => {
             const positions = extractLeafletCoords(chg.geometry);
             if (positions.length === 0) return null;
             const isEncroachment = chg.severity === 'CRITICAL_ENCROACHMENT' || chg.change_type.includes('ENCROACHMENT');
@@ -616,7 +693,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 8. Field Parcels (Cadastral Polygons) */}
         {layerVisibility['detected-parcels'] &&
-          parcels.map((parcel) => {
+          effectiveParcels.map((parcel) => {
             const positions = extractLeafletCoords(parcel.geometry_geojson);
             if (positions.length === 0) return null;
 
@@ -668,7 +745,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 19–24. Cadastral & Land Record Intelligence Layers */}
         {layerVisibility['official-cadastral-parcels'] &&
-          landParcels.map((lp) => {
+          effectiveLandParcels.map((lp) => {
             const positions = extractLeafletCoords(lp.cadastral_geometry);
             if (positions.length === 0) return null;
             const isSelected = lp.parcel_id === selectedParcelId;
@@ -756,7 +833,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 21. Historical Cadastral (1998) Boundary Lines */}
         {layerVisibility['historical-cadastral-1998'] &&
-          landParcels.map((lp) => {
+          effectiveLandParcels.map((lp) => {
             const positions = extractLeafletCoords(lp.cadastral_geometry);
             if (positions.length === 0) return null;
             return (
@@ -776,7 +853,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 22. Drone Measured Geometry (Sensor Fusion) */}
         {layerVisibility['drone-measured-parcels'] &&
-          landParcels
+          effectiveLandParcels
             .filter((lp) => lp.current_geometry)
             .map((lp) => {
               const positions = extractLeafletCoords(lp.current_geometry);
@@ -798,7 +875,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 23. Surveyor-Verified Boundary Lines */}
         {layerVisibility['surveyor-verified-parcels'] &&
-          landParcels
+          effectiveLandParcels
             .filter((lp) => lp.verified_geometry && lp.verification_status === 'SURVEYOR_VERIFIED')
             .map((lp) => {
               const positions = extractLeafletCoords(lp.verified_geometry);
@@ -819,8 +896,8 @@ export const GisMap: React.FC<GisMapProps> = ({
 
         {/* 24. Conflict & Encroachment Overlay */}
         {layerVisibility['parcel-conflict-layer'] &&
-          landParcels
-            .filter((lp) => (lp.change_records_count && lp.change_records_count > 0) || lp.match_status === 'CONFLICT')
+          effectiveLandParcels
+            .filter((lp) => (lp.change_records_count && lp.change_records_count > 0) || lp.match_status === 'CONFLICT' || lp.ownership_status === 'DISPUTED')
             .map((lp) => {
               const positions = extractLeafletCoords(lp.current_geometry || lp.cadastral_geometry);
               if (positions.length === 0) return null;
@@ -1072,7 +1149,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['ai-candidate-boundaries']} onChange={() => toggleLayer('ai-candidate-boundaries')} />
-          <span style={{ color: '#B18F2E', fontWeight: 600 }}>14. AI Candidate Bunds</span> ({aiBoundaries.length})
+          <span style={{ color: '#B18F2E', fontWeight: 600 }}>14. AI Candidate Bunds</span> ({effectiveAiBoundaries.length})
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['historical-change-layer']} onChange={() => toggleLayer('historical-change-layer')} />
@@ -1092,7 +1169,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['detected-parcels']} onChange={() => toggleLayer('detected-parcels')} />
-          <span>8. Field Parcels ({parcels.length})</span>
+          <span>8. Field Parcels ({effectiveParcels.length})</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={layerVisibility['dem-elevation']} onChange={() => toggleLayer('dem-elevation')} />

@@ -28,6 +28,11 @@ import {
   LandParcelDTO,
 } from '../types';
 import {
+  DEFAULT_HARIPURA_PARCELS,
+  DEFAULT_HARIPURA_LAND_PARCELS,
+  DEFAULT_HARIPURA_SURVEY,
+} from '../data/cadastralSpatialDefaults';
+import {
   TelemetryRecord,
   MissionHealth,
   SimulatorStatus,
@@ -52,13 +57,13 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
   const { activeRole } = useAuth();
   const { triggerDroneTransition } = useDroneTransition();
 
-  // Selected Survey Context
+  // Selected Survey Context with robust Haripura initial state
   const [selectedSurveyId] = useState<string>('SUR-2026-001');
-  const [survey, setSurvey] = useState<Survey | null>(null);
-  const [parcels, setParcels] = useState<Parcel[]>([]);
-  const [landParcels, setLandParcels] = useState<LandParcelDTO[]>([]);
-  const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
-  const [selectedLandParcel, setSelectedLandParcel] = useState<LandParcelDTO | null>(null);
+  const [survey, setSurvey] = useState<Survey | null>(DEFAULT_HARIPURA_SURVEY);
+  const [parcels, setParcels] = useState<Parcel[]>(DEFAULT_HARIPURA_PARCELS);
+  const [landParcels, setLandParcels] = useState<LandParcelDTO[]>(DEFAULT_HARIPURA_LAND_PARCELS);
+  const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(DEFAULT_HARIPURA_PARCELS[0]);
+  const [selectedLandParcel, setSelectedLandParcel] = useState<LandParcelDTO | null>(DEFAULT_HARIPURA_LAND_PARCELS[0]);
 
   // Drone Telemetry & Mission State
   const [selectedMissionId] = useState<string>('MIS-2026-HARIPURA-002');
@@ -188,12 +193,15 @@ export const CadastralGisWorkbenchPage: React.FC<CadastralGisWorkbenchPageProps>
         api.getSurveyLifecycle(selectedSurveyId).catch(() => null),
       ]);
       if (surveyData) setSurvey(surveyData);
-      setParcels(parcelsData || []);
-      setLandParcels(landData?.parcels || []);
-      if (lifecycleData) setSurveyLifecycle(lifecycleData);
-      if (parcelsData && parcelsData.length > 0 && !selectedParcel) {
-        setSelectedParcel(parcelsData[0]);
+      if (parcelsData && parcelsData.length > 0) {
+        setParcels(parcelsData);
+        if (!selectedParcel) setSelectedParcel(parcelsData[0]);
       }
+      if (landData?.parcels && landData.parcels.length > 0) {
+        setLandParcels(landData.parcels);
+        if (!selectedLandParcel) setSelectedLandParcel(landData.parcels[0]);
+      }
+      if (lifecycleData) setSurveyLifecycle(lifecycleData);
     } catch (e) {
       console.error('Failed to load GIS data', e);
     }
