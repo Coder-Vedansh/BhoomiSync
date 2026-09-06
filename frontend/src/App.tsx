@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from './auth/AuthContext';
 import { AppShell } from './components/layout/AppShell';
 import { DashboardPage } from './pages/DashboardPage';
+import { SurveyWorkspacePage } from './pages/SurveyWorkspacePage';
 import { CadastralGisWorkbenchPage } from './pages/CadastralGisWorkbenchPage';
 import { UnifiedLandRegistryPage } from './pages/UnifiedLandRegistryPage';
 import { ReportsPage } from './pages/ReportsPage';
@@ -73,6 +74,8 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
   };
 
   // Helper to determine active workspace
+  const isSurveyWorkspace = ['surveys', 'survey-detail'].includes(currentTab);
+
   const isGisWorkspace = [
     'gis',
     'workbench',
@@ -82,8 +85,6 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
     'ai-modules',
     'ai-analysis',
     'datasets',
-    'surveys',
-    'survey-detail',
   ].includes(currentTab);
 
   const isLandRegistryWorkspace = [
@@ -99,6 +100,8 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
 
   const activeWorkspaceKey = isDashboardWorkspace
     ? 'dashboard'
+    : isSurveyWorkspace
+    ? 'surveys'
     : isGisWorkspace
     ? 'gis'
     : isLandRegistryWorkspace
@@ -123,7 +126,10 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
           {/* 1. Primary Workspace #1: Executive Dashboard */}
           {isDashboardWorkspace && <DashboardPage onNavigate={handleNavigate} />}
 
-          {/* 2. Primary Workspace #2: Cadastral GIS & Mission Workbench */}
+          {/* 2. Primary Workspace #2: Dedicated Survey Workspace & Village Administration */}
+          {isSurveyWorkspace && <SurveyWorkspacePage onNavigate={handleNavigate} />}
+
+          {/* 3. Primary Workspace #3: Cadastral GIS & Mission Workbench */}
           {isGisWorkspace && (
             <CadastralGisWorkbenchPage
               onNavigate={handleNavigate}
