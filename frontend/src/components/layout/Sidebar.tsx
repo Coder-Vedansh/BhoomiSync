@@ -16,7 +16,6 @@ import {
   Zap,
   Activity,
   Compass,
-  Database,
   Settings,
 } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
@@ -83,22 +82,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       section: 'OPERATIONS',
       items: [
         {
-          id: 'drone-mission',
-          label: 'Missions',
-          subtitle: 'Flight Track & Telemetry',
-          icon: Radio,
-        },
-        {
-          id: 'datasets',
-          label: 'Datasets',
-          subtitle: 'R2 Cloud Rasters & DEM',
-          icon: Database,
-        },
-        {
           id: 'drone-data',
-          label: 'Drone Data',
+          label: 'Drone Sensor Data',
           subtitle: 'Camera Frames & ToF Stream',
           icon: Activity,
+          badge: 'LIVE',
         },
         {
           id: 'ai-analysis',
@@ -128,9 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const handleNavClick = (id: string) => {
-    if (id === 'drone-data') {
-      onSelectTab('drone-mission');
-    } else if (id === 'system-settings') {
+    if (id === 'system-settings') {
       onSelectTab('security-admin');
     } else {
       onSelectTab(id);
@@ -139,10 +125,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const getActiveId = (tab: string) => {
-    if (['gis', 'workbench', 'gis-workbench', 'geospatial'].includes(tab)) return 'gis';
+    if (['gis', 'workbench', 'gis-workbench', 'geospatial', 'drone-mission', 'datasets'].includes(tab)) return 'gis';
     if (['surveys', 'survey-detail'].includes(tab)) return 'surveys';
-    if (['drone-mission'].includes(tab)) return 'drone-mission';
-    if (['datasets'].includes(tab)) return 'datasets';
+    if (['drone-data', 'ingestion', 'telemetry'].includes(tab)) return 'drone-data';
     if (['ai-analysis', 'ai-modules'].includes(tab)) return 'ai-analysis';
     if (['land-registry', 'land-records', 'parcel-detail', 'comparison'].includes(tab)) return 'land-registry';
     if (['reports', 'report-detail'].includes(tab)) return 'reports';

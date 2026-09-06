@@ -4,6 +4,7 @@ import { AuthProvider } from './auth/AuthContext';
 import { AppShell } from './components/layout/AppShell';
 import { DashboardPage } from './pages/DashboardPage';
 import { SurveyWorkspacePage } from './pages/SurveyWorkspacePage';
+import { DroneDataPage } from './pages/DroneDataPage';
 import { CadastralGisWorkbenchPage } from './pages/CadastralGisWorkbenchPage';
 import { UnifiedLandRegistryPage } from './pages/UnifiedLandRegistryPage';
 import { ReportsPage } from './pages/ReportsPage';
@@ -75,6 +76,7 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
 
   // Helper to determine active workspace
   const isSurveyWorkspace = ['surveys', 'survey-detail'].includes(currentTab);
+  const isDroneDataWorkspace = ['drone-data', 'ingestion', 'telemetry'].includes(currentTab);
 
   const isGisWorkspace = [
     'gis',
@@ -102,6 +104,8 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
     ? 'dashboard'
     : isSurveyWorkspace
     ? 'surveys'
+    : isDroneDataWorkspace
+    ? 'drone-data'
     : isGisWorkspace
     ? 'gis'
     : isLandRegistryWorkspace
@@ -129,7 +133,10 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
           {/* 2. Primary Workspace #2: Dedicated Survey Workspace & Village Administration */}
           {isSurveyWorkspace && <SurveyWorkspacePage onNavigate={handleNavigate} />}
 
-          {/* 3. Primary Workspace #3: Cadastral GIS & Mission Workbench */}
+          {/* 3. Primary Workspace #3: Dedicated Drone Sensor Data & Telemetry Station */}
+          {isDroneDataWorkspace && <DroneDataPage onNavigate={handleNavigate} />}
+
+          {/* 4. Primary Workspace #4: Cadastral GIS & Mission Workbench */}
           {isGisWorkspace && (
             <CadastralGisWorkbenchPage
               onNavigate={handleNavigate}
