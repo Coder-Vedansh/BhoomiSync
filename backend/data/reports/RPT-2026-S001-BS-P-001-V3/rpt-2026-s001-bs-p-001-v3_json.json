@@ -5,14 +5,14 @@
     "survey_title": "Haripura Agricultural Resurvey Pilot",
     "parcel_id": "BS-P-001",
     "khasra_number": "101",
-    "generated_at": "2026-09-04T08:01:15.226541Z",
+    "generated_at": "2026-09-06T17:16:43.890317Z",
     "schema_version": "1.0.0",
     "crs": "EPSG:4326 (WGS84) / Projected UTM Zone 43N (EPSG:32643)",
     "preferred_unit": "m2",
     "access_role_level": "ADMIN"
   },
   "data_provenance_and_integrity": {
-    "checksum_sha256": "f4b485161b75e34ede7fe51a8200a4d31bbc3681cfec0b11aa3a71934d4cfc22",
+    "checksum_sha256": "81a353b1fbd7406839c258d77d6387606d39904ace72717dd5b581acd70cca11",
     "data_source_breakdown": {
       "raw_sensors": "CAMERA_RGB_LIDAR_RTK_GNSS",
       "ai_models": "BHOOMI_SEG_V2_DEEP_RESNET",
@@ -227,7 +227,7 @@
     "surveyor_name": "Vikram Singh (Cadastral Surveyor, Grade I)",
     "surveyor_id": "SRV-RJ-2024-0891",
     "license_number": "RAJ-REV-CAD-4412",
-    "verification_date": "2026-09-04",
+    "verification_date": "2026-09-06",
     "remarks": "Aerial boundary verified with RTK Ground Control Points. Alignment adheres to Rajasthan Land Revenue Act standards.",
     "digital_sign_hash": "SIG-SHA256-9026391F798E75E8"
   },
