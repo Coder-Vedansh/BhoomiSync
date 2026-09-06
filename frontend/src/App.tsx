@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { SurveyWorkspacePage } from './pages/SurveyWorkspacePage';
 import { DroneDataPage } from './pages/DroneDataPage';
 import { CadastralGisWorkbenchPage } from './pages/CadastralGisWorkbenchPage';
+import { AIAnalysisPage } from './pages/AIAnalysisPage';
 import { UnifiedLandRegistryPage } from './pages/UnifiedLandRegistryPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { ReportDetailPage } from './pages/ReportDetailPage';
@@ -77,6 +78,13 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
   // Helper to determine active workspace
   const isSurveyWorkspace = ['surveys', 'survey-detail'].includes(currentTab);
   const isDroneDataWorkspace = ['drone-data', 'ingestion', 'telemetry'].includes(currentTab);
+  const isAIAnalysisWorkspace = [
+    'ai-analysis',
+    'ai-modules',
+    'ai',
+    'ai-hub',
+    'computer-vision',
+  ].includes(currentTab);
 
   const isGisWorkspace = [
     'gis',
@@ -84,8 +92,6 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
     'drone-mission',
     'gis-workbench',
     'geospatial',
-    'ai-modules',
-    'ai-analysis',
     'datasets',
   ].includes(currentTab);
 
@@ -106,6 +112,8 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
     ? 'surveys'
     : isDroneDataWorkspace
     ? 'drone-data'
+    : isAIAnalysisWorkspace
+    ? 'ai-analysis'
     : isGisWorkspace
     ? 'gis'
     : isLandRegistryWorkspace
@@ -136,14 +144,15 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
           {/* 3. Primary Workspace #3: Dedicated Drone Sensor Data & Telemetry Station */}
           {isDroneDataWorkspace && <DroneDataPage onNavigate={handleNavigate} />}
 
-          {/* 4. Primary Workspace #4: Cadastral GIS & Mission Workbench */}
+          {/* 4. Primary Workspace #4: AI Computer Vision & Intelligence Hub */}
+          {isAIAnalysisWorkspace && <AIAnalysisPage onNavigate={handleNavigate} />}
+
+          {/* 5. Primary Workspace #5: Cadastral GIS & Mission Workbench */}
           {isGisWorkspace && (
             <CadastralGisWorkbenchPage
               onNavigate={handleNavigate}
               defaultTab={
-                currentTab === 'ai-analysis'
-                  ? 'ai'
-                  : currentTab === 'drone-mission'
+                currentTab === 'drone-mission'
                   ? 'mission'
                   : 'layers'
               }

@@ -230,6 +230,21 @@ export const api = {
   // ---------------------------------------------------------------------------
   // AI Geospatial Intelligence, Boundary Extraction & Historical Changes
   // ---------------------------------------------------------------------------
+  getHuggingFaceStatus: (apiKey?: string) => {
+    const qs = apiKey ? `?api_key=${encodeURIComponent(apiKey)}` : '';
+    return fetchJson<any>(`/ai/huggingface/status${qs}`);
+  },
+
+  testHuggingFaceConnection: (apiKey?: string, samModel?: string, lulcModel?: string) =>
+    fetchJson<any>('/ai/huggingface/test', {
+      method: 'POST',
+      body: JSON.stringify({
+        api_key: apiKey,
+        sam_model: samModel,
+        lulc_model: lulcModel,
+      }),
+    }),
+
   getAIModels: () =>
     fetchJson<{ total_models: number; models: AIModelRecord[] }>('/ai/models'),
 

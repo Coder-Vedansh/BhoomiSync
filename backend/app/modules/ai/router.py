@@ -17,14 +17,40 @@ router.include_router(change_detection_router)
 router.include_router(inference_router)
 
 
+from typing import Optional, Dict, Any, List
+from pydantic import BaseModel, Field
+
+class HFTestRequest(BaseModel):
+    api_key: Optional[str] = Field(None, description="Optional Hugging Face token to test")
+    sam_model: Optional[str] = Field(None, description="Optional custom SAM model ID")
+    lulc_model: Optional[str] = Field(None, description="Optional custom LULC model ID")
+
+class PipelineExecuteRequest(BaseModel):
+    survey_id: str = Field(..., description="Survey identifier")
+    pipelines: List[str] = Field(default_factory=lambda: ["lulc", "bund", "change"])
+    confidence_threshold: float = Field(0.60, ge=0.1, le=1.0)
+    edge_sensitivity: float = Field(0.75, ge=0.1, le=1.0)
+    simplify_tolerance_m: float = Field(0.12, ge=0.01, le=2.0)
+
 @router.get("/huggingface/status")
-async def get_huggingface_status():
+async def get_huggingface_status(api_key: Optional[str] = None):
     """
     Returns live connection and configuration status of the Hugging Face Serverless Inference API.
+    Optionally validates a provided api_key query param.
     """
     from app.modules.ai.services.huggingface_service import hf_inference_service
-    status_info = await hf_inference_service.check_api_status()
+    status_info = await hf_inference_service.check_api_status(test_key=api_key)
     return success_response(data=status_info)
+
+@router.post("/huggingface/test")
+async def test_huggingface_connection(payload: HFTestRequest):
+    """
+    Explicitly tests a Hugging Face API key token against whoami-v2.
+    """
+    from app.modules.ai.services.huggingface_service import hf_inference_service
+    status_info = await hf_inference_service.check_api_status(test_key=payload.api_key)
+    return success_response(data=status_info, message="Hugging Face API connection test completed")
+
 
 
 @router.get("/modules", response_model=ApiResponse[AIModulesResponse])
