@@ -421,11 +421,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
             </button>
 
             <button
-              onClick={() => onNavigate('drone-mission')}
+              onClick={() => onNavigate('drone-data')}
               className="h-9 px-3 rounded-[var(--radius-sm)] bg-[#182C24] border border-[#2E513E] text-xs text-[#F4F5EF] hover:bg-[#2E513E] transition-colors flex items-center gap-1 cursor-pointer"
-              title="Open Live Mission Control"
+              title="Open Live Drone Sensor Data & Telemetry"
             >
-              <span>Missions</span>
+              <span>Drone Data</span>
               <ChevronRight size={13} />
             </button>
           </div>
@@ -485,7 +485,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
               Bucket: {r2Stats?.bucket_name || 'bhoomisync-drone-data'}
             </span>
             <button
-              onClick={() => onNavigate('datasets')}
+              onClick={() => onNavigate('drone-data')}
               className="text-xs text-[#2E513E] hover:text-[#3C664D] font-semibold flex items-center gap-1 cursor-pointer"
             >
               <span>Explore</span>

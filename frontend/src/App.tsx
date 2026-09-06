@@ -78,7 +78,14 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
 
   // Helper to determine active workspace
   const isSurveyWorkspace = ['surveys', 'survey-detail'].includes(currentTab);
-  const isDroneDataWorkspace = ['drone-data', 'ingestion', 'telemetry'].includes(currentTab);
+  const isDroneDataWorkspace = [
+    'drone-data',
+    'ingestion',
+    'telemetry',
+    'missions',
+    'drone-mission',
+    'datasets',
+  ].includes(currentTab);
   const isAIAnalysisWorkspace = [
     'ai-analysis',
     'ai-modules',
@@ -90,10 +97,8 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
   const isGisWorkspace = [
     'gis',
     'workbench',
-    'drone-mission',
     'gis-workbench',
     'geospatial',
-    'datasets',
   ].includes(currentTab);
 
   const isLandRegistryWorkspace = [

@@ -130,7 +130,7 @@ export const PremiumCardDesigns: React.FC<PremiumCardDesignsProps> = ({
             CARD 2: Surveyed Area (Warm Sand with Gradient Mesh + Botanical Art)
             =================================================================== */}
         <div
-          onClick={() => onNavigate?.('gis')}
+          onClick={() => onNavigate?.('surveys')}
           className="group relative overflow-hidden bg-gradient-to-br from-[#FAF7F0] via-[#F4EFE5] to-[#EFE7D8] border border-[#D8D5CC] hover:border-[#C4B69E] rounded-[var(--radius-xl)] p-5 shadow-[0_4px_20px_rgba(44,52,43,0.06)] hover:shadow-[0_8px_30px_rgba(44,52,43,0.12)] transition-all duration-300 flex flex-col justify-between min-h-[170px] cursor-pointer"
         >
           {/* Animated Gradient Mesh & Botanical Branch */}
@@ -210,7 +210,7 @@ export const PremiumCardDesigns: React.FC<PremiumCardDesignsProps> = ({
             CARD 3: Active Missions (Deep Dark Teal with Topographic Grid)
             =================================================================== */}
         <div
-          onClick={() => onNavigate?.('missions')}
+          onClick={() => onNavigate?.('drone-data')}
           className="group relative overflow-hidden bg-gradient-to-br from-[#122A23] via-[#0E221C] to-[#081511] border border-[#1F4237] hover:border-[#3C7B65] rounded-[var(--radius-xl)] p-5 shadow-[0_8px_26px_rgba(8,21,17,0.4)] transition-all duration-300 flex flex-col justify-between min-h-[170px] text-white cursor-pointer"
         >
           {/* Animated Topographic Grid (Parallax / Tech Grid) */}
@@ -344,7 +344,7 @@ export const PremiumCardDesigns: React.FC<PremiumCardDesignsProps> = ({
             CARD 5: R2 Storage (Deep Misty Pine Forest Canopy)
             =================================================================== */}
         <div
-          onClick={() => onNavigate?.('datasets')}
+          onClick={() => onNavigate?.('drone-data')}
           className="group relative overflow-hidden bg-gradient-to-br from-[#14261C] via-[#0E1E16] to-[#07130D] border border-[#213F2E] hover:border-[#3C6E52] rounded-[var(--radius-xl)] p-5 shadow-[0_8px_26px_rgba(7,19,13,0.4)] transition-all duration-300 flex flex-col justify-between min-h-[170px] text-white cursor-pointer"
         >
           {/* Animated Misty Forest Canopy Silhouettes */}
