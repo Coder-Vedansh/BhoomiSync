@@ -12,6 +12,7 @@ import { ReportsPage } from './pages/ReportsPage';
 import { ReportDetailPage } from './pages/ReportDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { SecurityAdminPage } from './pages/SecurityAdminPage';
+import { SystemSettingsPage } from './pages/SystemSettingsPage';
 import { DroneTransitionProvider, useDroneTransition } from './context/DroneTransitionContext';
 
 interface AppContentProps {
@@ -105,6 +106,12 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
   const isReportsWorkspace = currentTab === 'reports';
   const isReportDetailWorkspace = currentTab === 'report-detail';
   const isDashboardWorkspace = currentTab === 'dashboard' || currentTab === '/' || currentTab === '';
+  const isSystemSettingsWorkspace = [
+    'system-settings',
+    'system-status',
+    'settings',
+    'architecture',
+  ].includes(currentTab);
 
   const activeWorkspaceKey = isDashboardWorkspace
     ? 'dashboard'
@@ -122,6 +129,8 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
     ? `report-detail-${selectedReportId}`
     : isReportsWorkspace
     ? 'reports'
+    : isSystemSettingsWorkspace
+    ? 'system-settings'
     : currentTab;
 
   return (
@@ -159,10 +168,10 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
             />
           )}
 
-          {/* 3. Primary Workspace #3: Authoritative Land Registry */}
+          {/* 6. Primary Workspace #6: Authoritative Land Registry */}
           {isLandRegistryWorkspace && <UnifiedLandRegistryPage onNavigate={handleNavigate} />}
 
-          {/* 4. Primary Workspace #4: Reports & Document Exports */}
+          {/* 7. Primary Workspace #7: Reports & Document Exports */}
           {isReportsWorkspace && <ReportsPage onNavigate={handleNavigate} />}
           {isReportDetailWorkspace && (
             <ReportDetailPage
@@ -171,9 +180,10 @@ function AppContent({ currentTab, setCurrentTab }: AppContentProps) {
             />
           )}
 
-          {/* Utility Views: Auth & Security Admin */}
+          {/* Utility Views: Auth, Security Admin & System Settings */}
           {currentTab === 'login' && <LoginPage onLoginSuccess={() => setCurrentTab('dashboard')} />}
           {currentTab === 'security-admin' && <SecurityAdminPage />}
+          {isSystemSettingsWorkspace && <SystemSettingsPage onNavigate={handleNavigate} />}
         </motion.div>
       </AnimatePresence>
     </AppShell>

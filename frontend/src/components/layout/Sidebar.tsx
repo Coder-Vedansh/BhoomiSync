@@ -116,11 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const handleNavClick = (id: string) => {
-    if (id === 'system-settings') {
-      onSelectTab('security-admin');
-    } else {
-      onSelectTab(id);
-    }
+    onSelectTab(id);
     onCloseMobile?.();
   };
 
@@ -128,10 +124,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (['gis', 'workbench', 'gis-workbench', 'geospatial', 'drone-mission', 'datasets'].includes(tab)) return 'gis';
     if (['surveys', 'survey-detail'].includes(tab)) return 'surveys';
     if (['drone-data', 'ingestion', 'telemetry'].includes(tab)) return 'drone-data';
-    if (['ai-analysis', 'ai-modules'].includes(tab)) return 'ai-analysis';
+    if (['ai-analysis', 'ai-modules', 'ai', 'ai-hub'].includes(tab)) return 'ai-analysis';
     if (['land-registry', 'land-records', 'parcel-detail', 'comparison'].includes(tab)) return 'land-registry';
     if (['reports', 'report-detail'].includes(tab)) return 'reports';
-    if (['security-admin', 'system-settings'].includes(tab)) return 'security-admin';
+    if (['security-admin'].includes(tab)) return 'security-admin';
+    if (['system-settings', 'system-status', 'settings'].includes(tab)) return 'system-settings';
     return 'dashboard';
   };
 
